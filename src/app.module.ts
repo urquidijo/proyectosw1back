@@ -7,6 +7,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { SqlImportsModule } from './sql-imports/sql-imports.module';
 import { GenerationsModule } from './generations/generations.module';
 import { GenerationPlansModule } from './generation-plans/generation-plans.module';
+import { SqlSchemaGeneratorModule } from './sql-schema-generator/sql-schema-generator.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { GenerationPlansModule } from './generation-plans/generation-plans.modul
     SqlImportsModule,
     GenerationsModule,
     GenerationPlansModule,
+    SqlSchemaGeneratorModule,
   ],
 })
 export class AppModule {}
