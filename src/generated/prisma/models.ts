@@ -10,4 +10,7 @@
  */
 export type * from './models/User.js'
 export type * from './models/Project.js'
+export type * from './models/SqlImport.js'
+export type * from './models/Generation.js'
+export type * from './models/GenerationPlan.js'
 export type * from './commonInputTypes.js'

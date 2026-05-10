@@ -13,6 +13,11 @@ enum UserRole {
   ADMIN
 }
 
+enum SqlImportStatus {
+  VALID
+  INVALID
+}
+
 model User {
   id           String   @id @default(cuid())
   name         String
@@ -36,5 +41,58 @@ model Project {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  sqlImports SqlImport[]
+
+  generations Generation[]
+
+  generationPlans GenerationPlan[]
+
   @@map("projects")
+}
+
+model SqlImport {
+  id          String          @id @default(cuid())
+  projectId   String
+  project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  originalSql String
+  status      SqlImportStatus
+  schemaJson  Json?
+  errors      Json?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  generations Generation[]
+
+  generationPlan GenerationPlan?
+
+  @@map("sql_imports")
+}
+
+model Generation {
+  id          String    @id @default(cuid())
+  projectId   String
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sqlImportId String
+  sqlImport   SqlImport @relation(fields: [sqlImportId], references: [id], onDelete: Cascade)
+  rowConfig   Json
+  previewJson Json
+  outputSql   String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  validationJson Json?
+
+  @@map("generations")
+}
+
+model GenerationPlan {
+  id          String    @id @default(cuid())
+  projectId   String
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sqlImportId String    @unique
+  sqlImport   SqlImport @relation(fields: [sqlImportId], references: [id], onDelete: Cascade)
+  planJson    Json
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("generation_plans")
 }

@@ -49,3 +49,18 @@ export type User = Prisma.UserModel
  * 
  */
 export type Project = Prisma.ProjectModel
+/**
+ * Model SqlImport
+ * 
+ */
+export type SqlImport = Prisma.SqlImportModel
+/**
+ * Model Generation
+ * 
+ */
+export type Generation = Prisma.GenerationModel
+/**
+ * Model GenerationPlan
+ * 
+ */
+export type GenerationPlan = Prisma.GenerationPlanModel

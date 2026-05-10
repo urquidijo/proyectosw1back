@@ -52,7 +52,10 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Project: 'Project'
+  Project: 'Project',
+  SqlImport: 'SqlImport',
+  Generation: 'Generation',
+  GenerationPlan: 'GenerationPlan'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -96,12 +99,68 @@ export const ProjectScalarFieldEnum = {
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
 
 
+export const SqlImportScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  originalSql: 'originalSql',
+  status: 'status',
+  schemaJson: 'schemaJson',
+  errors: 'errors',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SqlImportScalarFieldEnum = (typeof SqlImportScalarFieldEnum)[keyof typeof SqlImportScalarFieldEnum]
+
+
+export const GenerationScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  sqlImportId: 'sqlImportId',
+  rowConfig: 'rowConfig',
+  previewJson: 'previewJson',
+  outputSql: 'outputSql',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  validationJson: 'validationJson'
+} as const
+
+export type GenerationScalarFieldEnum = (typeof GenerationScalarFieldEnum)[keyof typeof GenerationScalarFieldEnum]
+
+
+export const GenerationPlanScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  sqlImportId: 'sqlImportId',
+  planJson: 'planJson',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GenerationPlanScalarFieldEnum = (typeof GenerationPlanScalarFieldEnum)[keyof typeof GenerationPlanScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -118,4 +177,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
