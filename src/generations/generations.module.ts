@@ -14,4 +14,4 @@ import { GenerationValidationService } from './generation-validation.service';
     GenerationValidationService,
   ],
 })
-export class GenerationsModule {}
+export class GenerationsModule { }

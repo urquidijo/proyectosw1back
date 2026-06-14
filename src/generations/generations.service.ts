@@ -16,7 +16,7 @@ export class GenerationsService {
     private readonly prisma: PrismaService,
     private readonly syntheticDataGenerator: SyntheticDataGeneratorService,
     private readonly generationValidationService: GenerationValidationService,
-  ) {}
+  ) { }
 
   async create(
     projectId: string,
@@ -49,9 +49,29 @@ export class GenerationsService {
     }
 
     const schema = sqlImport.schemaJson as unknown as DetectedSchema;
-    const rowConfig = this.validateRowConfig(
+
+    const generationRuleSet = createGenerationDto.ruleSetId
+      ? await this.prisma.generationRuleSet.findFirst({
+        where: {
+          id: createGenerationDto.ruleSetId,
+          projectId,
+          sqlImportId: sqlImport.id,
+        },
+      })
+      : null;
+
+    if (createGenerationDto.ruleSetId && !generationRuleSet) {
+      throw new NotFoundException('Configuración de reglas no encontrada');
+    }
+
+    const rulesJson =
+      createGenerationDto.rules ??
+      (generationRuleSet?.rulesJson as Record<string, unknown> | undefined);
+
+    const rowConfig = this.buildRowConfigFromRules(
       schema,
       createGenerationDto.rowConfig,
+      rulesJson,
     );
 
     const generationPlan = await this.prisma.generationPlan.findUnique({
@@ -79,6 +99,7 @@ export class GenerationsService {
       data: {
         projectId,
         sqlImportId: sqlImport.id,
+        generationRuleSetId: generationRuleSet?.id,
         rowConfig: rowConfig as unknown as Prisma.InputJsonValue,
         previewJson: result.preview as unknown as Prisma.InputJsonValue,
         validationJson: validationReport as unknown as Prisma.InputJsonValue,
@@ -90,6 +111,7 @@ export class GenerationsService {
       id: generation.id,
       projectId: generation.projectId,
       sqlImportId: generation.sqlImportId,
+      generationRuleSetId: generation.generationRuleSetId,
       rowConfig: generation.rowConfig,
       previewJson: generation.previewJson,
       validationJson: generation.validationJson,
@@ -97,6 +119,48 @@ export class GenerationsService {
       createdAt: generation.createdAt,
       updatedAt: generation.updatedAt,
     };
+  }
+
+  private buildRowConfigFromRules(
+    schema: DetectedSchema,
+    rowConfig?: Record<string, number>,
+    rulesJson?: Record<string, unknown>,
+  ): Record<string, number> {
+    const normalizedConfig: Record<string, number> = {};
+
+    const rules = rulesJson as
+      | {
+        tables?: Record<
+          string,
+          {
+            rowCount?: number;
+          }
+        >;
+      }
+      | undefined;
+
+    for (const table of schema.tables) {
+      const rawValue =
+        rowConfig?.[table.name] ?? rules?.tables?.[table.name]?.rowCount;
+
+      const value = Number(rawValue);
+
+      if (!Number.isInteger(value) || value < 1) {
+        throw new BadRequestException(
+          `Debes indicar una cantidad entera mayor a 0 para la tabla "${table.name}"`,
+        );
+      }
+
+      if (value > 1000) {
+        throw new BadRequestException(
+          `Por ahora el máximo permitido es 1000 filas por tabla. Tabla: "${table.name}"`,
+        );
+      }
+
+      normalizedConfig[table.name] = value;
+    }
+
+    return normalizedConfig;
   }
 
   async findAllByProject(projectId: string, userId: string) {

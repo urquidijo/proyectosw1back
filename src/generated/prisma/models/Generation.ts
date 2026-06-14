@@ -28,6 +28,7 @@ export type GenerationMinAggregateOutputType = {
   id: string | null
   projectId: string | null
   sqlImportId: string | null
+  generationRuleSetId: string | null
   outputSql: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -37,6 +38,7 @@ export type GenerationMaxAggregateOutputType = {
   id: string | null
   projectId: string | null
   sqlImportId: string | null
+  generationRuleSetId: string | null
   outputSql: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -46,6 +48,7 @@ export type GenerationCountAggregateOutputType = {
   id: number
   projectId: number
   sqlImportId: number
+  generationRuleSetId: number
   rowConfig: number
   previewJson: number
   outputSql: number
@@ -60,6 +63,7 @@ export type GenerationMinAggregateInputType = {
   id?: true
   projectId?: true
   sqlImportId?: true
+  generationRuleSetId?: true
   outputSql?: true
   createdAt?: true
   updatedAt?: true
@@ -69,6 +73,7 @@ export type GenerationMaxAggregateInputType = {
   id?: true
   projectId?: true
   sqlImportId?: true
+  generationRuleSetId?: true
   outputSql?: true
   createdAt?: true
   updatedAt?: true
@@ -78,6 +83,7 @@ export type GenerationCountAggregateInputType = {
   id?: true
   projectId?: true
   sqlImportId?: true
+  generationRuleSetId?: true
   rowConfig?: true
   previewJson?: true
   outputSql?: true
@@ -163,6 +169,7 @@ export type GenerationGroupByOutputType = {
   id: string
   projectId: string
   sqlImportId: string
+  generationRuleSetId: string | null
   rowConfig: runtime.JsonValue
   previewJson: runtime.JsonValue
   outputSql: string
@@ -196,6 +203,7 @@ export type GenerationWhereInput = {
   id?: Prisma.StringFilter<"Generation"> | string
   projectId?: Prisma.StringFilter<"Generation"> | string
   sqlImportId?: Prisma.StringFilter<"Generation"> | string
+  generationRuleSetId?: Prisma.StringNullableFilter<"Generation"> | string | null
   rowConfig?: Prisma.JsonFilter<"Generation">
   previewJson?: Prisma.JsonFilter<"Generation">
   outputSql?: Prisma.StringFilter<"Generation"> | string
@@ -204,12 +212,14 @@ export type GenerationWhereInput = {
   validationJson?: Prisma.JsonNullableFilter<"Generation">
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
   sqlImport?: Prisma.XOR<Prisma.SqlImportScalarRelationFilter, Prisma.SqlImportWhereInput>
+  generationRuleSet?: Prisma.XOR<Prisma.GenerationRuleSetNullableScalarRelationFilter, Prisma.GenerationRuleSetWhereInput> | null
 }
 
 export type GenerationOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   sqlImportId?: Prisma.SortOrder
+  generationRuleSetId?: Prisma.SortOrderInput | Prisma.SortOrder
   rowConfig?: Prisma.SortOrder
   previewJson?: Prisma.SortOrder
   outputSql?: Prisma.SortOrder
@@ -218,6 +228,7 @@ export type GenerationOrderByWithRelationInput = {
   validationJson?: Prisma.SortOrderInput | Prisma.SortOrder
   project?: Prisma.ProjectOrderByWithRelationInput
   sqlImport?: Prisma.SqlImportOrderByWithRelationInput
+  generationRuleSet?: Prisma.GenerationRuleSetOrderByWithRelationInput
 }
 
 export type GenerationWhereUniqueInput = Prisma.AtLeast<{
@@ -227,6 +238,7 @@ export type GenerationWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.GenerationWhereInput | Prisma.GenerationWhereInput[]
   projectId?: Prisma.StringFilter<"Generation"> | string
   sqlImportId?: Prisma.StringFilter<"Generation"> | string
+  generationRuleSetId?: Prisma.StringNullableFilter<"Generation"> | string | null
   rowConfig?: Prisma.JsonFilter<"Generation">
   previewJson?: Prisma.JsonFilter<"Generation">
   outputSql?: Prisma.StringFilter<"Generation"> | string
@@ -235,12 +247,14 @@ export type GenerationWhereUniqueInput = Prisma.AtLeast<{
   validationJson?: Prisma.JsonNullableFilter<"Generation">
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
   sqlImport?: Prisma.XOR<Prisma.SqlImportScalarRelationFilter, Prisma.SqlImportWhereInput>
+  generationRuleSet?: Prisma.XOR<Prisma.GenerationRuleSetNullableScalarRelationFilter, Prisma.GenerationRuleSetWhereInput> | null
 }, "id">
 
 export type GenerationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   sqlImportId?: Prisma.SortOrder
+  generationRuleSetId?: Prisma.SortOrderInput | Prisma.SortOrder
   rowConfig?: Prisma.SortOrder
   previewJson?: Prisma.SortOrder
   outputSql?: Prisma.SortOrder
@@ -259,6 +273,7 @@ export type GenerationScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Generation"> | string
   projectId?: Prisma.StringWithAggregatesFilter<"Generation"> | string
   sqlImportId?: Prisma.StringWithAggregatesFilter<"Generation"> | string
+  generationRuleSetId?: Prisma.StringNullableWithAggregatesFilter<"Generation"> | string | null
   rowConfig?: Prisma.JsonWithAggregatesFilter<"Generation">
   previewJson?: Prisma.JsonWithAggregatesFilter<"Generation">
   outputSql?: Prisma.StringWithAggregatesFilter<"Generation"> | string
@@ -277,12 +292,14 @@ export type GenerationCreateInput = {
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   project: Prisma.ProjectCreateNestedOneWithoutGenerationsInput
   sqlImport: Prisma.SqlImportCreateNestedOneWithoutGenerationsInput
+  generationRuleSet?: Prisma.GenerationRuleSetCreateNestedOneWithoutGenerationsInput
 }
 
 export type GenerationUncheckedCreateInput = {
   id?: string
   projectId: string
   sqlImportId: string
+  generationRuleSetId?: string | null
   rowConfig: Prisma.JsonNullValueInput | runtime.InputJsonValue
   previewJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   outputSql: string
@@ -301,12 +318,14 @@ export type GenerationUpdateInput = {
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   project?: Prisma.ProjectUpdateOneRequiredWithoutGenerationsNestedInput
   sqlImport?: Prisma.SqlImportUpdateOneRequiredWithoutGenerationsNestedInput
+  generationRuleSet?: Prisma.GenerationRuleSetUpdateOneWithoutGenerationsNestedInput
 }
 
 export type GenerationUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
   sqlImportId?: Prisma.StringFieldUpdateOperationsInput | string
+  generationRuleSetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rowConfig?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   previewJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   outputSql?: Prisma.StringFieldUpdateOperationsInput | string
@@ -319,6 +338,7 @@ export type GenerationCreateManyInput = {
   id?: string
   projectId: string
   sqlImportId: string
+  generationRuleSetId?: string | null
   rowConfig: Prisma.JsonNullValueInput | runtime.InputJsonValue
   previewJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   outputSql: string
@@ -341,6 +361,7 @@ export type GenerationUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
   sqlImportId?: Prisma.StringFieldUpdateOperationsInput | string
+  generationRuleSetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rowConfig?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   previewJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   outputSql?: Prisma.StringFieldUpdateOperationsInput | string
@@ -363,6 +384,7 @@ export type GenerationCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   sqlImportId?: Prisma.SortOrder
+  generationRuleSetId?: Prisma.SortOrder
   rowConfig?: Prisma.SortOrder
   previewJson?: Prisma.SortOrder
   outputSql?: Prisma.SortOrder
@@ -375,6 +397,7 @@ export type GenerationMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   sqlImportId?: Prisma.SortOrder
+  generationRuleSetId?: Prisma.SortOrder
   outputSql?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -384,6 +407,7 @@ export type GenerationMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   sqlImportId?: Prisma.SortOrder
+  generationRuleSetId?: Prisma.SortOrder
   outputSql?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -473,6 +497,48 @@ export type GenerationUncheckedUpdateManyWithoutSqlImportNestedInput = {
   deleteMany?: Prisma.GenerationScalarWhereInput | Prisma.GenerationScalarWhereInput[]
 }
 
+export type GenerationCreateNestedManyWithoutGenerationRuleSetInput = {
+  create?: Prisma.XOR<Prisma.GenerationCreateWithoutGenerationRuleSetInput, Prisma.GenerationUncheckedCreateWithoutGenerationRuleSetInput> | Prisma.GenerationCreateWithoutGenerationRuleSetInput[] | Prisma.GenerationUncheckedCreateWithoutGenerationRuleSetInput[]
+  connectOrCreate?: Prisma.GenerationCreateOrConnectWithoutGenerationRuleSetInput | Prisma.GenerationCreateOrConnectWithoutGenerationRuleSetInput[]
+  createMany?: Prisma.GenerationCreateManyGenerationRuleSetInputEnvelope
+  connect?: Prisma.GenerationWhereUniqueInput | Prisma.GenerationWhereUniqueInput[]
+}
+
+export type GenerationUncheckedCreateNestedManyWithoutGenerationRuleSetInput = {
+  create?: Prisma.XOR<Prisma.GenerationCreateWithoutGenerationRuleSetInput, Prisma.GenerationUncheckedCreateWithoutGenerationRuleSetInput> | Prisma.GenerationCreateWithoutGenerationRuleSetInput[] | Prisma.GenerationUncheckedCreateWithoutGenerationRuleSetInput[]
+  connectOrCreate?: Prisma.GenerationCreateOrConnectWithoutGenerationRuleSetInput | Prisma.GenerationCreateOrConnectWithoutGenerationRuleSetInput[]
+  createMany?: Prisma.GenerationCreateManyGenerationRuleSetInputEnvelope
+  connect?: Prisma.GenerationWhereUniqueInput | Prisma.GenerationWhereUniqueInput[]
+}
+
+export type GenerationUpdateManyWithoutGenerationRuleSetNestedInput = {
+  create?: Prisma.XOR<Prisma.GenerationCreateWithoutGenerationRuleSetInput, Prisma.GenerationUncheckedCreateWithoutGenerationRuleSetInput> | Prisma.GenerationCreateWithoutGenerationRuleSetInput[] | Prisma.GenerationUncheckedCreateWithoutGenerationRuleSetInput[]
+  connectOrCreate?: Prisma.GenerationCreateOrConnectWithoutGenerationRuleSetInput | Prisma.GenerationCreateOrConnectWithoutGenerationRuleSetInput[]
+  upsert?: Prisma.GenerationUpsertWithWhereUniqueWithoutGenerationRuleSetInput | Prisma.GenerationUpsertWithWhereUniqueWithoutGenerationRuleSetInput[]
+  createMany?: Prisma.GenerationCreateManyGenerationRuleSetInputEnvelope
+  set?: Prisma.GenerationWhereUniqueInput | Prisma.GenerationWhereUniqueInput[]
+  disconnect?: Prisma.GenerationWhereUniqueInput | Prisma.GenerationWhereUniqueInput[]
+  delete?: Prisma.GenerationWhereUniqueInput | Prisma.GenerationWhereUniqueInput[]
+  connect?: Prisma.GenerationWhereUniqueInput | Prisma.GenerationWhereUniqueInput[]
+  update?: Prisma.GenerationUpdateWithWhereUniqueWithoutGenerationRuleSetInput | Prisma.GenerationUpdateWithWhereUniqueWithoutGenerationRuleSetInput[]
+  updateMany?: Prisma.GenerationUpdateManyWithWhereWithoutGenerationRuleSetInput | Prisma.GenerationUpdateManyWithWhereWithoutGenerationRuleSetInput[]
+  deleteMany?: Prisma.GenerationScalarWhereInput | Prisma.GenerationScalarWhereInput[]
+}
+
+export type GenerationUncheckedUpdateManyWithoutGenerationRuleSetNestedInput = {
+  create?: Prisma.XOR<Prisma.GenerationCreateWithoutGenerationRuleSetInput, Prisma.GenerationUncheckedCreateWithoutGenerationRuleSetInput> | Prisma.GenerationCreateWithoutGenerationRuleSetInput[] | Prisma.GenerationUncheckedCreateWithoutGenerationRuleSetInput[]
+  connectOrCreate?: Prisma.GenerationCreateOrConnectWithoutGenerationRuleSetInput | Prisma.GenerationCreateOrConnectWithoutGenerationRuleSetInput[]
+  upsert?: Prisma.GenerationUpsertWithWhereUniqueWithoutGenerationRuleSetInput | Prisma.GenerationUpsertWithWhereUniqueWithoutGenerationRuleSetInput[]
+  createMany?: Prisma.GenerationCreateManyGenerationRuleSetInputEnvelope
+  set?: Prisma.GenerationWhereUniqueInput | Prisma.GenerationWhereUniqueInput[]
+  disconnect?: Prisma.GenerationWhereUniqueInput | Prisma.GenerationWhereUniqueInput[]
+  delete?: Prisma.GenerationWhereUniqueInput | Prisma.GenerationWhereUniqueInput[]
+  connect?: Prisma.GenerationWhereUniqueInput | Prisma.GenerationWhereUniqueInput[]
+  update?: Prisma.GenerationUpdateWithWhereUniqueWithoutGenerationRuleSetInput | Prisma.GenerationUpdateWithWhereUniqueWithoutGenerationRuleSetInput[]
+  updateMany?: Prisma.GenerationUpdateManyWithWhereWithoutGenerationRuleSetInput | Prisma.GenerationUpdateManyWithWhereWithoutGenerationRuleSetInput[]
+  deleteMany?: Prisma.GenerationScalarWhereInput | Prisma.GenerationScalarWhereInput[]
+}
+
 export type GenerationCreateWithoutProjectInput = {
   id?: string
   rowConfig: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -482,11 +548,13 @@ export type GenerationCreateWithoutProjectInput = {
   updatedAt?: Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   sqlImport: Prisma.SqlImportCreateNestedOneWithoutGenerationsInput
+  generationRuleSet?: Prisma.GenerationRuleSetCreateNestedOneWithoutGenerationsInput
 }
 
 export type GenerationUncheckedCreateWithoutProjectInput = {
   id?: string
   sqlImportId: string
+  generationRuleSetId?: string | null
   rowConfig: Prisma.JsonNullValueInput | runtime.InputJsonValue
   previewJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   outputSql: string
@@ -528,6 +596,7 @@ export type GenerationScalarWhereInput = {
   id?: Prisma.StringFilter<"Generation"> | string
   projectId?: Prisma.StringFilter<"Generation"> | string
   sqlImportId?: Prisma.StringFilter<"Generation"> | string
+  generationRuleSetId?: Prisma.StringNullableFilter<"Generation"> | string | null
   rowConfig?: Prisma.JsonFilter<"Generation">
   previewJson?: Prisma.JsonFilter<"Generation">
   outputSql?: Prisma.StringFilter<"Generation"> | string
@@ -545,11 +614,13 @@ export type GenerationCreateWithoutSqlImportInput = {
   updatedAt?: Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   project: Prisma.ProjectCreateNestedOneWithoutGenerationsInput
+  generationRuleSet?: Prisma.GenerationRuleSetCreateNestedOneWithoutGenerationsInput
 }
 
 export type GenerationUncheckedCreateWithoutSqlImportInput = {
   id?: string
   projectId: string
+  generationRuleSetId?: string | null
   rowConfig: Prisma.JsonNullValueInput | runtime.InputJsonValue
   previewJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   outputSql: string
@@ -584,9 +655,60 @@ export type GenerationUpdateManyWithWhereWithoutSqlImportInput = {
   data: Prisma.XOR<Prisma.GenerationUpdateManyMutationInput, Prisma.GenerationUncheckedUpdateManyWithoutSqlImportInput>
 }
 
+export type GenerationCreateWithoutGenerationRuleSetInput = {
+  id?: string
+  rowConfig: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previewJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  outputSql: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  project: Prisma.ProjectCreateNestedOneWithoutGenerationsInput
+  sqlImport: Prisma.SqlImportCreateNestedOneWithoutGenerationsInput
+}
+
+export type GenerationUncheckedCreateWithoutGenerationRuleSetInput = {
+  id?: string
+  projectId: string
+  sqlImportId: string
+  rowConfig: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previewJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  outputSql: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+}
+
+export type GenerationCreateOrConnectWithoutGenerationRuleSetInput = {
+  where: Prisma.GenerationWhereUniqueInput
+  create: Prisma.XOR<Prisma.GenerationCreateWithoutGenerationRuleSetInput, Prisma.GenerationUncheckedCreateWithoutGenerationRuleSetInput>
+}
+
+export type GenerationCreateManyGenerationRuleSetInputEnvelope = {
+  data: Prisma.GenerationCreateManyGenerationRuleSetInput | Prisma.GenerationCreateManyGenerationRuleSetInput[]
+  skipDuplicates?: boolean
+}
+
+export type GenerationUpsertWithWhereUniqueWithoutGenerationRuleSetInput = {
+  where: Prisma.GenerationWhereUniqueInput
+  update: Prisma.XOR<Prisma.GenerationUpdateWithoutGenerationRuleSetInput, Prisma.GenerationUncheckedUpdateWithoutGenerationRuleSetInput>
+  create: Prisma.XOR<Prisma.GenerationCreateWithoutGenerationRuleSetInput, Prisma.GenerationUncheckedCreateWithoutGenerationRuleSetInput>
+}
+
+export type GenerationUpdateWithWhereUniqueWithoutGenerationRuleSetInput = {
+  where: Prisma.GenerationWhereUniqueInput
+  data: Prisma.XOR<Prisma.GenerationUpdateWithoutGenerationRuleSetInput, Prisma.GenerationUncheckedUpdateWithoutGenerationRuleSetInput>
+}
+
+export type GenerationUpdateManyWithWhereWithoutGenerationRuleSetInput = {
+  where: Prisma.GenerationScalarWhereInput
+  data: Prisma.XOR<Prisma.GenerationUpdateManyMutationInput, Prisma.GenerationUncheckedUpdateManyWithoutGenerationRuleSetInput>
+}
+
 export type GenerationCreateManyProjectInput = {
   id?: string
   sqlImportId: string
+  generationRuleSetId?: string | null
   rowConfig: Prisma.JsonNullValueInput | runtime.InputJsonValue
   previewJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   outputSql: string
@@ -604,11 +726,13 @@ export type GenerationUpdateWithoutProjectInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   sqlImport?: Prisma.SqlImportUpdateOneRequiredWithoutGenerationsNestedInput
+  generationRuleSet?: Prisma.GenerationRuleSetUpdateOneWithoutGenerationsNestedInput
 }
 
 export type GenerationUncheckedUpdateWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   sqlImportId?: Prisma.StringFieldUpdateOperationsInput | string
+  generationRuleSetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rowConfig?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   previewJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   outputSql?: Prisma.StringFieldUpdateOperationsInput | string
@@ -620,6 +744,7 @@ export type GenerationUncheckedUpdateWithoutProjectInput = {
 export type GenerationUncheckedUpdateManyWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   sqlImportId?: Prisma.StringFieldUpdateOperationsInput | string
+  generationRuleSetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rowConfig?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   previewJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   outputSql?: Prisma.StringFieldUpdateOperationsInput | string
@@ -631,6 +756,7 @@ export type GenerationUncheckedUpdateManyWithoutProjectInput = {
 export type GenerationCreateManySqlImportInput = {
   id?: string
   projectId: string
+  generationRuleSetId?: string | null
   rowConfig: Prisma.JsonNullValueInput | runtime.InputJsonValue
   previewJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   outputSql: string
@@ -648,11 +774,13 @@ export type GenerationUpdateWithoutSqlImportInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   project?: Prisma.ProjectUpdateOneRequiredWithoutGenerationsNestedInput
+  generationRuleSet?: Prisma.GenerationRuleSetUpdateOneWithoutGenerationsNestedInput
 }
 
 export type GenerationUncheckedUpdateWithoutSqlImportInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  generationRuleSetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rowConfig?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   previewJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   outputSql?: Prisma.StringFieldUpdateOperationsInput | string
@@ -664,6 +792,55 @@ export type GenerationUncheckedUpdateWithoutSqlImportInput = {
 export type GenerationUncheckedUpdateManyWithoutSqlImportInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  generationRuleSetId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rowConfig?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previewJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  outputSql?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+}
+
+export type GenerationCreateManyGenerationRuleSetInput = {
+  id?: string
+  projectId: string
+  sqlImportId: string
+  rowConfig: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previewJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  outputSql: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+}
+
+export type GenerationUpdateWithoutGenerationRuleSetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  rowConfig?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previewJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  outputSql?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  project?: Prisma.ProjectUpdateOneRequiredWithoutGenerationsNestedInput
+  sqlImport?: Prisma.SqlImportUpdateOneRequiredWithoutGenerationsNestedInput
+}
+
+export type GenerationUncheckedUpdateWithoutGenerationRuleSetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  sqlImportId?: Prisma.StringFieldUpdateOperationsInput | string
+  rowConfig?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  previewJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  outputSql?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+}
+
+export type GenerationUncheckedUpdateManyWithoutGenerationRuleSetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  sqlImportId?: Prisma.StringFieldUpdateOperationsInput | string
   rowConfig?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   previewJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   outputSql?: Prisma.StringFieldUpdateOperationsInput | string
@@ -678,6 +855,7 @@ export type GenerationSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   id?: boolean
   projectId?: boolean
   sqlImportId?: boolean
+  generationRuleSetId?: boolean
   rowConfig?: boolean
   previewJson?: boolean
   outputSql?: boolean
@@ -686,12 +864,14 @@ export type GenerationSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   validationJson?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   sqlImport?: boolean | Prisma.SqlImportDefaultArgs<ExtArgs>
+  generationRuleSet?: boolean | Prisma.Generation$generationRuleSetArgs<ExtArgs>
 }, ExtArgs["result"]["generation"]>
 
 export type GenerationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   projectId?: boolean
   sqlImportId?: boolean
+  generationRuleSetId?: boolean
   rowConfig?: boolean
   previewJson?: boolean
   outputSql?: boolean
@@ -700,12 +880,14 @@ export type GenerationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   validationJson?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   sqlImport?: boolean | Prisma.SqlImportDefaultArgs<ExtArgs>
+  generationRuleSet?: boolean | Prisma.Generation$generationRuleSetArgs<ExtArgs>
 }, ExtArgs["result"]["generation"]>
 
 export type GenerationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   projectId?: boolean
   sqlImportId?: boolean
+  generationRuleSetId?: boolean
   rowConfig?: boolean
   previewJson?: boolean
   outputSql?: boolean
@@ -714,12 +896,14 @@ export type GenerationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   validationJson?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   sqlImport?: boolean | Prisma.SqlImportDefaultArgs<ExtArgs>
+  generationRuleSet?: boolean | Prisma.Generation$generationRuleSetArgs<ExtArgs>
 }, ExtArgs["result"]["generation"]>
 
 export type GenerationSelectScalar = {
   id?: boolean
   projectId?: boolean
   sqlImportId?: boolean
+  generationRuleSetId?: boolean
   rowConfig?: boolean
   previewJson?: boolean
   outputSql?: boolean
@@ -728,18 +912,21 @@ export type GenerationSelectScalar = {
   validationJson?: boolean
 }
 
-export type GenerationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "sqlImportId" | "rowConfig" | "previewJson" | "outputSql" | "createdAt" | "updatedAt" | "validationJson", ExtArgs["result"]["generation"]>
+export type GenerationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "sqlImportId" | "generationRuleSetId" | "rowConfig" | "previewJson" | "outputSql" | "createdAt" | "updatedAt" | "validationJson", ExtArgs["result"]["generation"]>
 export type GenerationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   sqlImport?: boolean | Prisma.SqlImportDefaultArgs<ExtArgs>
+  generationRuleSet?: boolean | Prisma.Generation$generationRuleSetArgs<ExtArgs>
 }
 export type GenerationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   sqlImport?: boolean | Prisma.SqlImportDefaultArgs<ExtArgs>
+  generationRuleSet?: boolean | Prisma.Generation$generationRuleSetArgs<ExtArgs>
 }
 export type GenerationIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   sqlImport?: boolean | Prisma.SqlImportDefaultArgs<ExtArgs>
+  generationRuleSet?: boolean | Prisma.Generation$generationRuleSetArgs<ExtArgs>
 }
 
 export type $GenerationPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -747,11 +934,13 @@ export type $GenerationPayload<ExtArgs extends runtime.Types.Extensions.Internal
   objects: {
     project: Prisma.$ProjectPayload<ExtArgs>
     sqlImport: Prisma.$SqlImportPayload<ExtArgs>
+    generationRuleSet: Prisma.$GenerationRuleSetPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     projectId: string
     sqlImportId: string
+    generationRuleSetId: string | null
     rowConfig: runtime.JsonValue
     previewJson: runtime.JsonValue
     outputSql: string
@@ -1154,6 +1343,7 @@ export interface Prisma__GenerationClient<T, Null = never, ExtArgs extends runti
   readonly [Symbol.toStringTag]: "PrismaPromise"
   project<T extends Prisma.ProjectDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProjectDefaultArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   sqlImport<T extends Prisma.SqlImportDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SqlImportDefaultArgs<ExtArgs>>): Prisma.Prisma__SqlImportClient<runtime.Types.Result.GetResult<Prisma.$SqlImportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  generationRuleSet<T extends Prisma.Generation$generationRuleSetArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Generation$generationRuleSetArgs<ExtArgs>>): Prisma.Prisma__GenerationRuleSetClient<runtime.Types.Result.GetResult<Prisma.$GenerationRuleSetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1186,6 +1376,7 @@ export interface GenerationFieldRefs {
   readonly id: Prisma.FieldRef<"Generation", 'String'>
   readonly projectId: Prisma.FieldRef<"Generation", 'String'>
   readonly sqlImportId: Prisma.FieldRef<"Generation", 'String'>
+  readonly generationRuleSetId: Prisma.FieldRef<"Generation", 'String'>
   readonly rowConfig: Prisma.FieldRef<"Generation", 'Json'>
   readonly previewJson: Prisma.FieldRef<"Generation", 'Json'>
   readonly outputSql: Prisma.FieldRef<"Generation", 'String'>
@@ -1590,6 +1781,25 @@ export type GenerationDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Limit how many Generations to delete.
    */
   limit?: number
+}
+
+/**
+ * Generation.generationRuleSet
+ */
+export type Generation$generationRuleSetArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GenerationRuleSet
+   */
+  select?: Prisma.GenerationRuleSetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GenerationRuleSet
+   */
+  omit?: Prisma.GenerationRuleSetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GenerationRuleSetInclude<ExtArgs> | null
+  where?: Prisma.GenerationRuleSetWhereInput
 }
 
 /**

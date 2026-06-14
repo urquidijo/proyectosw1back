@@ -47,6 +47,8 @@ model Project {
 
   generationPlans GenerationPlan[]
 
+  generationRuleSets GenerationRuleSet[]
+
   @@map("projects")
 }
 
@@ -65,6 +67,8 @@ model SqlImport {
 
   generationPlan GenerationPlan?
 
+  generationRuleSets GenerationRuleSet[]
+
   @@map("sql_imports")
 }
 
@@ -74,11 +78,15 @@ model Generation {
   project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   sqlImportId String
   sqlImport   SqlImport @relation(fields: [sqlImportId], references: [id], onDelete: Cascade)
-  rowConfig   Json
-  previewJson Json
-  outputSql   String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+
+  generationRuleSetId String?
+  generationRuleSet   GenerationRuleSet? @relation(fields: [generationRuleSetId], references: [id], onDelete: SetNull)
+
+  rowConfig      Json
+  previewJson    Json
+  outputSql      String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
   validationJson Json?
 
   @@map("generations")
@@ -95,4 +103,28 @@ model GenerationPlan {
   updatedAt   DateTime  @updatedAt
 
   @@map("generation_plans")
+}
+
+model GenerationRuleSet {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  sqlImportId String
+  sqlImport   SqlImport @relation(fields: [sqlImportId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  rulesJson   Json
+  isDefault   Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  generations Generation[]
+
+  @@unique([projectId, sqlImportId, name])
+  @@index([projectId])
+  @@index([sqlImportId])
+  @@map("generation_rule_sets")
 }

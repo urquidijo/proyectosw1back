@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNotEmptyObject, IsObject, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNotEmptyObject,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateGenerationDto {
   @IsString()
@@ -6,6 +12,14 @@ export class CreateGenerationDto {
   sqlImportId!: string;
 
   @IsObject()
-  @IsNotEmptyObject()
-  rowConfig!: Record<string, number>;
+  @IsOptional()
+  rowConfig?: Record<string, number>;
+
+  @IsString()
+  @IsOptional()
+  ruleSetId?: string;
+
+  @IsObject()
+  @IsOptional()
+  rules?: Record<string, unknown>;
 }
