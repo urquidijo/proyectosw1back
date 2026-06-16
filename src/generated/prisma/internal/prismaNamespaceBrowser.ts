@@ -122,6 +122,11 @@ export const GenerationScalarFieldEnum = {
   rowConfig: 'rowConfig',
   previewJson: 'previewJson',
   outputSql: 'outputSql',
+  status: 'status',
+  progress: 'progress',
+  error: 'error',
+  outputFile: 'outputFile',
+  region: 'region',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   validationJson: 'validationJson'

@@ -9,6 +9,14 @@ import { DetectedSchema } from '../sql-imports/types/detected-schema.type';
 import { CreateGenerationDto } from './dto/create-generation.dto';
 import { SyntheticDataGeneratorService } from './synthetic-data-generator.service';
 import { GenerationValidationService } from './generation-validation.service';
+import { DeterministicCoherenceService } from './deterministic-coherence.service';
+import { enrichSchemaWithImplicitFks } from '../sql-imports/utils/schema-enricher';
+import type {
+  GenerationPlanJson,
+  PlanRule,
+} from '../generation-plans/schemas/generation-plan.schema';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class GenerationsService {
@@ -16,6 +24,7 @@ export class GenerationsService {
     private readonly prisma: PrismaService,
     private readonly syntheticDataGenerator: SyntheticDataGeneratorService,
     private readonly generationValidationService: GenerationValidationService,
+    private readonly deterministicCoherence: DeterministicCoherenceService,
   ) { }
 
   async create(
@@ -84,28 +93,29 @@ export class GenerationsService {
       | import('../generation-plans/schemas/generation-plan.schema').GenerationPlanJson
       | undefined;
 
-    const result = this.syntheticDataGenerator.generate(
-      schema,
-      rowConfig,
-      plan,
-    );
-    const validationReport = this.generationValidationService.validate(
-      schema,
-      result.rowsByTable,
-      plan,
-    );
-
     const generation = await this.prisma.generation.create({
       data: {
         projectId,
         sqlImportId: sqlImport.id,
         generationRuleSetId: generationRuleSet?.id,
         rowConfig: rowConfig as unknown as Prisma.InputJsonValue,
-        previewJson: result.preview as unknown as Prisma.InputJsonValue,
-        validationJson: validationReport as unknown as Prisma.InputJsonValue,
-        outputSql: result.outputSql,
+        previewJson: {} as unknown as Prisma.InputJsonValue,
+        validationJson: null as unknown as Prisma.InputJsonValue,
+        status: 'PENDING',
+        progress: 0,
+        region: createGenerationDto.region ?? 'GENERIC',
       },
     });
+
+    // Iniciar generación en segundo plano
+    this.runBackgroundGeneration(
+      generation.id,
+      projectId,
+      schema,
+      rowConfig,
+      plan,
+      createGenerationDto.region,
+    );
 
     return {
       id: generation.id,
@@ -114,8 +124,10 @@ export class GenerationsService {
       generationRuleSetId: generation.generationRuleSetId,
       rowConfig: generation.rowConfig,
       previewJson: generation.previewJson,
-      validationJson: generation.validationJson,
-      orderedTables: result.orderedTables,
+      status: generation.status,
+      progress: generation.progress,
+      region: generation.region,
+      orderedTables: schema.tables.map((t) => t.name),
       createdAt: generation.createdAt,
       updatedAt: generation.updatedAt,
     };
@@ -151,9 +163,9 @@ export class GenerationsService {
         );
       }
 
-      if (value > 1000) {
+      if (value > 10000) {
         throw new BadRequestException(
-          `Por ahora el máximo permitido es 1000 filas por tabla. Tabla: "${table.name}"`,
+          `El máximo permitido es 10000 filas por tabla. Tabla: "${table.name}"`,
         );
       }
 
@@ -179,6 +191,10 @@ export class GenerationsService {
         sqlImportId: true,
         rowConfig: true,
         previewJson: true,
+        status: true,
+        progress: true,
+        error: true,
+        region: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -202,10 +218,147 @@ export class GenerationsService {
     return generation;
   }
 
-  async getOutputSql(projectId: string, generationId: string, userId: string) {
+  async getOutputSql(projectId: string, generationId: string, userId: string): Promise<string> {
     const generation = await this.findOne(projectId, generationId, userId);
 
-    return generation.outputSql;
+    if (generation.outputFile && fs.existsSync(generation.outputFile)) {
+      return fs.readFileSync(generation.outputFile, 'utf8');
+    }
+
+    return generation.outputSql || '';
+  }
+
+  async getStatus(projectId: string, generationId: string, userId: string) {
+    await this.ensureProjectBelongsToUser(projectId, userId);
+
+    const generation = await this.prisma.generation.findFirst({
+      where: {
+        id: generationId,
+        projectId,
+      },
+      select: {
+        status: true,
+        progress: true,
+        error: true,
+      },
+    });
+
+    if (!generation) {
+      throw new NotFoundException('Generación no encontrada');
+    }
+
+    return generation;
+  }
+
+  private async runBackgroundGeneration(
+    generationId: string,
+    projectId: string,
+    schema: DetectedSchema,
+    rowConfig: Record<string, number>,
+    plan: any,
+    region?: string,
+  ): Promise<void> {
+    setImmediate(async () => {
+      try {
+        await this.prisma.generation.update({
+          where: { id: generationId },
+          data: { status: 'PROCESSING', progress: 10 },
+        });
+
+        // 0. Fusionar el plan (si existe) con reglas de coherencia DETERMINISTAS
+        //    (aritmética, totales, orden de fechas). Garantiza coherencia para
+        //    cualquier base, con o sin análisis de IA y con cualquier modelo.
+        const effectivePlan = this.mergeWithDeterministicRules(schema, plan);
+
+        // 1. Generación de datos sintéticos
+        const result = this.syntheticDataGenerator.generate(
+          schema,
+          rowConfig,
+          effectivePlan,
+          region,
+        );
+
+        await this.prisma.generation.update({
+          where: { id: generationId },
+          data: { progress: 50 },
+        });
+
+        // 2. Validación
+        const validationReport = this.generationValidationService.validate(
+          schema,
+          result.rowsByTable,
+          plan,
+        );
+
+        await this.prisma.generation.update({
+          where: { id: generationId },
+          data: { progress: 85 },
+        });
+
+        // 3. Escribir archivo de salida en disco
+        const uploadDir = path.join(process.cwd(), 'uploads', 'generations');
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        const filePath = path.join(uploadDir, `${generationId}.sql`);
+        fs.writeFileSync(filePath, result.outputSql, 'utf8');
+
+        // 4. Guardar resultado completado
+        await this.prisma.generation.update({
+          where: { id: generationId },
+          data: {
+            status: 'COMPLETED',
+            progress: 100,
+            previewJson: result.preview as any,
+            validationJson: validationReport as any,
+            outputFile: filePath,
+            outputSql: '',
+          },
+        });
+      } catch (error) {
+        console.error('Error en generación en segundo plano:', error);
+        await this.prisma.generation.update({
+          where: { id: generationId },
+          data: {
+            status: 'FAILED',
+            progress: 100,
+            error: error instanceof Error ? error.message : 'Error desconocido',
+          },
+        });
+      }
+    });
+  }
+
+  /**
+   * Combina el plan de IA (si existe) con las reglas de coherencia deterministas.
+   * Deduplica por columna destino, conservando la regla de mayor confianza, de modo
+   * que una regla determinista correcta gana a una posible regla floja del modelo.
+   */
+  private mergeWithDeterministicRules(
+    schema: DetectedSchema,
+    plan: GenerationPlanJson | null | undefined,
+  ): GenerationPlanJson {
+    const enriched = enrichSchemaWithImplicitFks(schema);
+    const deterministicRules = this.deterministicCoherence.synthesize(enriched);
+
+    const basePlan: GenerationPlanJson = plan ?? {
+      domainSummary: '',
+      tables: [],
+      columns: [],
+      rules: [],
+      warnings: [],
+    };
+
+    const byTarget = new Map<string, PlanRule>();
+    for (const rule of [...basePlan.rules, ...deterministicRules]) {
+      const key = `${rule.targetTable}.${rule.targetColumn}`;
+      const current = byTarget.get(key);
+      if (!current || rule.confidence > current.confidence) {
+        byTarget.set(key, rule);
+      }
+    }
+
+    return { ...basePlan, rules: Array.from(byTarget.values()) };
   }
 
   private validateRowConfig(
@@ -224,9 +377,9 @@ export class GenerationsService {
         );
       }
 
-      if (value > 1000) {
+      if (value > 10000) {
         throw new BadRequestException(
-          `Por ahora el máximo permitido es 1000 filas por tabla. Tabla: "${table.name}"`,
+          `El máximo permitido es 10000 filas por tabla. Tabla: "${table.name}"`,
         );
       }
 

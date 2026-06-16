@@ -1,14 +1,14 @@
-    import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { GenerationPlansController } from './generation-plans.controller';
 import { GenerationPlansService } from './generation-plans.service';
-import { GeminiSemanticAnalyzerService } from './gemini-semantic-analyzer.service';
+import { SemanticAnalyzerService } from './semantic-analyzer.service';
 import { SemanticRuleCandidateService } from './semantic-rule-candidate.service';
 
 @Module({
   controllers: [GenerationPlansController],
   providers: [
     GenerationPlansService,
-    GeminiSemanticAnalyzerService,
+    SemanticAnalyzerService,
     SemanticRuleCandidateService,
   ],
   exports: [GenerationPlansService],

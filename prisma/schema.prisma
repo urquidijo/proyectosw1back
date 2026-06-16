@@ -84,7 +84,12 @@ model Generation {
 
   rowConfig      Json
   previewJson    Json
-  outputSql      String
+  outputSql      String?
+  status         String   @default("COMPLETED")
+  progress       Int      @default(100)
+  error          String?
+  outputFile     String?
+  region         String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   validationJson Json?

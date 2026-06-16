@@ -4,6 +4,8 @@ import { GenerationsService } from './generations.service';
 import { SyntheticDataGeneratorService } from './synthetic-data-generator.service';
 import { GenerationPlanExecutorService } from './generation-plan-executor.service';
 import { GenerationValidationService } from './generation-validation.service';
+import { VolumeSuggestionService } from './volume-suggestion.service';
+import { DeterministicCoherenceService } from './deterministic-coherence.service';
 
 @Module({
   controllers: [GenerationsController],
@@ -12,6 +14,8 @@ import { GenerationValidationService } from './generation-validation.service';
     SyntheticDataGeneratorService,
     GenerationPlanExecutorService,
     GenerationValidationService,
+    VolumeSuggestionService,
+    DeterministicCoherenceService,
   ],
 })
 export class GenerationsModule { }

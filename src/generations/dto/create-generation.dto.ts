@@ -22,4 +22,8 @@ export class CreateGenerationDto {
   @IsObject()
   @IsOptional()
   rules?: Record<string, unknown>;
+
+  @IsString()
+  @IsOptional()
+  region?: string;
 }
