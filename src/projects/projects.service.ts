@@ -20,10 +20,13 @@ export class ProjectsService {
     });
   }
 
-  async findMyProjects(ownerId: string) {
+  async findMyProjects(userId: string) {
     return this.prisma.project.findMany({
       where: {
-        ownerId,
+        OR: [
+          { ownerId: userId },
+          { workspace: { members: { some: { userId } } } },
+        ],
       },
       orderBy: {
         createdAt: 'desc',
@@ -31,11 +34,14 @@ export class ProjectsService {
     });
   }
 
-  async findOne(id: string, ownerId: string) {
+  async findOne(id: string, userId: string) {
     const project = await this.prisma.project.findFirst({
       where: {
         id,
-        ownerId,
+        OR: [
+          { ownerId: userId },
+          { workspace: { members: { some: { userId } } } },
+        ],
       },
     });
 
@@ -58,5 +64,24 @@ export class ProjectsService {
     return {
       message: 'Proyecto eliminado correctamente',
     };
+  }
+
+  async assignToWorkspace(projectId: string, workspaceId: string, ownerId: string) {
+    // Verificar que el proyecto es del owner
+    await this.findOne(projectId, ownerId);
+
+    // Verificar que el usuario pertenece al workspace
+    const member = await this.prisma.workspaceMember.findUnique({
+      where: { workspaceId_userId: { workspaceId, userId: ownerId } },
+    });
+
+    if (!member) {
+      throw new NotFoundException('No perteneces a este grupo');
+    }
+
+    return this.prisma.project.update({
+      where: { id: projectId },
+      data: { workspaceId },
+    });
   }
 }

@@ -47,3 +47,28 @@ export type GenerationPlan = Prisma.GenerationPlanModel
  * 
  */
 export type GenerationRuleSet = Prisma.GenerationRuleSetModel
+/**
+ * Model SubscriptionPlan
+ * 
+ */
+export type SubscriptionPlan = Prisma.SubscriptionPlanModel
+/**
+ * Model Workspace
+ * 
+ */
+export type Workspace = Prisma.WorkspaceModel
+/**
+ * Model WorkspaceMember
+ * 
+ */
+export type WorkspaceMember = Prisma.WorkspaceMemberModel
+/**
+ * Model PaymentLog
+ * 
+ */
+export type PaymentLog = Prisma.PaymentLogModel
+/**
+ * Model ActivityLog
+ * 
+ */
+export type ActivityLog = Prisma.ActivityLogModel

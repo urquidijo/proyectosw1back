@@ -56,7 +56,12 @@ export const ModelName = {
   SqlImport: 'SqlImport',
   Generation: 'Generation',
   GenerationPlan: 'GenerationPlan',
-  GenerationRuleSet: 'GenerationRuleSet'
+  GenerationRuleSet: 'GenerationRuleSet',
+  SubscriptionPlan: 'SubscriptionPlan',
+  Workspace: 'Workspace',
+  WorkspaceMember: 'WorkspaceMember',
+  PaymentLog: 'PaymentLog',
+  ActivityLog: 'ActivityLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -82,7 +87,8 @@ export const UserScalarFieldEnum = {
   passwordHash: 'passwordHash',
   role: 'role',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  subscriptionPlanId: 'subscriptionPlanId'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -94,7 +100,9 @@ export const ProjectScalarFieldEnum = {
   description: 'description',
   ownerId: 'ownerId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  workspaceId: 'workspaceId',
+  isPublic: 'isPublic'
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
@@ -155,11 +163,76 @@ export const GenerationRuleSetScalarFieldEnum = {
   description: 'description',
   rulesJson: 'rulesJson',
   isDefault: 'isDefault',
+  isPublic: 'isPublic',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type GenerationRuleSetScalarFieldEnum = (typeof GenerationRuleSetScalarFieldEnum)[keyof typeof GenerationRuleSetScalarFieldEnum]
+
+
+export const SubscriptionPlanScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  price: 'price',
+  maxWorkspaces: 'maxWorkspaces',
+  maxProjects: 'maxProjects',
+  maxUsersPerWorkspace: 'maxUsersPerWorkspace',
+  maxGenerationsPerMonth: 'maxGenerationsPerMonth',
+  apiCostPer1kRows: 'apiCostPer1kRows',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
+} as const
+
+export type SubscriptionPlanScalarFieldEnum = (typeof SubscriptionPlanScalarFieldEnum)[keyof typeof SubscriptionPlanScalarFieldEnum]
+
+
+export const WorkspaceScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  ownerId: 'ownerId',
+  createdAt: 'createdAt'
+} as const
+
+export type WorkspaceScalarFieldEnum = (typeof WorkspaceScalarFieldEnum)[keyof typeof WorkspaceScalarFieldEnum]
+
+
+export const WorkspaceMemberScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  userId: 'userId',
+  role: 'role',
+  joinedAt: 'joinedAt'
+} as const
+
+export type WorkspaceMemberScalarFieldEnum = (typeof WorkspaceMemberScalarFieldEnum)[keyof typeof WorkspaceMemberScalarFieldEnum]
+
+
+export const PaymentLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  workspaceId: 'workspaceId',
+  amount: 'amount',
+  currency: 'currency',
+  status: 'status',
+  reference: 'reference',
+  createdAt: 'createdAt'
+} as const
+
+export type PaymentLogScalarFieldEnum = (typeof PaymentLogScalarFieldEnum)[keyof typeof PaymentLogScalarFieldEnum]
+
+
+export const ActivityLogScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  userId: 'userId',
+  action: 'action',
+  details: 'details',
+  createdAt: 'createdAt'
+} as const
+
+export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[keyof typeof ActivityLogScalarFieldEnum]
 
 
 export const SortOrder = {

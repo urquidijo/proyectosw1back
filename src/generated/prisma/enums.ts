@@ -11,7 +11,8 @@
 
 export const UserRole = {
   USER: 'USER',
-  ADMIN: 'ADMIN'
+  ADMIN: 'ADMIN',
+  SUPERADMIN: 'SUPERADMIN'
 } as const
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
@@ -23,3 +24,20 @@ export const SqlImportStatus = {
 } as const
 
 export type SqlImportStatus = (typeof SqlImportStatus)[keyof typeof SqlImportStatus]
+
+
+export const PlanType = {
+  INDIVIDUAL: 'INDIVIDUAL',
+  GROUP: 'GROUP',
+  API_USAGE: 'API_USAGE'
+} as const
+
+export type PlanType = (typeof PlanType)[keyof typeof PlanType]
+
+
+export const WorkspaceRole = {
+  ADMIN: 'ADMIN',
+  MEMBER: 'MEMBER'
+} as const
+
+export type WorkspaceRole = (typeof WorkspaceRole)[keyof typeof WorkspaceRole]

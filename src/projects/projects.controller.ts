@@ -38,4 +38,13 @@ export class ProjectsController {
   ) {
     return this.projectsService.remove(id, user.id);
   }
+
+  @Post(':id/workspace')
+  assignToWorkspace(
+    @Param('id') id: string,
+    @Body('workspaceId') workspaceId: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.projectsService.assignToWorkspace(id, workspaceId, user.id);
+  }
 }

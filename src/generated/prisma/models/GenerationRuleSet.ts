@@ -31,6 +31,7 @@ export type GenerationRuleSetMinAggregateOutputType = {
   name: string | null
   description: string | null
   isDefault: boolean | null
+  isPublic: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -42,6 +43,7 @@ export type GenerationRuleSetMaxAggregateOutputType = {
   name: string | null
   description: string | null
   isDefault: boolean | null
+  isPublic: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,6 +56,7 @@ export type GenerationRuleSetCountAggregateOutputType = {
   description: number
   rulesJson: number
   isDefault: number
+  isPublic: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -67,6 +70,7 @@ export type GenerationRuleSetMinAggregateInputType = {
   name?: true
   description?: true
   isDefault?: true
+  isPublic?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -78,6 +82,7 @@ export type GenerationRuleSetMaxAggregateInputType = {
   name?: true
   description?: true
   isDefault?: true
+  isPublic?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -90,6 +95,7 @@ export type GenerationRuleSetCountAggregateInputType = {
   description?: true
   rulesJson?: true
   isDefault?: true
+  isPublic?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -175,6 +181,7 @@ export type GenerationRuleSetGroupByOutputType = {
   description: string | null
   rulesJson: runtime.JsonValue
   isDefault: boolean
+  isPublic: boolean
   createdAt: Date
   updatedAt: Date
   _count: GenerationRuleSetCountAggregateOutputType | null
@@ -208,6 +215,7 @@ export type GenerationRuleSetWhereInput = {
   description?: Prisma.StringNullableFilter<"GenerationRuleSet"> | string | null
   rulesJson?: Prisma.JsonFilter<"GenerationRuleSet">
   isDefault?: Prisma.BoolFilter<"GenerationRuleSet"> | boolean
+  isPublic?: Prisma.BoolFilter<"GenerationRuleSet"> | boolean
   createdAt?: Prisma.DateTimeFilter<"GenerationRuleSet"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GenerationRuleSet"> | Date | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
@@ -223,6 +231,7 @@ export type GenerationRuleSetOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   rulesJson?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
+  isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   project?: Prisma.ProjectOrderByWithRelationInput
@@ -242,6 +251,7 @@ export type GenerationRuleSetWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"GenerationRuleSet"> | string | null
   rulesJson?: Prisma.JsonFilter<"GenerationRuleSet">
   isDefault?: Prisma.BoolFilter<"GenerationRuleSet"> | boolean
+  isPublic?: Prisma.BoolFilter<"GenerationRuleSet"> | boolean
   createdAt?: Prisma.DateTimeFilter<"GenerationRuleSet"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GenerationRuleSet"> | Date | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
@@ -257,6 +267,7 @@ export type GenerationRuleSetOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   rulesJson?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
+  isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.GenerationRuleSetCountOrderByAggregateInput
@@ -275,6 +286,7 @@ export type GenerationRuleSetScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"GenerationRuleSet"> | string | null
   rulesJson?: Prisma.JsonWithAggregatesFilter<"GenerationRuleSet">
   isDefault?: Prisma.BoolWithAggregatesFilter<"GenerationRuleSet"> | boolean
+  isPublic?: Prisma.BoolWithAggregatesFilter<"GenerationRuleSet"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"GenerationRuleSet"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"GenerationRuleSet"> | Date | string
 }
@@ -285,6 +297,7 @@ export type GenerationRuleSetCreateInput = {
   description?: string | null
   rulesJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: boolean
+  isPublic?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutGenerationRuleSetsInput
@@ -300,6 +313,7 @@ export type GenerationRuleSetUncheckedCreateInput = {
   description?: string | null
   rulesJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: boolean
+  isPublic?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   generations?: Prisma.GenerationUncheckedCreateNestedManyWithoutGenerationRuleSetInput
@@ -311,6 +325,7 @@ export type GenerationRuleSetUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rulesJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutGenerationRuleSetsNestedInput
@@ -326,6 +341,7 @@ export type GenerationRuleSetUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rulesJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   generations?: Prisma.GenerationUncheckedUpdateManyWithoutGenerationRuleSetNestedInput
@@ -339,6 +355,7 @@ export type GenerationRuleSetCreateManyInput = {
   description?: string | null
   rulesJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: boolean
+  isPublic?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -349,6 +366,7 @@ export type GenerationRuleSetUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rulesJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -361,6 +379,7 @@ export type GenerationRuleSetUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rulesJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -394,6 +413,7 @@ export type GenerationRuleSetCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   rulesJson?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
+  isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -405,6 +425,7 @@ export type GenerationRuleSetMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
+  isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -416,6 +437,7 @@ export type GenerationRuleSetMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
+  isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -520,16 +542,13 @@ export type GenerationRuleSetUpdateOneWithoutGenerationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.GenerationRuleSetUpdateToOneWithWhereWithoutGenerationsInput, Prisma.GenerationRuleSetUpdateWithoutGenerationsInput>, Prisma.GenerationRuleSetUncheckedUpdateWithoutGenerationsInput>
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type GenerationRuleSetCreateWithoutProjectInput = {
   id?: string
   name: string
   description?: string | null
   rulesJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: boolean
+  isPublic?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   sqlImport: Prisma.SqlImportCreateNestedOneWithoutGenerationRuleSetsInput
@@ -543,6 +562,7 @@ export type GenerationRuleSetUncheckedCreateWithoutProjectInput = {
   description?: string | null
   rulesJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: boolean
+  isPublic?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   generations?: Prisma.GenerationUncheckedCreateNestedManyWithoutGenerationRuleSetInput
@@ -585,6 +605,7 @@ export type GenerationRuleSetScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"GenerationRuleSet"> | string | null
   rulesJson?: Prisma.JsonFilter<"GenerationRuleSet">
   isDefault?: Prisma.BoolFilter<"GenerationRuleSet"> | boolean
+  isPublic?: Prisma.BoolFilter<"GenerationRuleSet"> | boolean
   createdAt?: Prisma.DateTimeFilter<"GenerationRuleSet"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GenerationRuleSet"> | Date | string
 }
@@ -595,6 +616,7 @@ export type GenerationRuleSetCreateWithoutSqlImportInput = {
   description?: string | null
   rulesJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: boolean
+  isPublic?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutGenerationRuleSetsInput
@@ -608,6 +630,7 @@ export type GenerationRuleSetUncheckedCreateWithoutSqlImportInput = {
   description?: string | null
   rulesJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: boolean
+  isPublic?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   generations?: Prisma.GenerationUncheckedCreateNestedManyWithoutGenerationRuleSetInput
@@ -645,6 +668,7 @@ export type GenerationRuleSetCreateWithoutGenerationsInput = {
   description?: string | null
   rulesJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: boolean
+  isPublic?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutGenerationRuleSetsInput
@@ -659,6 +683,7 @@ export type GenerationRuleSetUncheckedCreateWithoutGenerationsInput = {
   description?: string | null
   rulesJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: boolean
+  isPublic?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -685,6 +710,7 @@ export type GenerationRuleSetUpdateWithoutGenerationsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rulesJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutGenerationRuleSetsNestedInput
@@ -699,6 +725,7 @@ export type GenerationRuleSetUncheckedUpdateWithoutGenerationsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rulesJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -710,6 +737,7 @@ export type GenerationRuleSetCreateManyProjectInput = {
   description?: string | null
   rulesJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: boolean
+  isPublic?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -720,6 +748,7 @@ export type GenerationRuleSetUpdateWithoutProjectInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rulesJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sqlImport?: Prisma.SqlImportUpdateOneRequiredWithoutGenerationRuleSetsNestedInput
@@ -733,6 +762,7 @@ export type GenerationRuleSetUncheckedUpdateWithoutProjectInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rulesJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   generations?: Prisma.GenerationUncheckedUpdateManyWithoutGenerationRuleSetNestedInput
@@ -745,6 +775,7 @@ export type GenerationRuleSetUncheckedUpdateManyWithoutProjectInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rulesJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -756,6 +787,7 @@ export type GenerationRuleSetCreateManySqlImportInput = {
   description?: string | null
   rulesJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: boolean
+  isPublic?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -766,6 +798,7 @@ export type GenerationRuleSetUpdateWithoutSqlImportInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rulesJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutGenerationRuleSetsNestedInput
@@ -779,6 +812,7 @@ export type GenerationRuleSetUncheckedUpdateWithoutSqlImportInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rulesJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   generations?: Prisma.GenerationUncheckedUpdateManyWithoutGenerationRuleSetNestedInput
@@ -791,6 +825,7 @@ export type GenerationRuleSetUncheckedUpdateManyWithoutSqlImportInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rulesJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -834,6 +869,7 @@ export type GenerationRuleSetSelect<ExtArgs extends runtime.Types.Extensions.Int
   description?: boolean
   rulesJson?: boolean
   isDefault?: boolean
+  isPublic?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
@@ -850,6 +886,7 @@ export type GenerationRuleSetSelectCreateManyAndReturn<ExtArgs extends runtime.T
   description?: boolean
   rulesJson?: boolean
   isDefault?: boolean
+  isPublic?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
@@ -864,6 +901,7 @@ export type GenerationRuleSetSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   description?: boolean
   rulesJson?: boolean
   isDefault?: boolean
+  isPublic?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
@@ -878,11 +916,12 @@ export type GenerationRuleSetSelectScalar = {
   description?: boolean
   rulesJson?: boolean
   isDefault?: boolean
+  isPublic?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type GenerationRuleSetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "sqlImportId" | "name" | "description" | "rulesJson" | "isDefault" | "createdAt" | "updatedAt", ExtArgs["result"]["generationRuleSet"]>
+export type GenerationRuleSetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "sqlImportId" | "name" | "description" | "rulesJson" | "isDefault" | "isPublic" | "createdAt" | "updatedAt", ExtArgs["result"]["generationRuleSet"]>
 export type GenerationRuleSetInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   sqlImport?: boolean | Prisma.SqlImportDefaultArgs<ExtArgs>
@@ -913,6 +952,7 @@ export type $GenerationRuleSetPayload<ExtArgs extends runtime.Types.Extensions.I
     description: string | null
     rulesJson: runtime.JsonValue
     isDefault: boolean
+    isPublic: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["generationRuleSet"]>
@@ -1348,6 +1388,7 @@ export interface GenerationRuleSetFieldRefs {
   readonly description: Prisma.FieldRef<"GenerationRuleSet", 'String'>
   readonly rulesJson: Prisma.FieldRef<"GenerationRuleSet", 'Json'>
   readonly isDefault: Prisma.FieldRef<"GenerationRuleSet", 'Boolean'>
+  readonly isPublic: Prisma.FieldRef<"GenerationRuleSet", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"GenerationRuleSet", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"GenerationRuleSet", 'DateTime'>
 }

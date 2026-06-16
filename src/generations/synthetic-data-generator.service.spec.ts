@@ -309,8 +309,8 @@ describe('SyntheticDataGeneratorService', () => {
       // 3. Verificar Identity Pooling (usuarios vinculados a profesores)
       expect(result.rowsByTable.usuarios.length).toBe(3);
       const profesoresNombres = result.rowsByTable.profesores.map(p => {
-        const cleanN = p.nombres.toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, '');
-        const cleanA = p.apellidos.toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, '');
+        const cleanN = (p.nombres as string).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, '');
+        const cleanA = (p.apellidos as string).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, '');
         return `${cleanN}.${cleanA}`;
       });
 

@@ -10,6 +10,8 @@ import { GenerationPlansModule } from './generation-plans/generation-plans.modul
 import { SqlSchemaGeneratorModule } from './sql-schema-generator/sql-schema-generator.module';
 import { GenerationRulesModule } from './generation-rules/generation-rules.module';
 import { AiModule } from './ai/ai.module';
+import { SubscriptionPlansModule } from './subscription-plans/subscription-plans.module';
+import { WorkspacesModule } from './workspaces/workspaces.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { AiModule } from './ai/ai.module';
     GenerationPlansModule,
     SqlSchemaGeneratorModule,
     GenerationRulesModule,
+    SubscriptionPlansModule,
+    WorkspacesModule,
   ],
 })
 export class AppModule { }

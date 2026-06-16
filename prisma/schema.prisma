@@ -44,6 +44,7 @@ model User {
   subscriptionPlanId String?
   plan               SubscriptionPlan? @relation(fields: [subscriptionPlanId], references: [id])
   workspaces         WorkspaceMember[]
+  ownedWorkspaces    Workspace[]       @relation("WorkspaceOwner")
   payments           PaymentLog[]
   activities         ActivityLog[]
 
@@ -162,6 +163,8 @@ model SubscriptionPlan {
   name                   String   @unique
   type                   PlanType @default(INDIVIDUAL)
   price                  Decimal  @default(0.0)
+  maxWorkspaces          Int      @default(1)
+  maxProjects            Int      @default(5)
   maxUsersPerWorkspace   Int?
   maxGenerationsPerMonth Int      @default(10)
   apiCostPer1kRows       Decimal?
@@ -169,7 +172,6 @@ model SubscriptionPlan {
   createdAt              DateTime @default(now())
 
   users                  User[]
-  workspaces             Workspace[]
 
   @@map("subscription_plans")
 }
@@ -177,10 +179,10 @@ model SubscriptionPlan {
 model Workspace {
   id                 String           @id @default(cuid())
   name               String
-  subscriptionPlanId String
+  ownerId            String
   createdAt          DateTime         @default(now())
 
-  plan               SubscriptionPlan @relation(fields: [subscriptionPlanId], references: [id])
+  owner              User             @relation("WorkspaceOwner", fields: [ownerId], references: [id])
   members            WorkspaceMember[]
   projects           Project[]
   activities         ActivityLog[]
