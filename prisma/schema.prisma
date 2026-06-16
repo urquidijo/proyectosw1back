@@ -11,11 +11,23 @@ datasource db {
 enum UserRole {
   USER
   ADMIN
+  SUPERADMIN
 }
 
 enum SqlImportStatus {
   VALID
   INVALID
+}
+
+enum PlanType {
+  INDIVIDUAL
+  GROUP
+  API_USAGE
+}
+
+enum WorkspaceRole {
+  ADMIN
+  MEMBER
 }
 
 model User {
@@ -29,6 +41,12 @@ model User {
 
   projects Project[]
 
+  subscriptionPlanId String?
+  plan               SubscriptionPlan? @relation(fields: [subscriptionPlanId], references: [id])
+  workspaces         WorkspaceMember[]
+  payments           PaymentLog[]
+  activities         ActivityLog[]
+
   @@map("users")
 }
 
@@ -40,6 +58,10 @@ model Project {
   owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  workspaceId String?
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  isPublic    Boolean    @default(false)
 
   sqlImports SqlImport[]
 
@@ -122,6 +144,7 @@ model GenerationRuleSet {
   description String?
   rulesJson   Json
   isDefault   Boolean @default(false)
+  isPublic    Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -132,4 +155,80 @@ model GenerationRuleSet {
   @@index([projectId])
   @@index([sqlImportId])
   @@map("generation_rule_sets")
+}
+
+model SubscriptionPlan {
+  id                     String   @id @default(cuid())
+  name                   String   @unique
+  type                   PlanType @default(INDIVIDUAL)
+  price                  Decimal  @default(0.0)
+  maxUsersPerWorkspace   Int?
+  maxGenerationsPerMonth Int      @default(10)
+  apiCostPer1kRows       Decimal?
+  isActive               Boolean  @default(true)
+  createdAt              DateTime @default(now())
+
+  users                  User[]
+  workspaces             Workspace[]
+
+  @@map("subscription_plans")
+}
+
+model Workspace {
+  id                 String           @id @default(cuid())
+  name               String
+  subscriptionPlanId String
+  createdAt          DateTime         @default(now())
+
+  plan               SubscriptionPlan @relation(fields: [subscriptionPlanId], references: [id])
+  members            WorkspaceMember[]
+  projects           Project[]
+  activities         ActivityLog[]
+  payments           PaymentLog[]
+
+  @@map("workspaces")
+}
+
+model WorkspaceMember {
+  id          String        @id @default(cuid())
+  workspaceId String
+  userId      String
+  role        WorkspaceRole @default(MEMBER)
+  joinedAt    DateTime      @default(now())
+
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@map("workspace_members")
+}
+
+model PaymentLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  workspaceId String?
+  amount      Decimal
+  currency    String   @default("USD")
+  status      String
+  reference   String?
+  createdAt   DateTime @default(now())
+
+  user        User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+
+  @@map("payment_logs")
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  workspaceId String?  
+  userId      String?  
+  action      String   
+  details     Json?    
+  createdAt   DateTime @default(now())
+
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("activity_logs")
 }

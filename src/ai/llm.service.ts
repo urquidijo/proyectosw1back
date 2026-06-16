@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { ClaudeProvider } from './claude.provider';
 import { GeminiProvider } from './gemini.provider';
+import { GroqProvider } from './groq.provider';
 import { LlmProvider } from './llm-provider.interface';
 
 /**
@@ -15,28 +16,29 @@ import { LlmProvider } from './llm-provider.interface';
 @Injectable()
 export class LlmService {
   private readonly logger = new Logger(LlmService.name);
-  private readonly primary: LlmProvider;
-  private readonly fallback: LlmProvider;
+  private readonly providersChain: LlmProvider[];
 
   constructor(
     private readonly configService: ConfigService,
     private readonly claude: ClaudeProvider,
     private readonly gemini: GeminiProvider,
+    private readonly groq: GroqProvider,
   ) {
     const preferred = (
       this.configService.get<string>('LLM_PROVIDER') ?? 'claude'
     ).toLowerCase();
 
-    if (preferred === 'gemini') {
-      this.primary = this.gemini;
-      this.fallback = this.claude;
+    // Ordenamos la cadena según preferencia
+    if (preferred === 'groq') {
+      this.providersChain = [this.groq, this.claude, this.gemini];
+    } else if (preferred === 'gemini') {
+      this.providersChain = [this.gemini, this.claude, this.groq];
     } else {
-      this.primary = this.claude;
-      this.fallback = this.gemini;
+      this.providersChain = [this.claude, this.gemini, this.groq];
     }
 
     this.logger.log(
-      `Proveedor IA principal: ${this.primary.name} (respaldo: ${this.fallback.name})`,
+      `Proveedor IA principal: ${this.providersChain[0].name}`,
     );
   }
 
@@ -78,10 +80,8 @@ export class LlmService {
     );
   }
 
-  /** Orden de intento: principal configurado primero, luego respaldo configurado. */
+  /** Orden de intento: principal configurado primero, luego los respaldos configurados. */
   private buildProviderChain(): LlmProvider[] {
-    return [this.primary, this.fallback].filter((provider) =>
-      provider.isConfigured(),
-    );
+    return this.providersChain.filter((provider) => provider.isConfigured());
   }
 }
