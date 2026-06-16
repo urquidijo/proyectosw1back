@@ -13,11 +13,15 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import type { AuthenticatedUser } from '../auth/types/authenticated-user.type';
 import { CreateGenerationDto } from './dto/create-generation.dto';
 import { GenerationsService } from './generations.service';
+import { VolumeSuggestionService } from './volume-suggestion.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('projects/:projectId/generations')
 export class GenerationsController {
-  constructor(private readonly generationsService: GenerationsService) {}
+  constructor(
+    private readonly generationsService: GenerationsService,
+    private readonly volumeSuggestionService: VolumeSuggestionService,
+  ) {}
 
   @Post()
   create(
@@ -49,6 +53,15 @@ export class GenerationsController {
     return this.generationsService.findOne(projectId, generationId, user.id);
   }
 
+  @Get(':generationId/status')
+  getStatus(
+    @Param('projectId') projectId: string,
+    @Param('generationId') generationId: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.generationsService.getStatus(projectId, generationId, user.id);
+  }
+
   @Get(':generationId/download')
   async download(
     @Param('projectId') projectId: string,
@@ -69,5 +82,14 @@ export class GenerationsController {
     );
 
     return outputSql;
+  }
+
+  @Get('suggest-volumes/:importId')
+  suggestVolumes(
+    @Param('projectId') projectId: string,
+    @Param('importId') importId: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.volumeSuggestionService.suggest(projectId, importId, user.id);
   }
 }

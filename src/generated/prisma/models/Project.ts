@@ -194,6 +194,7 @@ export type ProjectWhereInput = {
   sqlImports?: Prisma.SqlImportListRelationFilter
   generations?: Prisma.GenerationListRelationFilter
   generationPlans?: Prisma.GenerationPlanListRelationFilter
+  generationRuleSets?: Prisma.GenerationRuleSetListRelationFilter
 }
 
 export type ProjectOrderByWithRelationInput = {
@@ -207,6 +208,7 @@ export type ProjectOrderByWithRelationInput = {
   sqlImports?: Prisma.SqlImportOrderByRelationAggregateInput
   generations?: Prisma.GenerationOrderByRelationAggregateInput
   generationPlans?: Prisma.GenerationPlanOrderByRelationAggregateInput
+  generationRuleSets?: Prisma.GenerationRuleSetOrderByRelationAggregateInput
 }
 
 export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -223,6 +225,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   sqlImports?: Prisma.SqlImportListRelationFilter
   generations?: Prisma.GenerationListRelationFilter
   generationPlans?: Prisma.GenerationPlanListRelationFilter
+  generationRuleSets?: Prisma.GenerationRuleSetListRelationFilter
 }, "id">
 
 export type ProjectOrderByWithAggregationInput = {
@@ -259,6 +262,7 @@ export type ProjectCreateInput = {
   sqlImports?: Prisma.SqlImportCreateNestedManyWithoutProjectInput
   generations?: Prisma.GenerationCreateNestedManyWithoutProjectInput
   generationPlans?: Prisma.GenerationPlanCreateNestedManyWithoutProjectInput
+  generationRuleSets?: Prisma.GenerationRuleSetCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateInput = {
@@ -271,6 +275,7 @@ export type ProjectUncheckedCreateInput = {
   sqlImports?: Prisma.SqlImportUncheckedCreateNestedManyWithoutProjectInput
   generations?: Prisma.GenerationUncheckedCreateNestedManyWithoutProjectInput
   generationPlans?: Prisma.GenerationPlanUncheckedCreateNestedManyWithoutProjectInput
+  generationRuleSets?: Prisma.GenerationRuleSetUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUpdateInput = {
@@ -283,6 +288,7 @@ export type ProjectUpdateInput = {
   sqlImports?: Prisma.SqlImportUpdateManyWithoutProjectNestedInput
   generations?: Prisma.GenerationUpdateManyWithoutProjectNestedInput
   generationPlans?: Prisma.GenerationPlanUpdateManyWithoutProjectNestedInput
+  generationRuleSets?: Prisma.GenerationRuleSetUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateInput = {
@@ -295,6 +301,7 @@ export type ProjectUncheckedUpdateInput = {
   sqlImports?: Prisma.SqlImportUncheckedUpdateManyWithoutProjectNestedInput
   generations?: Prisma.GenerationUncheckedUpdateManyWithoutProjectNestedInput
   generationPlans?: Prisma.GenerationPlanUncheckedUpdateManyWithoutProjectNestedInput
+  generationRuleSets?: Prisma.GenerationRuleSetUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateManyInput = {
@@ -453,6 +460,20 @@ export type ProjectUpdateOneRequiredWithoutGenerationPlansNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutGenerationPlansInput, Prisma.ProjectUpdateWithoutGenerationPlansInput>, Prisma.ProjectUncheckedUpdateWithoutGenerationPlansInput>
 }
 
+export type ProjectCreateNestedOneWithoutGenerationRuleSetsInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutGenerationRuleSetsInput, Prisma.ProjectUncheckedCreateWithoutGenerationRuleSetsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutGenerationRuleSetsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutGenerationRuleSetsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutGenerationRuleSetsInput, Prisma.ProjectUncheckedCreateWithoutGenerationRuleSetsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutGenerationRuleSetsInput
+  upsert?: Prisma.ProjectUpsertWithoutGenerationRuleSetsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutGenerationRuleSetsInput, Prisma.ProjectUpdateWithoutGenerationRuleSetsInput>, Prisma.ProjectUncheckedUpdateWithoutGenerationRuleSetsInput>
+}
+
 export type ProjectCreateWithoutOwnerInput = {
   id?: string
   name: string
@@ -462,6 +483,7 @@ export type ProjectCreateWithoutOwnerInput = {
   sqlImports?: Prisma.SqlImportCreateNestedManyWithoutProjectInput
   generations?: Prisma.GenerationCreateNestedManyWithoutProjectInput
   generationPlans?: Prisma.GenerationPlanCreateNestedManyWithoutProjectInput
+  generationRuleSets?: Prisma.GenerationRuleSetCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutOwnerInput = {
@@ -473,6 +495,7 @@ export type ProjectUncheckedCreateWithoutOwnerInput = {
   sqlImports?: Prisma.SqlImportUncheckedCreateNestedManyWithoutProjectInput
   generations?: Prisma.GenerationUncheckedCreateNestedManyWithoutProjectInput
   generationPlans?: Prisma.GenerationPlanUncheckedCreateNestedManyWithoutProjectInput
+  generationRuleSets?: Prisma.GenerationRuleSetUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutOwnerInput = {
@@ -522,6 +545,7 @@ export type ProjectCreateWithoutSqlImportsInput = {
   owner: Prisma.UserCreateNestedOneWithoutProjectsInput
   generations?: Prisma.GenerationCreateNestedManyWithoutProjectInput
   generationPlans?: Prisma.GenerationPlanCreateNestedManyWithoutProjectInput
+  generationRuleSets?: Prisma.GenerationRuleSetCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutSqlImportsInput = {
@@ -533,6 +557,7 @@ export type ProjectUncheckedCreateWithoutSqlImportsInput = {
   updatedAt?: Date | string
   generations?: Prisma.GenerationUncheckedCreateNestedManyWithoutProjectInput
   generationPlans?: Prisma.GenerationPlanUncheckedCreateNestedManyWithoutProjectInput
+  generationRuleSets?: Prisma.GenerationRuleSetUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutSqlImportsInput = {
@@ -560,6 +585,7 @@ export type ProjectUpdateWithoutSqlImportsInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProjectsNestedInput
   generations?: Prisma.GenerationUpdateManyWithoutProjectNestedInput
   generationPlans?: Prisma.GenerationPlanUpdateManyWithoutProjectNestedInput
+  generationRuleSets?: Prisma.GenerationRuleSetUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutSqlImportsInput = {
@@ -571,6 +597,7 @@ export type ProjectUncheckedUpdateWithoutSqlImportsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   generations?: Prisma.GenerationUncheckedUpdateManyWithoutProjectNestedInput
   generationPlans?: Prisma.GenerationPlanUncheckedUpdateManyWithoutProjectNestedInput
+  generationRuleSets?: Prisma.GenerationRuleSetUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateWithoutGenerationsInput = {
@@ -582,6 +609,7 @@ export type ProjectCreateWithoutGenerationsInput = {
   owner: Prisma.UserCreateNestedOneWithoutProjectsInput
   sqlImports?: Prisma.SqlImportCreateNestedManyWithoutProjectInput
   generationPlans?: Prisma.GenerationPlanCreateNestedManyWithoutProjectInput
+  generationRuleSets?: Prisma.GenerationRuleSetCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutGenerationsInput = {
@@ -593,6 +621,7 @@ export type ProjectUncheckedCreateWithoutGenerationsInput = {
   updatedAt?: Date | string
   sqlImports?: Prisma.SqlImportUncheckedCreateNestedManyWithoutProjectInput
   generationPlans?: Prisma.GenerationPlanUncheckedCreateNestedManyWithoutProjectInput
+  generationRuleSets?: Prisma.GenerationRuleSetUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutGenerationsInput = {
@@ -620,6 +649,7 @@ export type ProjectUpdateWithoutGenerationsInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProjectsNestedInput
   sqlImports?: Prisma.SqlImportUpdateManyWithoutProjectNestedInput
   generationPlans?: Prisma.GenerationPlanUpdateManyWithoutProjectNestedInput
+  generationRuleSets?: Prisma.GenerationRuleSetUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutGenerationsInput = {
@@ -631,6 +661,7 @@ export type ProjectUncheckedUpdateWithoutGenerationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sqlImports?: Prisma.SqlImportUncheckedUpdateManyWithoutProjectNestedInput
   generationPlans?: Prisma.GenerationPlanUncheckedUpdateManyWithoutProjectNestedInput
+  generationRuleSets?: Prisma.GenerationRuleSetUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateWithoutGenerationPlansInput = {
@@ -642,6 +673,7 @@ export type ProjectCreateWithoutGenerationPlansInput = {
   owner: Prisma.UserCreateNestedOneWithoutProjectsInput
   sqlImports?: Prisma.SqlImportCreateNestedManyWithoutProjectInput
   generations?: Prisma.GenerationCreateNestedManyWithoutProjectInput
+  generationRuleSets?: Prisma.GenerationRuleSetCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutGenerationPlansInput = {
@@ -653,6 +685,7 @@ export type ProjectUncheckedCreateWithoutGenerationPlansInput = {
   updatedAt?: Date | string
   sqlImports?: Prisma.SqlImportUncheckedCreateNestedManyWithoutProjectInput
   generations?: Prisma.GenerationUncheckedCreateNestedManyWithoutProjectInput
+  generationRuleSets?: Prisma.GenerationRuleSetUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutGenerationPlansInput = {
@@ -680,6 +713,7 @@ export type ProjectUpdateWithoutGenerationPlansInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProjectsNestedInput
   sqlImports?: Prisma.SqlImportUpdateManyWithoutProjectNestedInput
   generations?: Prisma.GenerationUpdateManyWithoutProjectNestedInput
+  generationRuleSets?: Prisma.GenerationRuleSetUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutGenerationPlansInput = {
@@ -691,6 +725,71 @@ export type ProjectUncheckedUpdateWithoutGenerationPlansInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sqlImports?: Prisma.SqlImportUncheckedUpdateManyWithoutProjectNestedInput
   generations?: Prisma.GenerationUncheckedUpdateManyWithoutProjectNestedInput
+  generationRuleSets?: Prisma.GenerationRuleSetUncheckedUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectCreateWithoutGenerationRuleSetsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutProjectsInput
+  sqlImports?: Prisma.SqlImportCreateNestedManyWithoutProjectInput
+  generations?: Prisma.GenerationCreateNestedManyWithoutProjectInput
+  generationPlans?: Prisma.GenerationPlanCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutGenerationRuleSetsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  ownerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sqlImports?: Prisma.SqlImportUncheckedCreateNestedManyWithoutProjectInput
+  generations?: Prisma.GenerationUncheckedCreateNestedManyWithoutProjectInput
+  generationPlans?: Prisma.GenerationPlanUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutGenerationRuleSetsInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutGenerationRuleSetsInput, Prisma.ProjectUncheckedCreateWithoutGenerationRuleSetsInput>
+}
+
+export type ProjectUpsertWithoutGenerationRuleSetsInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutGenerationRuleSetsInput, Prisma.ProjectUncheckedUpdateWithoutGenerationRuleSetsInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutGenerationRuleSetsInput, Prisma.ProjectUncheckedCreateWithoutGenerationRuleSetsInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutGenerationRuleSetsInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutGenerationRuleSetsInput, Prisma.ProjectUncheckedUpdateWithoutGenerationRuleSetsInput>
+}
+
+export type ProjectUpdateWithoutGenerationRuleSetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutProjectsNestedInput
+  sqlImports?: Prisma.SqlImportUpdateManyWithoutProjectNestedInput
+  generations?: Prisma.GenerationUpdateManyWithoutProjectNestedInput
+  generationPlans?: Prisma.GenerationPlanUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutGenerationRuleSetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sqlImports?: Prisma.SqlImportUncheckedUpdateManyWithoutProjectNestedInput
+  generations?: Prisma.GenerationUncheckedUpdateManyWithoutProjectNestedInput
+  generationPlans?: Prisma.GenerationPlanUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateManyOwnerInput = {
@@ -710,6 +809,7 @@ export type ProjectUpdateWithoutOwnerInput = {
   sqlImports?: Prisma.SqlImportUpdateManyWithoutProjectNestedInput
   generations?: Prisma.GenerationUpdateManyWithoutProjectNestedInput
   generationPlans?: Prisma.GenerationPlanUpdateManyWithoutProjectNestedInput
+  generationRuleSets?: Prisma.GenerationRuleSetUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutOwnerInput = {
@@ -721,6 +821,7 @@ export type ProjectUncheckedUpdateWithoutOwnerInput = {
   sqlImports?: Prisma.SqlImportUncheckedUpdateManyWithoutProjectNestedInput
   generations?: Prisma.GenerationUncheckedUpdateManyWithoutProjectNestedInput
   generationPlans?: Prisma.GenerationPlanUncheckedUpdateManyWithoutProjectNestedInput
+  generationRuleSets?: Prisma.GenerationRuleSetUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateManyWithoutOwnerInput = {
@@ -740,12 +841,14 @@ export type ProjectCountOutputType = {
   sqlImports: number
   generations: number
   generationPlans: number
+  generationRuleSets: number
 }
 
 export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sqlImports?: boolean | ProjectCountOutputTypeCountSqlImportsArgs
   generations?: boolean | ProjectCountOutputTypeCountGenerationsArgs
   generationPlans?: boolean | ProjectCountOutputTypeCountGenerationPlansArgs
+  generationRuleSets?: boolean | ProjectCountOutputTypeCountGenerationRuleSetsArgs
 }
 
 /**
@@ -779,6 +882,13 @@ export type ProjectCountOutputTypeCountGenerationPlansArgs<ExtArgs extends runti
   where?: Prisma.GenerationPlanWhereInput
 }
 
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountGenerationRuleSetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GenerationRuleSetWhereInput
+}
+
 
 export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -791,6 +901,7 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   sqlImports?: boolean | Prisma.Project$sqlImportsArgs<ExtArgs>
   generations?: boolean | Prisma.Project$generationsArgs<ExtArgs>
   generationPlans?: boolean | Prisma.Project$generationPlansArgs<ExtArgs>
+  generationRuleSets?: boolean | Prisma.Project$generationRuleSetsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
@@ -829,6 +940,7 @@ export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   sqlImports?: boolean | Prisma.Project$sqlImportsArgs<ExtArgs>
   generations?: boolean | Prisma.Project$generationsArgs<ExtArgs>
   generationPlans?: boolean | Prisma.Project$generationPlansArgs<ExtArgs>
+  generationRuleSets?: boolean | Prisma.Project$generationRuleSetsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProjectIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -845,6 +957,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     sqlImports: Prisma.$SqlImportPayload<ExtArgs>[]
     generations: Prisma.$GenerationPayload<ExtArgs>[]
     generationPlans: Prisma.$GenerationPlanPayload<ExtArgs>[]
+    generationRuleSets: Prisma.$GenerationRuleSetPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1251,6 +1364,7 @@ export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.
   sqlImports<T extends Prisma.Project$sqlImportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$sqlImportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SqlImportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   generations<T extends Prisma.Project$generationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$generationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GenerationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   generationPlans<T extends Prisma.Project$generationPlansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$generationPlansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GenerationPlanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  generationRuleSets<T extends Prisma.Project$generationRuleSetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$generationRuleSetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GenerationRuleSetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1756,6 +1870,30 @@ export type Project$generationPlansArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.GenerationPlanScalarFieldEnum | Prisma.GenerationPlanScalarFieldEnum[]
+}
+
+/**
+ * Project.generationRuleSets
+ */
+export type Project$generationRuleSetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GenerationRuleSet
+   */
+  select?: Prisma.GenerationRuleSetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GenerationRuleSet
+   */
+  omit?: Prisma.GenerationRuleSetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GenerationRuleSetInclude<ExtArgs> | null
+  where?: Prisma.GenerationRuleSetWhereInput
+  orderBy?: Prisma.GenerationRuleSetOrderByWithRelationInput | Prisma.GenerationRuleSetOrderByWithRelationInput[]
+  cursor?: Prisma.GenerationRuleSetWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GenerationRuleSetScalarFieldEnum | Prisma.GenerationRuleSetScalarFieldEnum[]
 }
 
 /**

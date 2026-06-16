@@ -6,17 +6,25 @@ import {
 import { Prisma } from '../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { DetectedSchema } from '../sql-imports/types/detected-schema.type';
-import { GeminiSemanticAnalyzerService } from './gemini-semantic-analyzer.service';
+import {
+  PlanLanguage,
+  SemanticAnalyzerService,
+} from './semantic-analyzer.service';
 import { GenerationPlanJson, PlanRule } from './schemas/generation-plan.schema';
 
 @Injectable()
 export class GenerationPlansService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly geminiSemanticAnalyzer: GeminiSemanticAnalyzerService,
+    private readonly semanticAnalyzer: SemanticAnalyzerService,
   ) {}
 
-  async analyze(projectId: string, importId: string, userId: string) {
+  async analyze(
+    projectId: string,
+    importId: string,
+    userId: string,
+    language: PlanLanguage = 'es',
+  ) {
     await this.ensureProjectBelongsToUser(projectId, userId);
 
     const sqlImport = await this.prisma.sqlImport.findFirst({
@@ -44,7 +52,7 @@ export class GenerationPlansService {
 
     const schema = sqlImport.schemaJson as unknown as DetectedSchema;
 
-    const aiPlan = await this.geminiSemanticAnalyzer.analyzeSchema(schema);
+    const aiPlan = await this.semanticAnalyzer.analyzeSchema(schema, language);
     const sanitizedPlan = this.sanitizePlanForSchema(schema, aiPlan);
 
     return this.prisma.generationPlan.upsert({
@@ -132,7 +140,7 @@ export class GenerationPlansService {
 
         return {
           ...columnPlan,
-          sampleValues: uniqueSamples.slice(0, 12),
+          sampleValues: uniqueSamples.slice(0, 15),
           numericMin,
           numericMax,
         };

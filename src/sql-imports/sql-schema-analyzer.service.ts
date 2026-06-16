@@ -135,11 +135,17 @@ export class SqlSchemaAnalyzerService {
       }
     }
 
-    const finalColumns = columns.map((column) => ({
-      ...column,
-      isPrimaryKey: primaryKeys.has(column.name) || column.isPrimaryKey,
-      isNullable: primaryKeys.has(column.name) ? false : column.isNullable,
-    }));
+    const finalColumns = columns.map((column) => {
+      const fk = foreignKeys.find((f) => f.column === column.name);
+      return {
+        ...column,
+        isPrimaryKey: primaryKeys.has(column.name) || column.isPrimaryKey,
+        isNullable: primaryKeys.has(column.name) ? false : column.isNullable,
+        references: fk
+          ? { table: fk.referencesTable, column: fk.referencesColumn }
+          : column.references,
+      };
+    });
 
     return {
       name: tableName,

@@ -64,3 +64,8 @@ export type Generation = Prisma.GenerationModel
  * 
  */
 export type GenerationPlan = Prisma.GenerationPlanModel
+/**
+ * Model GenerationRuleSet
+ * 
+ */
+export type GenerationRuleSet = Prisma.GenerationRuleSetModel

@@ -55,7 +55,8 @@ export const ModelName = {
   Project: 'Project',
   SqlImport: 'SqlImport',
   Generation: 'Generation',
-  GenerationPlan: 'GenerationPlan'
+  GenerationPlan: 'GenerationPlan',
+  GenerationRuleSet: 'GenerationRuleSet'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -117,9 +118,15 @@ export const GenerationScalarFieldEnum = {
   id: 'id',
   projectId: 'projectId',
   sqlImportId: 'sqlImportId',
+  generationRuleSetId: 'generationRuleSetId',
   rowConfig: 'rowConfig',
   previewJson: 'previewJson',
   outputSql: 'outputSql',
+  status: 'status',
+  progress: 'progress',
+  error: 'error',
+  outputFile: 'outputFile',
+  region: 'region',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   validationJson: 'validationJson'
@@ -138,6 +145,21 @@ export const GenerationPlanScalarFieldEnum = {
 } as const
 
 export type GenerationPlanScalarFieldEnum = (typeof GenerationPlanScalarFieldEnum)[keyof typeof GenerationPlanScalarFieldEnum]
+
+
+export const GenerationRuleSetScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  sqlImportId: 'sqlImportId',
+  name: 'name',
+  description: 'description',
+  rulesJson: 'rulesJson',
+  isDefault: 'isDefault',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GenerationRuleSetScalarFieldEnum = (typeof GenerationRuleSetScalarFieldEnum)[keyof typeof GenerationRuleSetScalarFieldEnum]
 
 
 export const SortOrder = {

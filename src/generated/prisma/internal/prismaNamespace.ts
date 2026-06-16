@@ -388,7 +388,8 @@ export const ModelName = {
   Project: 'Project',
   SqlImport: 'SqlImport',
   Generation: 'Generation',
-  GenerationPlan: 'GenerationPlan'
+  GenerationPlan: 'GenerationPlan',
+  GenerationRuleSet: 'GenerationRuleSet'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -404,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "project" | "sqlImport" | "generation" | "generationPlan"
+    modelProps: "user" | "project" | "sqlImport" | "generation" | "generationPlan" | "generationRuleSet"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -778,6 +779,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    GenerationRuleSet: {
+      payload: Prisma.$GenerationRuleSetPayload<ExtArgs>
+      fields: Prisma.GenerationRuleSetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GenerationRuleSetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenerationRuleSetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GenerationRuleSetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenerationRuleSetPayload>
+        }
+        findFirst: {
+          args: Prisma.GenerationRuleSetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenerationRuleSetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GenerationRuleSetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenerationRuleSetPayload>
+        }
+        findMany: {
+          args: Prisma.GenerationRuleSetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenerationRuleSetPayload>[]
+        }
+        create: {
+          args: Prisma.GenerationRuleSetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenerationRuleSetPayload>
+        }
+        createMany: {
+          args: Prisma.GenerationRuleSetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GenerationRuleSetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenerationRuleSetPayload>[]
+        }
+        delete: {
+          args: Prisma.GenerationRuleSetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenerationRuleSetPayload>
+        }
+        update: {
+          args: Prisma.GenerationRuleSetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenerationRuleSetPayload>
+        }
+        deleteMany: {
+          args: Prisma.GenerationRuleSetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GenerationRuleSetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GenerationRuleSetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenerationRuleSetPayload>[]
+        }
+        upsert: {
+          args: Prisma.GenerationRuleSetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GenerationRuleSetPayload>
+        }
+        aggregate: {
+          args: Prisma.GenerationRuleSetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGenerationRuleSet>
+        }
+        groupBy: {
+          args: Prisma.GenerationRuleSetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GenerationRuleSetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GenerationRuleSetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GenerationRuleSetCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -860,9 +935,15 @@ export const GenerationScalarFieldEnum = {
   id: 'id',
   projectId: 'projectId',
   sqlImportId: 'sqlImportId',
+  generationRuleSetId: 'generationRuleSetId',
   rowConfig: 'rowConfig',
   previewJson: 'previewJson',
   outputSql: 'outputSql',
+  status: 'status',
+  progress: 'progress',
+  error: 'error',
+  outputFile: 'outputFile',
+  region: 'region',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   validationJson: 'validationJson'
@@ -881,6 +962,21 @@ export const GenerationPlanScalarFieldEnum = {
 } as const
 
 export type GenerationPlanScalarFieldEnum = (typeof GenerationPlanScalarFieldEnum)[keyof typeof GenerationPlanScalarFieldEnum]
+
+
+export const GenerationRuleSetScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  sqlImportId: 'sqlImportId',
+  name: 'name',
+  description: 'description',
+  rulesJson: 'rulesJson',
+  isDefault: 'isDefault',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GenerationRuleSetScalarFieldEnum = (typeof GenerationRuleSetScalarFieldEnum)[keyof typeof GenerationRuleSetScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1020,6 +1116,27 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -1135,6 +1252,7 @@ export type GlobalOmitConfig = {
   sqlImport?: Prisma.SqlImportOmit
   generation?: Prisma.GenerationOmit
   generationPlan?: Prisma.GenerationPlanOmit
+  generationRuleSet?: Prisma.GenerationRuleSetOmit
 }
 
 /* Types for Logging */

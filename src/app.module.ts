@@ -8,12 +8,15 @@ import { SqlImportsModule } from './sql-imports/sql-imports.module';
 import { GenerationsModule } from './generations/generations.module';
 import { GenerationPlansModule } from './generation-plans/generation-plans.module';
 import { SqlSchemaGeneratorModule } from './sql-schema-generator/sql-schema-generator.module';
+import { GenerationRulesModule } from './generation-rules/generation-rules.module';
+import { AiModule } from './ai/ai.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    AiModule,
     PrismaModule,
     UsersModule,
     AuthModule,
@@ -22,6 +25,7 @@ import { SqlSchemaGeneratorModule } from './sql-schema-generator/sql-schema-gene
     GenerationsModule,
     GenerationPlansModule,
     SqlSchemaGeneratorModule,
+    GenerationRulesModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }

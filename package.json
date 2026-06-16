@@ -20,6 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.104.2",
+    "@faker-js/faker": "^10.4.0",
     "@google/genai": "^2.0.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.4",
@@ -80,6 +82,9 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
+    "transformIgnorePatterns": [
+      "node_modules/(?!@faker-js/faker)"
+    ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
