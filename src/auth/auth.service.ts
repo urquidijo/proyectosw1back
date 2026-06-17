@@ -75,7 +75,7 @@ export class AuthService {
     };
   }
 
-  private buildAuthResponse(user: User) {
+  private buildAuthResponse(user: any) {
     const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
@@ -88,12 +88,13 @@ export class AuthService {
     };
   }
 
-  private sanitizeUser(user: User) {
+  private sanitizeUser(user: any) {
     return {
       id: user.id,
       name: user.name,
       email: user.email,
       role: user.role,
+      plan: user.plan || null,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
