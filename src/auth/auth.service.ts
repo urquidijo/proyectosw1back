@@ -10,12 +10,14 @@ import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtPayload } from './types/jwt-payload.type';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async register(registerDto: RegisterDto) {
@@ -56,6 +58,15 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales incorrectas');
     }
 
+    // Log Activity
+    await this.prisma.activityLog.create({
+      data: {
+        userId: user.id,
+        action: 'LOGIN',
+        details: { email: user.email }
+      }
+    });
+
     return this.buildAuthResponse(user);
   }
 
@@ -69,7 +80,16 @@ export class AuthService {
     return this.sanitizeUser(user);
   }
 
-  async logout() {
+  async logout(userId?: string) {
+    if (userId) {
+      await this.prisma.activityLog.create({
+        data: {
+          userId,
+          action: 'LOGOUT',
+        }
+      });
+    }
+
     return {
       message: 'Sesión cerrada correctamente',
     };

@@ -1,7 +1,8 @@
-import { Controller, Get, UseGuards, Request, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request, ForbiddenException, ConflictException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PrismaService } from '../prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
 
 @Controller('users')
 export class UsersController {
@@ -19,5 +20,36 @@ export class UsersController {
       },
       orderBy: { createdAt: 'desc' },
     });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('superadmin')
+  async createSuperAdmin(@Request() req, @Body() body: any) {
+    if (req.user.role !== 'SUPERADMIN') {
+      throw new ForbiddenException('Solo los administradores pueden crear nuevos SuperAdmins');
+    }
+
+    const { name, email, password } = body;
+    if (!name || !email || !password) {
+      throw new ConflictException('Nombre, email y contraseña son requeridos');
+    }
+
+    const emailLower = email.toLowerCase().trim();
+    const existing = await this.prisma.user.findUnique({ where: { email: emailLower } });
+    if (existing) {
+      throw new ConflictException('El correo ya está registrado');
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const newUser = await this.prisma.user.create({
+      data: {
+        name: name.trim(),
+        email: emailLower,
+        passwordHash,
+        role: 'SUPERADMIN',
+      }
+    });
+
+    return { message: 'SuperAdmin creado con éxito', user: { id: newUser.id, email: newUser.email } };
   }
 }
