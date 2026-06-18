@@ -228,6 +228,9 @@ export type UserWhereInput = {
   ownedWorkspaces?: Prisma.WorkspaceListRelationFilter
   payments?: Prisma.PaymentLogListRelationFilter
   activities?: Prisma.ActivityLogListRelationFilter
+  communityPosts?: Prisma.CommunityPostListRelationFilter
+  postComments?: Prisma.PostCommentListRelationFilter
+  postUpvotes?: Prisma.PostUpvoteListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -247,6 +250,9 @@ export type UserOrderByWithRelationInput = {
   ownedWorkspaces?: Prisma.WorkspaceOrderByRelationAggregateInput
   payments?: Prisma.PaymentLogOrderByRelationAggregateInput
   activities?: Prisma.ActivityLogOrderByRelationAggregateInput
+  communityPosts?: Prisma.CommunityPostOrderByRelationAggregateInput
+  postComments?: Prisma.PostCommentOrderByRelationAggregateInput
+  postUpvotes?: Prisma.PostUpvoteOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -269,6 +275,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   ownedWorkspaces?: Prisma.WorkspaceListRelationFilter
   payments?: Prisma.PaymentLogListRelationFilter
   activities?: Prisma.ActivityLogListRelationFilter
+  communityPosts?: Prisma.CommunityPostListRelationFilter
+  postComments?: Prisma.PostCommentListRelationFilter
+  postUpvotes?: Prisma.PostUpvoteListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -319,6 +328,9 @@ export type UserCreateInput = {
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   payments?: Prisma.PaymentLogCreateNestedManyWithoutUserInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -337,6 +349,9 @@ export type UserUncheckedCreateInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   payments?: Prisma.PaymentLogUncheckedCreateNestedManyWithoutUserInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -355,6 +370,9 @@ export type UserUpdateInput = {
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   payments?: Prisma.PaymentLogUpdateManyWithoutUserNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -373,6 +391,9 @@ export type UserUncheckedUpdateInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   payments?: Prisma.PaymentLogUncheckedUpdateManyWithoutUserNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -604,6 +625,48 @@ export type UserUpdateOneWithoutActivitiesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutActivitiesInput, Prisma.UserUpdateWithoutActivitiesInput>, Prisma.UserUncheckedUpdateWithoutActivitiesInput>
 }
 
+export type UserCreateNestedOneWithoutCommunityPostsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCommunityPostsInput, Prisma.UserUncheckedCreateWithoutCommunityPostsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommunityPostsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCommunityPostsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCommunityPostsInput, Prisma.UserUncheckedCreateWithoutCommunityPostsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommunityPostsInput
+  upsert?: Prisma.UserUpsertWithoutCommunityPostsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCommunityPostsInput, Prisma.UserUpdateWithoutCommunityPostsInput>, Prisma.UserUncheckedUpdateWithoutCommunityPostsInput>
+}
+
+export type UserCreateNestedOneWithoutPostCommentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPostCommentsInput, Prisma.UserUncheckedCreateWithoutPostCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPostCommentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPostCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPostCommentsInput, Prisma.UserUncheckedCreateWithoutPostCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPostCommentsInput
+  upsert?: Prisma.UserUpsertWithoutPostCommentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPostCommentsInput, Prisma.UserUpdateWithoutPostCommentsInput>, Prisma.UserUncheckedUpdateWithoutPostCommentsInput>
+}
+
+export type UserCreateNestedOneWithoutPostUpvotesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPostUpvotesInput, Prisma.UserUncheckedCreateWithoutPostUpvotesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPostUpvotesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPostUpvotesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPostUpvotesInput, Prisma.UserUncheckedCreateWithoutPostUpvotesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPostUpvotesInput
+  upsert?: Prisma.UserUpsertWithoutPostUpvotesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPostUpvotesInput, Prisma.UserUpdateWithoutPostUpvotesInput>, Prisma.UserUncheckedUpdateWithoutPostUpvotesInput>
+}
+
 export type UserCreateWithoutProjectsInput = {
   id?: string
   name: string
@@ -619,6 +682,9 @@ export type UserCreateWithoutProjectsInput = {
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   payments?: Prisma.PaymentLogCreateNestedManyWithoutUserInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProjectsInput = {
@@ -636,6 +702,9 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   payments?: Prisma.PaymentLogUncheckedCreateNestedManyWithoutUserInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProjectsInput = {
@@ -669,6 +738,9 @@ export type UserUpdateWithoutProjectsInput = {
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   payments?: Prisma.PaymentLogUpdateManyWithoutUserNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectsInput = {
@@ -686,6 +758,9 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   payments?: Prisma.PaymentLogUncheckedUpdateManyWithoutUserNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPlanInput = {
@@ -703,6 +778,9 @@ export type UserCreateWithoutPlanInput = {
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   payments?: Prisma.PaymentLogCreateNestedManyWithoutUserInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPlanInput = {
@@ -720,6 +798,9 @@ export type UserUncheckedCreateWithoutPlanInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   payments?: Prisma.PaymentLogUncheckedCreateNestedManyWithoutUserInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPlanInput = {
@@ -779,6 +860,9 @@ export type UserCreateWithoutOwnedWorkspacesInput = {
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentLogCreateNestedManyWithoutUserInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
@@ -796,6 +880,9 @@ export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentLogUncheckedCreateNestedManyWithoutUserInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOwnedWorkspacesInput = {
@@ -829,6 +916,9 @@ export type UserUpdateWithoutOwnedWorkspacesInput = {
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentLogUpdateManyWithoutUserNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
@@ -846,6 +936,9 @@ export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentLogUncheckedUpdateManyWithoutUserNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutWorkspacesInput = {
@@ -863,6 +956,9 @@ export type UserCreateWithoutWorkspacesInput = {
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   payments?: Prisma.PaymentLogCreateNestedManyWithoutUserInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutWorkspacesInput = {
@@ -880,6 +976,9 @@ export type UserUncheckedCreateWithoutWorkspacesInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   payments?: Prisma.PaymentLogUncheckedCreateNestedManyWithoutUserInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutWorkspacesInput = {
@@ -913,6 +1012,9 @@ export type UserUpdateWithoutWorkspacesInput = {
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   payments?: Prisma.PaymentLogUpdateManyWithoutUserNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkspacesInput = {
@@ -930,6 +1032,9 @@ export type UserUncheckedUpdateWithoutWorkspacesInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   payments?: Prisma.PaymentLogUncheckedUpdateManyWithoutUserNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPaymentsInput = {
@@ -947,6 +1052,9 @@ export type UserCreateWithoutPaymentsInput = {
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   activities?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPaymentsInput = {
@@ -964,6 +1072,9 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPaymentsInput = {
@@ -997,6 +1108,9 @@ export type UserUpdateWithoutPaymentsInput = {
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPaymentsInput = {
@@ -1014,6 +1128,9 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutActivitiesInput = {
@@ -1031,6 +1148,9 @@ export type UserCreateWithoutActivitiesInput = {
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
   payments?: Prisma.PaymentLogCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutActivitiesInput = {
@@ -1048,6 +1168,9 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   payments?: Prisma.PaymentLogUncheckedCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutActivitiesInput = {
@@ -1081,6 +1204,9 @@ export type UserUpdateWithoutActivitiesInput = {
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   payments?: Prisma.PaymentLogUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivitiesInput = {
@@ -1098,6 +1224,297 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   payments?: Prisma.PaymentLogUncheckedUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCommunityPostsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  plan?: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
+  workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  payments?: Prisma.PaymentLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCommunityPostsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  subscriptionPlanId?: string | null
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  payments?: Prisma.PaymentLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCommunityPostsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCommunityPostsInput, Prisma.UserUncheckedCreateWithoutCommunityPostsInput>
+}
+
+export type UserUpsertWithoutCommunityPostsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCommunityPostsInput, Prisma.UserUncheckedUpdateWithoutCommunityPostsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCommunityPostsInput, Prisma.UserUncheckedCreateWithoutCommunityPostsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCommunityPostsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCommunityPostsInput, Prisma.UserUncheckedUpdateWithoutCommunityPostsInput>
+}
+
+export type UserUpdateWithoutCommunityPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  plan?: Prisma.SubscriptionPlanUpdateOneWithoutUsersNestedInput
+  workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  payments?: Prisma.PaymentLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCommunityPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriptionPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  payments?: Prisma.PaymentLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPostCommentsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  plan?: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
+  workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  payments?: Prisma.PaymentLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPostCommentsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  subscriptionPlanId?: string | null
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  payments?: Prisma.PaymentLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutAuthorInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPostCommentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPostCommentsInput, Prisma.UserUncheckedCreateWithoutPostCommentsInput>
+}
+
+export type UserUpsertWithoutPostCommentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPostCommentsInput, Prisma.UserUncheckedUpdateWithoutPostCommentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPostCommentsInput, Prisma.UserUncheckedCreateWithoutPostCommentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPostCommentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPostCommentsInput, Prisma.UserUncheckedUpdateWithoutPostCommentsInput>
+}
+
+export type UserUpdateWithoutPostCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  plan?: Prisma.SubscriptionPlanUpdateOneWithoutUsersNestedInput
+  workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  payments?: Prisma.PaymentLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPostCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriptionPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  payments?: Prisma.PaymentLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPostUpvotesInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  plan?: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
+  workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  payments?: Prisma.PaymentLogCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityLogCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentCreateNestedManyWithoutAuthorInput
+}
+
+export type UserUncheckedCreateWithoutPostUpvotesInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  subscriptionPlanId?: string | null
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  payments?: Prisma.PaymentLogUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutUserInput
+  communityPosts?: Prisma.CommunityPostUncheckedCreateNestedManyWithoutAuthorInput
+  postComments?: Prisma.PostCommentUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type UserCreateOrConnectWithoutPostUpvotesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPostUpvotesInput, Prisma.UserUncheckedCreateWithoutPostUpvotesInput>
+}
+
+export type UserUpsertWithoutPostUpvotesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPostUpvotesInput, Prisma.UserUncheckedUpdateWithoutPostUpvotesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPostUpvotesInput, Prisma.UserUncheckedCreateWithoutPostUpvotesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPostUpvotesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPostUpvotesInput, Prisma.UserUncheckedUpdateWithoutPostUpvotesInput>
+}
+
+export type UserUpdateWithoutPostUpvotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  plan?: Prisma.SubscriptionPlanUpdateOneWithoutUsersNestedInput
+  workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  payments?: Prisma.PaymentLogUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPostUpvotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriptionPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  payments?: Prisma.PaymentLogUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateManyPlanInput = {
@@ -1127,6 +1544,9 @@ export type UserUpdateWithoutPlanInput = {
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
   payments?: Prisma.PaymentLogUpdateManyWithoutUserNestedInput
   activities?: Prisma.ActivityLogUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPlanInput = {
@@ -1144,6 +1564,9 @@ export type UserUncheckedUpdateWithoutPlanInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   payments?: Prisma.PaymentLogUncheckedUpdateManyWithoutUserNestedInput
   activities?: Prisma.ActivityLogUncheckedUpdateManyWithoutUserNestedInput
+  communityPosts?: Prisma.CommunityPostUncheckedUpdateManyWithoutAuthorNestedInput
+  postComments?: Prisma.PostCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  postUpvotes?: Prisma.PostUpvoteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutPlanInput = {
@@ -1169,6 +1592,9 @@ export type UserCountOutputType = {
   ownedWorkspaces: number
   payments: number
   activities: number
+  communityPosts: number
+  postComments: number
+  postUpvotes: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1177,6 +1603,9 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   ownedWorkspaces?: boolean | UserCountOutputTypeCountOwnedWorkspacesArgs
   payments?: boolean | UserCountOutputTypeCountPaymentsArgs
   activities?: boolean | UserCountOutputTypeCountActivitiesArgs
+  communityPosts?: boolean | UserCountOutputTypeCountCommunityPostsArgs
+  postComments?: boolean | UserCountOutputTypeCountPostCommentsArgs
+  postUpvotes?: boolean | UserCountOutputTypeCountPostUpvotesArgs
 }
 
 /**
@@ -1224,6 +1653,27 @@ export type UserCountOutputTypeCountActivitiesArgs<ExtArgs extends runtime.Types
   where?: Prisma.ActivityLogWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCommunityPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommunityPostWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPostCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostCommentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPostUpvotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostUpvoteWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1242,6 +1692,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   ownedWorkspaces?: boolean | Prisma.User$ownedWorkspacesArgs<ExtArgs>
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
   activities?: boolean | Prisma.User$activitiesArgs<ExtArgs>
+  communityPosts?: boolean | Prisma.User$communityPostsArgs<ExtArgs>
+  postComments?: boolean | Prisma.User$postCommentsArgs<ExtArgs>
+  postUpvotes?: boolean | Prisma.User$postUpvotesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1294,6 +1747,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   ownedWorkspaces?: boolean | Prisma.User$ownedWorkspacesArgs<ExtArgs>
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
   activities?: boolean | Prisma.User$activitiesArgs<ExtArgs>
+  communityPosts?: boolean | Prisma.User$communityPostsArgs<ExtArgs>
+  postComments?: boolean | Prisma.User$postCommentsArgs<ExtArgs>
+  postUpvotes?: boolean | Prisma.User$postUpvotesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1312,6 +1768,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     ownedWorkspaces: Prisma.$WorkspacePayload<ExtArgs>[]
     payments: Prisma.$PaymentLogPayload<ExtArgs>[]
     activities: Prisma.$ActivityLogPayload<ExtArgs>[]
+    communityPosts: Prisma.$CommunityPostPayload<ExtArgs>[]
+    postComments: Prisma.$PostCommentPayload<ExtArgs>[]
+    postUpvotes: Prisma.$PostUpvotePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1724,6 +2183,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   ownedWorkspaces<T extends Prisma.User$ownedWorkspacesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedWorkspacesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payments<T extends Prisma.User$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activities<T extends Prisma.User$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  communityPosts<T extends Prisma.User$communityPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$communityPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommunityPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  postComments<T extends Prisma.User$postCommentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$postCommentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  postUpvotes<T extends Prisma.User$postUpvotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$postUpvotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostUpvotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2300,6 +2762,78 @@ export type User$activitiesArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ActivityLogScalarFieldEnum | Prisma.ActivityLogScalarFieldEnum[]
+}
+
+/**
+ * User.communityPosts
+ */
+export type User$communityPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CommunityPost
+   */
+  select?: Prisma.CommunityPostSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CommunityPost
+   */
+  omit?: Prisma.CommunityPostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommunityPostInclude<ExtArgs> | null
+  where?: Prisma.CommunityPostWhereInput
+  orderBy?: Prisma.CommunityPostOrderByWithRelationInput | Prisma.CommunityPostOrderByWithRelationInput[]
+  cursor?: Prisma.CommunityPostWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommunityPostScalarFieldEnum | Prisma.CommunityPostScalarFieldEnum[]
+}
+
+/**
+ * User.postComments
+ */
+export type User$postCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PostComment
+   */
+  select?: Prisma.PostCommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PostComment
+   */
+  omit?: Prisma.PostCommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PostCommentInclude<ExtArgs> | null
+  where?: Prisma.PostCommentWhereInput
+  orderBy?: Prisma.PostCommentOrderByWithRelationInput | Prisma.PostCommentOrderByWithRelationInput[]
+  cursor?: Prisma.PostCommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PostCommentScalarFieldEnum | Prisma.PostCommentScalarFieldEnum[]
+}
+
+/**
+ * User.postUpvotes
+ */
+export type User$postUpvotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PostUpvote
+   */
+  select?: Prisma.PostUpvoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PostUpvote
+   */
+  omit?: Prisma.PostUpvoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PostUpvoteInclude<ExtArgs> | null
+  where?: Prisma.PostUpvoteWhereInput
+  orderBy?: Prisma.PostUpvoteOrderByWithRelationInput | Prisma.PostUpvoteOrderByWithRelationInput[]
+  cursor?: Prisma.PostUpvoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PostUpvoteScalarFieldEnum | Prisma.PostUpvoteScalarFieldEnum[]
 }
 
 /**

@@ -28,8 +28,7 @@ export type SqlImportStatus = (typeof SqlImportStatus)[keyof typeof SqlImportSta
 
 export const PlanType = {
   INDIVIDUAL: 'INDIVIDUAL',
-  GROUP: 'GROUP',
-  API_USAGE: 'API_USAGE'
+  GROUP: 'GROUP'
 } as const
 
 export type PlanType = (typeof PlanType)[keyof typeof PlanType]

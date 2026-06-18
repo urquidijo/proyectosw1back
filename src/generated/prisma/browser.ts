@@ -72,3 +72,18 @@ export type PaymentLog = Prisma.PaymentLogModel
  * 
  */
 export type ActivityLog = Prisma.ActivityLogModel
+/**
+ * Model CommunityPost
+ * 
+ */
+export type CommunityPost = Prisma.CommunityPostModel
+/**
+ * Model PostComment
+ * 
+ */
+export type PostComment = Prisma.PostCommentModel
+/**
+ * Model PostUpvote
+ * 
+ */
+export type PostUpvote = Prisma.PostUpvoteModel

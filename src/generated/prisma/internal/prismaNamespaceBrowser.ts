@@ -61,7 +61,10 @@ export const ModelName = {
   Workspace: 'Workspace',
   WorkspaceMember: 'WorkspaceMember',
   PaymentLog: 'PaymentLog',
-  ActivityLog: 'ActivityLog'
+  ActivityLog: 'ActivityLog',
+  CommunityPost: 'CommunityPost',
+  PostComment: 'PostComment',
+  PostUpvote: 'PostUpvote'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -235,6 +238,45 @@ export const ActivityLogScalarFieldEnum = {
 } as const
 
 export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[keyof typeof ActivityLogScalarFieldEnum]
+
+
+export const CommunityPostScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  tags: 'tags',
+  fileKey: 'fileKey',
+  imageKey: 'imageKey',
+  projectId: 'projectId',
+  downloads: 'downloads',
+  authorId: 'authorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommunityPostScalarFieldEnum = (typeof CommunityPostScalarFieldEnum)[keyof typeof CommunityPostScalarFieldEnum]
+
+
+export const PostCommentScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  authorId: 'authorId',
+  content: 'content',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PostCommentScalarFieldEnum = (typeof PostCommentScalarFieldEnum)[keyof typeof PostCommentScalarFieldEnum]
+
+
+export const PostUpvoteScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type PostUpvoteScalarFieldEnum = (typeof PostUpvoteScalarFieldEnum)[keyof typeof PostUpvoteScalarFieldEnum]
 
 
 export const SortOrder = {
