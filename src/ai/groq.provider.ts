@@ -47,6 +47,7 @@ export class GroqProvider implements LlmProvider {
     const promptWithSchema = `${prompt}
 
 MUY IMPORTANTE: Responde ÚNICAMENTE con un objeto JSON válido que cumpla estrictamente con el siguiente JSON Schema. No incluyas texto antes ni después del JSON.
+NO anides tu respuesta bajo una llave "properties" ni "schema". Devuelve directamente una instancia con los datos finales en la raíz.
 
 JSON Schema esperado:
 ${JSON.stringify(inputSchema, null, 2)}

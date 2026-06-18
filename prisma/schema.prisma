@@ -22,7 +22,6 @@ enum SqlImportStatus {
 enum PlanType {
   INDIVIDUAL
   GROUP
-  API_USAGE
 }
 
 enum WorkspaceRole {
@@ -42,6 +41,8 @@ model User {
   projects Project[]
 
   subscriptionPlanId String?
+  stripeCustomerId   String?
+  stripeSubscriptionId String?
   plan               SubscriptionPlan? @relation(fields: [subscriptionPlanId], references: [id])
   workspaces         WorkspaceMember[]
   ownedWorkspaces    Workspace[]       @relation("WorkspaceOwner")

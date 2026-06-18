@@ -21,6 +21,14 @@ export class UsersService {
   }
 
   async create(data: Prisma.UserCreateInput): Promise<User> {
+    const freePlan = await this.prisma.subscriptionPlan.findFirst({
+      where: { price: 0, isActive: true },
+    });
+
+    if (freePlan) {
+      data.plan = { connect: { id: freePlan.id } };
+    }
+
     return this.prisma.user.create({
       data,
     });

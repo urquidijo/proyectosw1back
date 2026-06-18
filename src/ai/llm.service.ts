@@ -46,10 +46,11 @@ export class LlmService {
    * Pide JSON estructurado al proveedor principal; si no está configurado o
    * lanza error, reintenta con el de respaldo.
    */
-  async generateJson(
+  async generateJson<T = unknown>(
     prompt: string,
     jsonSchema: Record<string, unknown>,
-  ): Promise<unknown> {
+    validator?: (data: unknown) => T,
+  ): Promise<T> {
     const chain = this.buildProviderChain();
 
     if (chain.length === 0) {
@@ -62,7 +63,11 @@ export class LlmService {
 
     for (const provider of chain) {
       try {
-        return await provider.generateJson(prompt, jsonSchema);
+        const rawJson = await provider.generateJson(prompt, jsonSchema);
+        if (validator) {
+          return validator(rawJson);
+        }
+        return rawJson as T;
       } catch (error) {
         lastError = error;
         this.logger.warn(

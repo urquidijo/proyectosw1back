@@ -14,6 +14,7 @@ import { GenerationRulesModule } from './generation-rules/generation-rules.modul
 import { AiModule } from './ai/ai.module';
 import { SubscriptionPlansModule } from './subscription-plans/subscription-plans.module';
 import { WorkspacesModule } from './workspaces/workspaces.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { WorkspacesModule } from './workspaces/workspaces.module';
     GenerationRulesModule,
     SubscriptionPlansModule,
     WorkspacesModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

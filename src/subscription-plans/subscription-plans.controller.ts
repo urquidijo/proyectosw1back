@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Param, UseGuards, Request, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Request, ForbiddenException } from '@nestjs/common';
 import { SubscriptionPlansService } from './subscription-plans.service';
 import { CreateSubscriptionPlanDto } from './dto/create-subscription-plan.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -39,5 +39,14 @@ export class SubscriptionPlansController {
       throw new ForbiddenException('Solo Superadmin puede editar planes');
     }
     return this.plansService.update(id, updateDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  remove(@Request() req, @Param('id') id: string) {
+    if (req.user.role !== 'SUPERADMIN') {
+      throw new ForbiddenException('Solo Superadmin puede eliminar planes');
+    }
+    return this.plansService.remove(id);
   }
 }

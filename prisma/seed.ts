@@ -1,7 +1,10 @@
-import { PrismaClient } from '../src/generated/prisma/client';
+import { PrismaClient, PlanType } from '../src/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcrypt';
 import * as process from 'process';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -45,6 +48,96 @@ async function main() {
     });
     console.log('Usuario SuperAdmin creado correctamente.');
   }
+
+  // --- Planes de Suscripción ---
+  console.log('Creando planes de suscripción...');
+
+  await prisma.subscriptionPlan.upsert({
+    where: { name: 'Starter' },
+    update: {
+      maxProjects: 3,
+      maxWorkspaces: 0,
+      apiCostPer1kRows: null,
+      price: 0
+    },
+    create: {
+      name: 'Starter',
+      type: PlanType.INDIVIDUAL,
+      price: 0,
+      maxProjects: 3,
+      maxWorkspaces: 0,
+      maxUsersPerWorkspace: 0,
+      maxGenerationsPerMonth: 5,
+      isActive: true,
+    },
+  });
+
+  await prisma.subscriptionPlan.upsert({
+    where: { name: 'Developer Pro' },
+    update: {
+      maxProjects: 15,
+      maxWorkspaces: 0,
+      apiCostPer1kRows: 0.50,
+      price: 12.00
+    },
+    create: {
+      name: 'Developer Pro',
+      type: PlanType.INDIVIDUAL,
+      price: 12.00,
+      maxProjects: 15,
+      maxWorkspaces: 0,
+      maxUsersPerWorkspace: 0,
+      maxGenerationsPerMonth: 50,
+      apiCostPer1kRows: 0.50,
+      isActive: true,
+    },
+  });
+
+  await prisma.subscriptionPlan.upsert({
+    where: { name: 'Team Premium' },
+    update: {
+      maxProjects: 100,
+      maxWorkspaces: 5,
+      maxUsersPerWorkspace: 10,
+      apiCostPer1kRows: 0.40,
+      price: 39.00
+    },
+    create: {
+      name: 'Team Premium',
+      type: PlanType.GROUP,
+      price: 39.00,
+      maxProjects: 100,
+      maxWorkspaces: 5,
+      maxUsersPerWorkspace: 10,
+      maxGenerationsPerMonth: 500,
+      apiCostPer1kRows: 0.40,
+      isActive: true,
+    },
+  });
+
+  await prisma.subscriptionPlan.upsert({
+    where: { name: 'Enterprise Scale' },
+    update: {
+      maxProjects: 999,
+      maxWorkspaces: 999,
+      maxUsersPerWorkspace: 999,
+      apiCostPer1kRows: 0.20,
+      price: 149.00
+    },
+    create: {
+      name: 'Enterprise Scale',
+      type: PlanType.GROUP,
+      price: 149.00,
+      maxProjects: 999,
+      maxWorkspaces: 999,
+      maxUsersPerWorkspace: 999,
+      maxGenerationsPerMonth: 9999,
+      apiCostPer1kRows: 0.20,
+      isActive: true,
+    },
+  });
+
+  console.log('Planes creados correctamente.');
 }
 
 main()

@@ -41,9 +41,11 @@ export class SemanticAnalyzerService {
         unknown
       >;
 
-      const parsed = await this.llmService.generateJson(prompt, jsonSchema);
-
-      return generationPlanSchema.parse(parsed);
+      return await this.llmService.generateJson(
+        prompt,
+        jsonSchema,
+        (data) => generationPlanSchema.parse(data),
+      );
     } catch (error) {
       throw new InternalServerErrorException(
         `No se pudo analizar la coherencia semántica: ${

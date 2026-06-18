@@ -38,4 +38,11 @@ export class SubscriptionPlansService {
       data: updateDto as unknown as Prisma.SubscriptionPlanUpdateInput,
     });
   }
+
+  async remove(id: string) {
+    await this.findOne(id);
+    return this.prisma.subscriptionPlan.delete({
+      where: { id },
+    });
+  }
 }
