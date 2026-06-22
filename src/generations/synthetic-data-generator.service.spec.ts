@@ -320,5 +320,106 @@ describe('SyntheticDataGeneratorService', () => {
       }
     });
   });
+
+  describe('Reglas manuales por columna (columnRules)', () => {
+    it('debe aplicar EMAIL, ENUM, MONEY, DATE, unicidad y nulos forzados según la regla del usuario', () => {
+      const schema: DetectedSchema = {
+        dialect: 'postgresql',
+        tables: [
+          {
+            name: 'clientes',
+            primaryKeys: ['id'],
+            foreignKeys: [],
+            columns: [
+              { name: 'id', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: true, isNullable: false, isUnique: true },
+              { name: 'email', rawType: 'VARCHAR', normalizedType: 'STRING', isPrimaryKey: false, isNullable: false, isUnique: false },
+              { name: 'estado', rawType: 'VARCHAR', normalizedType: 'STRING', isPrimaryKey: false, isNullable: false, isUnique: false },
+              { name: 'salario', rawType: 'DECIMAL', normalizedType: 'DECIMAL', isPrimaryKey: false, isNullable: false, isUnique: false },
+              { name: 'fecha_registro', rawType: 'DATE', normalizedType: 'DATE', isPrimaryKey: false, isNullable: false, isUnique: false },
+              { name: 'nota', rawType: 'TEXT', normalizedType: 'TEXT', isPrimaryKey: false, isNullable: true, isUnique: false },
+            ],
+          },
+        ],
+      };
+
+      const columnRules = {
+        tables: {
+          clientes: {
+            columns: {
+              email: { type: 'EMAIL', unique: true },
+              estado: { type: 'ENUM', values: ['ACTIVO', 'INACTIVO', 'BLOQUEADO'] },
+              salario: { type: 'MONEY', min: '1000', max: '2000' },
+              fecha_registro: { type: 'DATE', min: '2020-01-01', max: '2020-01-31' },
+              nota: { type: 'STRING', nullable: true, nullRate: 100 },
+            },
+          },
+        },
+      };
+
+      const result = service.generate(
+        schema,
+        { clientes: 30 },
+        null,
+        'GENERIC',
+        columnRules,
+      );
+
+      const rows = result.rowsByTable.clientes;
+      expect(rows.length).toBe(30);
+
+      const emails = rows.map((r) => r.email as string);
+      expect(new Set(emails).size).toBe(30); // unique: true
+      for (const email of emails) {
+        expect(email).toMatch(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+      }
+
+      for (const row of rows) {
+        expect(['ACTIVO', 'INACTIVO', 'BLOQUEADO']).toContain(row.estado);
+
+        const salario = Number(row.salario);
+        expect(salario).toBeGreaterThanOrEqual(1000);
+        expect(salario).toBeLessThanOrEqual(2000);
+
+        const fecha = new Date(row.fecha_registro as string);
+        expect(fecha.getTime()).toBeGreaterThanOrEqual(new Date('2020-01-01').getTime());
+        expect(fecha.getTime()).toBeLessThanOrEqual(new Date('2020-01-31').getTime());
+
+        expect(row.nota).toBeNull(); // nullRate: 100
+      }
+    });
+
+    it('no debe sobrescribir la clave primaria aunque se le configure una regla', () => {
+      const schema: DetectedSchema = {
+        dialect: 'postgresql',
+        tables: [
+          {
+            name: 'items',
+            primaryKeys: ['id'],
+            foreignKeys: [],
+            columns: [
+              { name: 'id', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: true, isNullable: false, isUnique: true },
+            ],
+          },
+        ],
+      };
+
+      const columnRules = {
+        tables: {
+          items: {
+            columns: {
+              id: { type: 'ENUM', values: ['X', 'Y'] },
+            },
+          },
+        },
+      };
+
+      const result = service.generate(schema, { items: 5 }, null, 'GENERIC', columnRules);
+
+      // La PK conserva su estrategia normal de generación (entero secuencial), no "X"/"Y".
+      for (const row of result.rowsByTable.items) {
+        expect(typeof row.id).toBe('number');
+      }
+    });
+  });
 });
 

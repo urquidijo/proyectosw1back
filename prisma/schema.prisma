@@ -40,11 +40,11 @@ model User {
 
   projects Project[]
 
-  subscriptionPlanId String?
-  stripeCustomerId   String?
+  subscriptionPlanId   String?
+  stripeCustomerId     String?
   stripeSubscriptionId String?
-  apiKey             String?
-  plan               SubscriptionPlan? @relation(fields: [subscriptionPlanId], references: [id])
+  apiKey               String?  @unique
+  plan                 SubscriptionPlan? @relation(fields: [subscriptionPlanId], references: [id])
   workspaces         WorkspaceMember[]
   ownedWorkspaces    Workspace[]       @relation("WorkspaceOwner")
   payments           PaymentLog[]

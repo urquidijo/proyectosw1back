@@ -267,6 +267,7 @@ export type UserOrderByWithRelationInput = {
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
+  apiKey?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
@@ -278,7 +279,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   subscriptionPlanId?: Prisma.StringNullableFilter<"User"> | string | null
   stripeCustomerId?: Prisma.StringNullableFilter<"User"> | string | null
   stripeSubscriptionId?: Prisma.StringNullableFilter<"User"> | string | null
-  apiKey?: Prisma.StringNullableFilter<"User"> | string | null
   projects?: Prisma.ProjectListRelationFilter
   plan?: Prisma.XOR<Prisma.SubscriptionPlanNullableScalarRelationFilter, Prisma.SubscriptionPlanWhereInput> | null
   workspaces?: Prisma.WorkspaceMemberListRelationFilter
@@ -288,7 +288,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   communityPosts?: Prisma.CommunityPostListRelationFilter
   postComments?: Prisma.PostCommentListRelationFilter
   postUpvotes?: Prisma.PostUpvoteListRelationFilter
-}, "id" | "email">
+}, "id" | "email" | "apiKey">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

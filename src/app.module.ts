@@ -17,6 +17,7 @@ import { WorkspacesModule } from './workspaces/workspaces.module';
 import { PaymentsModule } from './payments/payments.module';
 import { CommunityModule } from './community/community.module';
 import { ExportsModule } from './exports/exports.module';
+import { ExternalApiModule } from './external-api/external-api.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ExportsModule } from './exports/exports.module';
     PaymentsModule,
     CommunityModule,
     ExportsModule,
+    ExternalApiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
