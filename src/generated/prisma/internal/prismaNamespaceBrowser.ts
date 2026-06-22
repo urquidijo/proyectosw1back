@@ -140,6 +140,7 @@ export const GenerationScalarFieldEnum = {
   progress: 'progress',
   error: 'error',
   outputFile: 'outputFile',
+  outputDataFile: 'outputDataFile',
   region: 'region',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',

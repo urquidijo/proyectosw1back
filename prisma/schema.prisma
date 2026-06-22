@@ -119,6 +119,7 @@ model Generation {
   progress       Int      @default(100)
   error          String?
   outputFile     String?
+  outputDataFile String?
   region         String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
