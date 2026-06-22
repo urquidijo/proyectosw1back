@@ -6,7 +6,10 @@ import * as bcrypt from 'bcrypt';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly usersService: UsersService
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('all')
@@ -20,6 +23,12 @@ export class UsersController {
       },
       orderBy: { createdAt: 'desc' },
     });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me/usage')
+  async getMyUsage(@Request() req) {
+    return this.usersService.getUserUsage(req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)

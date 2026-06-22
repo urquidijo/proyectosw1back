@@ -33,4 +33,40 @@ export class UsersService {
       data,
     });
   }
+
+  async getUserUsage(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { plan: true },
+    });
+
+    if (!user) throw new Error('Usuario no encontrado');
+
+    const totalProjects = await this.prisma.project.count({
+      where: { ownerId: userId },
+    });
+
+    const totalWorkspaces = await this.prisma.workspace.count({
+      where: { ownerId: userId },
+    });
+
+    const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    
+    const totalGenerations = await this.prisma.generation.count({
+      where: {
+        project: { ownerId: userId },
+        createdAt: { gte: startOfMonth },
+      },
+    });
+
+    return {
+      plan: user.plan,
+      usage: {
+        projects: totalProjects,
+        workspaces: totalWorkspaces,
+        generations: totalGenerations,
+      },
+      subscriptionStart: user.createdAt,
+    };
+  }
 }
