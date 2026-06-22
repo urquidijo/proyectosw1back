@@ -137,6 +137,107 @@ describe('SyntheticDataGeneratorService', () => {
     });
   });
 
+  describe('Generación Masiva (CP-12)', () => {
+    it('genera grandes volúmenes de datos manteniendo claves foráneas, subtotales y totales coherentes', () => {
+      const schema: DetectedSchema = {
+        dialect: 'postgresql',
+        tables: [
+          {
+            name: 'categorias',
+            primaryKeys: ['id'],
+            foreignKeys: [],
+            columns: [
+              { name: 'id', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: true, isNullable: false, isUnique: true },
+              { name: 'nombre', rawType: 'VARCHAR', normalizedType: 'STRING', isPrimaryKey: false, isNullable: false, isUnique: true },
+            ],
+          },
+          {
+            name: 'productos',
+            primaryKeys: ['id'],
+            foreignKeys: [],
+            columns: [
+              { name: 'id', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: true, isNullable: false, isUnique: true },
+              { name: 'nombre', rawType: 'VARCHAR', normalizedType: 'STRING', isPrimaryKey: false, isNullable: false, isUnique: false },
+              { name: 'precio', rawType: 'DECIMAL', normalizedType: 'DECIMAL', isPrimaryKey: false, isNullable: false, isUnique: false },
+              { name: 'id_categoria', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: false, isNullable: false, isUnique: false },
+            ],
+          },
+          {
+            name: 'ventas',
+            primaryKeys: ['id'],
+            foreignKeys: [],
+            columns: [
+              { name: 'id', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: true, isNullable: false, isUnique: true },
+              { name: 'total', rawType: 'DECIMAL', normalizedType: 'DECIMAL', isPrimaryKey: false, isNullable: false, isUnique: false },
+            ],
+          },
+          {
+            name: 'detalle_ventas',
+            primaryKeys: ['id'],
+            foreignKeys: [
+              { column: 'id_venta', referencesTable: 'ventas', referencesColumn: 'id' },
+            ],
+            columns: [
+              { name: 'id', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: true, isNullable: false, isUnique: true },
+              { name: 'id_venta', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: false, isNullable: false, isUnique: false },
+              { name: 'id_producto', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: false, isNullable: false, isUnique: false },
+              { name: 'cantidad', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: false, isNullable: false, isUnique: false },
+              { name: 'precio_unitario', rawType: 'DECIMAL', normalizedType: 'DECIMAL', isPrimaryKey: false, isNullable: false, isUnique: false },
+              { name: 'subtotal', rawType: 'DECIMAL', normalizedType: 'DECIMAL', isPrimaryKey: false, isNullable: false, isUnique: false },
+            ],
+          },
+        ],
+      };
+
+      const rowConfig = {
+        categorias: 10,
+        productos: 300,
+        ventas: 1000,
+        detalle_ventas: 5000,
+      };
+
+      const start = Date.now();
+      const result = service.generate(schema, rowConfig, null, 'GENERIC');
+      const elapsedMs = Date.now() - start;
+
+      // Volumen generado completo, sin bloquear el hilo más de un par de segundos
+      expect(result.rowsByTable.categorias).toHaveLength(10);
+      expect(result.rowsByTable.productos).toHaveLength(300);
+      expect(result.rowsByTable.ventas).toHaveLength(1000);
+      expect(result.rowsByTable.detalle_ventas).toHaveLength(5000);
+      expect(elapsedMs).toBeLessThan(10000);
+
+      // Integridad referencial: cada detalle apunta a una venta y un producto reales
+      const ventaIds = new Set(result.rowsByTable.ventas.map((v) => v.id));
+      const productoIds = new Set(result.rowsByTable.productos.map((p) => p.id));
+      for (const det of result.rowsByTable.detalle_ventas) {
+        expect(ventaIds.has(det.id_venta as number)).toBe(true);
+        expect(productoIds.has(det.id_producto as number)).toBe(true);
+      }
+
+      // Cobertura: cada venta tiene al menos un detalle (no quedan cabeceras huérfanas)
+      const ventaIdsConDetalle = new Set(
+        result.rowsByTable.detalle_ventas.map((d) => d.id_venta),
+      );
+      for (const venta of result.rowsByTable.ventas) {
+        expect(ventaIdsConDetalle.has(venta.id)).toBe(true);
+      }
+
+      // Coherencia de totales: total de cada venta = suma de subtotales de sus detalles
+      for (const venta of result.rowsByTable.ventas) {
+        const detalles = result.rowsByTable.detalle_ventas.filter(
+          (d) => d.id_venta === venta.id,
+        );
+        const sumaSubtotales = Number(
+          detalles
+            .reduce((acc, d) => acc + Number(d.subtotal), 0)
+            .toFixed(2),
+        );
+        expect(venta.total).toBe(sumaSubtotales);
+      }
+    });
+  });
+
   describe('Localization Support (Bolivia)', () => {
     it('should generate Bolivian specific data (cities and valid mobile numbers)', () => {
       const schema: DetectedSchema = {
@@ -185,6 +286,70 @@ describe('SyntheticDataGeneratorService', () => {
         const tel = String(cliente.telefono);
         expect(tel.length).toBe(8);
         expect(['6', '7']).toContain(tel[0]);
+      }
+    });
+
+    const clientesSchema: DetectedSchema = {
+      dialect: 'postgresql',
+      tables: [
+        {
+          name: 'clientes',
+          primaryKeys: ['id'],
+          foreignKeys: [],
+          columns: [
+            { name: 'id', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: true, isNullable: false, isUnique: true },
+            { name: 'nombre', rawType: 'VARCHAR', normalizedType: 'STRING', isPrimaryKey: false, isNullable: false, isUnique: false },
+            { name: 'telefono', rawType: 'VARCHAR', normalizedType: 'STRING', isPrimaryKey: false, isNullable: false, isUnique: false },
+            { name: 'estado', rawType: 'VARCHAR', normalizedType: 'STRING', isPrimaryKey: false, isNullable: false, isUnique: false },
+          ],
+        },
+      ],
+    };
+
+    it.each([
+      ['ARGENTINA', /^11\d{8}$/],
+      ['CHILE', /^9\d{8}$/],
+      ['COLOMBIA', /^3\d{9}$/],
+      ['MEXICO', /^55\d{8}$/],
+      ['ESPAÑA', /^[67]\d{8}$/],
+    ])(
+      'genera teléfonos con el formato regional definido para %s',
+      (region, phonePattern) => {
+        const result = service.generate(clientesSchema, { clientes: 15 }, null, region);
+
+        for (const cliente of result.rowsByTable.clientes) {
+          expect(String(cliente.telefono)).toMatch(phonePattern);
+          // El idioma de los estados sigue siendo español para regiones hispanas
+          expect(['ACTIVO', 'INACTIVO', 'PENDIENTE', 'COMPLETADO']).toContain(
+            cliente.estado,
+          );
+        }
+      },
+    );
+
+    it('genera datos contextuales en inglés (idioma y estados) para la región USA', () => {
+      const result = service.generate(clientesSchema, { clientes: 15 }, null, 'USA');
+
+      for (const cliente of result.rowsByTable.clientes) {
+        expect(['ACTIVE', 'INACTIVE', 'PENDING', 'COMPLETED']).toContain(
+          cliente.estado,
+        );
+      }
+    });
+
+    it('una región desconocida cae al perfil GENERIC sin lanzar errores', () => {
+      const result = service.generate(
+        clientesSchema,
+        { clientes: 5 },
+        null,
+        'REGION_INEXISTENTE',
+      );
+
+      expect(result.rowsByTable.clientes).toHaveLength(5);
+      for (const cliente of result.rowsByTable.clientes) {
+        expect(['ACTIVO', 'INACTIVO', 'PENDIENTE', 'COMPLETADO']).toContain(
+          cliente.estado,
+        );
       }
     });
   });
