@@ -31,6 +31,29 @@ type PersonContext = {
   fullName: string;
 };
 
+/** Regla manual definida por el usuario para una columna (UI de "reglas configurables por columna"). */
+export type ColumnOverrideRule = {
+  type?: string;
+  nullable?: boolean;
+  unique?: boolean;
+  min?: number | string;
+  max?: number | string;
+  values?: string[];
+  nullRate?: number;
+};
+
+export type ColumnRulesInput = {
+  tables: Record<
+    string,
+    {
+      columns?: Record<string, ColumnOverrideRule>;
+    }
+  >;
+};
+
+/** Las reglas manuales tienen prioridad absoluta sobre el plan de IA y las heurísticas genéricas. */
+const NO_RULE_OVERRIDE = Symbol('no-rule-override');
+
 @Injectable()
 export class SyntheticDataGeneratorService {
   constructor(
@@ -52,6 +75,7 @@ export class SyntheticDataGeneratorService {
     rowConfig: Record<string, number>,
     plan?: GenerationPlanJson | null,
     region?: string,
+    columnRules?: ColumnRulesInput | null,
   ): GenerationEngineResult {
     const enrichedSchema = enrichSchemaWithImplicitFks(schema);
     const { faker, regionName } = getFakerInstance(region);
@@ -69,6 +93,14 @@ export class SyntheticDataGeneratorService {
 
       const generatedCompositeKeys = new Set<string>();
 
+      // Las tablas puente (PK compuesta) necesitan FKs puramente aleatorias para
+      // poder reintentar combinaciones hasta encontrar una tupla única; el resto
+      // de tablas usa asignación con cobertura garantizada (ver buildForeignKeyAssignments).
+      const isBridgeTable = !!(table.primaryKeys && table.primaryKeys.length > 1);
+      const fkAssignments = isBridgeTable
+        ? undefined
+        : this.buildForeignKeyAssignments(table, count, rowsByTableMap);
+
       for (let index = 1; index <= count; index++) {
         let row = this.generateRow(
           table,
@@ -79,6 +111,8 @@ export class SyntheticDataGeneratorService {
           faker,
           regionName,
           uniqueValuesByColumn,
+          fkAssignments,
+          columnRules,
         );
 
         // Si tiene clave primaria compuesta, garantizar unicidad de la tupla
@@ -95,6 +129,8 @@ export class SyntheticDataGeneratorService {
               faker,
               regionName,
               uniqueValuesByColumn,
+              fkAssignments,
+              columnRules,
             );
             keyString = table.primaryKeys.map(k => String(row[k])).join('|');
             attempts++;
@@ -141,6 +177,8 @@ export class SyntheticDataGeneratorService {
     faker?: Faker,
     regionName?: string,
     uniqueValuesByColumn?: Map<string, Set<any>>,
+    fkAssignments?: Map<string, GeneratedValue[]>,
+    columnRules?: ColumnRulesInput | null,
   ): GeneratedRow {
     const activeFaker = faker || getFakerInstance().faker;
     const activeRegion = regionName || 'GENERIC';
@@ -183,6 +221,8 @@ export class SyntheticDataGeneratorService {
         uniqueValuesByColumn,
         linkedPersonRow,
         linkedPersonRole,
+        fkAssignments,
+        columnRules,
       );
     }
 
@@ -202,6 +242,8 @@ export class SyntheticDataGeneratorService {
     uniqueValuesByColumn?: Map<string, Set<any>>,
     linkedPersonRow?: any,
     linkedPersonRole?: string | null,
+    fkAssignments?: Map<string, GeneratedValue[]>,
+    columnRules?: ColumnRulesInput | null,
   ): GeneratedValue {
     const activeFaker = faker || getFakerInstance().faker;
     const activeRegion = regionName || 'GENERIC';
@@ -218,12 +260,28 @@ export class SyntheticDataGeneratorService {
       activeRegion,
       linkedPersonRow,
       linkedPersonRole,
+      fkAssignments,
+      columnRules,
     );
+
+    const columnRule = this.getColumnRule(table, column, columnRules);
+
+    // Nulos forzados por regla manual. Antes de la unicidad porque NULL nunca
+    // necesita pasar por el ciclo de deduplicación.
+    if (
+      columnRule?.nullable &&
+      column.isNullable &&
+      value !== null &&
+      Math.random() < this.resolveNullRate(columnRule.nullRate)
+    ) {
+      value = null;
+    }
 
     // Forzar unicidad en columnas que lo requieren, en CUALQUIER tabla:
     //  - columnas marcadas UNIQUE en el DDL (ci, email, placa, username, ...)
     //  - claves primarias
     //  - heurística de nombre para tablas de parametrización (REFERENCE)
+    //  - "Único" marcado manualmente en la regla de columna
     const isReferenceTable =
       plan?.tables.find((t) => t.table === table.name)?.role === 'REFERENCE';
     const columnName = column.name.toLowerCase();
@@ -237,7 +295,10 @@ export class SyntheticDataGeneratorService {
         columnName === 'key');
 
     const mustBeUnique =
-      column.isUnique || column.isPrimaryKey || isReferenceNameCandidate;
+      column.isUnique ||
+      column.isPrimaryKey ||
+      isReferenceNameCandidate ||
+      Boolean(columnRule?.unique);
 
     // En PostgreSQL múltiples NULL NO violan UNIQUE, así que solo deduplicamos no-nulos.
     if (mustBeUnique && uniqueValuesByColumn && value !== null) {
@@ -260,6 +321,8 @@ export class SyntheticDataGeneratorService {
             activeRegion,
             linkedPersonRow,
             linkedPersonRole,
+            fkAssignments,
+            columnRules,
           );
           attempts++;
         }
@@ -278,6 +341,20 @@ export class SyntheticDataGeneratorService {
     return value;
   }
 
+  private getColumnRule(
+    table: DetectedTable,
+    column: DetectedColumn,
+    columnRules?: ColumnRulesInput | null,
+  ): ColumnOverrideRule | undefined {
+    return columnRules?.tables?.[table.name]?.columns?.[column.name];
+  }
+
+  /** nullRate llega como porcentaje (0-100) desde el frontend; 10% por defecto si no se especifica. */
+  private resolveNullRate(nullRate: number | undefined): number {
+    if (nullRate === undefined || !Number.isFinite(nullRate)) return 0.1;
+    return Math.min(1, Math.max(0, nullRate / 100));
+  }
+
   /** Garantiza un valor único cuando la regeneración no alcanza (pool pequeño). */
   private forceUniqueValue(
     current: GeneratedValue,
@@ -292,11 +369,28 @@ export class SyntheticDataGeneratorService {
     }
 
     const base = String(original ?? current ?? 'val');
+
+    // Si el valor termina en un número (ej. "FAC-2024-002"), incrementamos ESE
+    // número preservando el ancho de relleno en vez de concatenar el rowIndex
+    // crudo al final (lo que producía códigos corruptos como "FAC-2024-00410").
+    const trailingDigitsMatch = base.match(/^(.*?)(\d+)$/);
+    if (trailingDigitsMatch) {
+      const [, prefix, digits] = trailingDigitsMatch;
+      const width = digits.length;
+      let counter = parseInt(digits, 10) + 1;
+      let candidate = `${prefix}${String(counter).padStart(width, '0')}`;
+      while (usedSet.has(candidate)) {
+        counter += 1;
+        candidate = `${prefix}${String(counter).padStart(width, '0')}`;
+      }
+      return candidate;
+    }
+
     let counter = rowIndex;
-    let candidate = `${base}${counter}`;
+    let candidate = `${base}-${counter}`;
     while (usedSet.has(candidate)) {
       counter += 1;
-      candidate = `${base}${counter}`;
+      candidate = `${base}-${counter}`;
     }
     return candidate;
   }
@@ -313,6 +407,8 @@ export class SyntheticDataGeneratorService {
     regionName?: string,
     linkedPersonRow?: any,
     linkedPersonRole?: string | null,
+    fkAssignments?: Map<string, GeneratedValue[]>,
+    columnRules?: ColumnRulesInput | null,
   ): GeneratedValue {
     const activeFaker = faker || getFakerInstance().faker;
     const activeRegion = regionName || 'GENERIC';
@@ -321,8 +417,10 @@ export class SyntheticDataGeneratorService {
       return this.generateForeignKeyValue(
         table.name,
         column,
+        rowIndex,
         generatedRowsByTable,
         currentTableRows,
+        fkAssignments,
       );
     }
 
@@ -330,6 +428,61 @@ export class SyntheticDataGeneratorService {
 
     const tableNameLower = table.name.toLowerCase();
     const columnName = column.name.toLowerCase();
+
+    // Detección de primer nombre vs apellido.
+    // "nombre" a secas solo se interpreta como "primer nombre" si la tabla
+    // tiene una columna hermana de apellido; si no existe, "nombre" es el
+    // nombre completo (caso típico de clientes/usuarios con un solo campo).
+    const hasLastNameSiblingColumn = table.columns.some((c) => {
+      const siblingName = c.name.toLowerCase();
+      return (
+        siblingName === 'apellido' ||
+        siblingName === 'apellidos' ||
+        siblingName === 'last_name' ||
+        siblingName === 'lastname' ||
+        siblingName === 'paterno' ||
+        siblingName === 'materno'
+      );
+    });
+
+    const isFirstName =
+      (columnName === 'nombre' && hasLastNameSiblingColumn) ||
+      columnName === 'primer_nombre' ||
+      columnName === 'firstname' ||
+      columnName === 'first_name' ||
+      columnName === 'nombres';
+
+    const isLastName =
+      columnName === 'apellido' ||
+      columnName === 'apellidos' ||
+      columnName === 'last_name' ||
+      columnName === 'lastname' ||
+      columnName === 'paterno' ||
+      columnName === 'materno';
+
+    // 0. Reglas manuales configuradas por el usuario para esta columna: tienen
+    //    prioridad absoluta sobre el plan de IA y cualquier heurística genérica
+    //    (excepto en claves primarias, que deben conservar su estrategia de
+    //    generación para no romper la unicidad/orden de inserción).
+    if (!column.isPrimaryKey) {
+      const columnRule = this.getColumnRule(table, column, columnRules);
+
+      if (columnRule?.type) {
+        const overrideValue = this.applyColumnRuleType(
+          columnRule,
+          rowIndex,
+          isFirstName,
+          isLastName,
+          person,
+          activeFaker,
+          activeRegion,
+        );
+
+        if (overrideValue !== NO_RULE_OVERRIDE) {
+          return overrideValue;
+        }
+      }
+    }
 
     // A. Identidad Vinculada para Usuarios
     if (linkedPersonRow) {
@@ -430,25 +583,39 @@ export class SyntheticDataGeneratorService {
         item.confidence >= 0.7,
     );
 
-    // Detección de primer nombre vs apellido
-    const isFirstName = 
-      columnName === 'nombre' || 
-      columnName === 'primer_nombre' || 
-      columnName === 'firstname' || 
-      columnName === 'first_name' || 
-      columnName === 'nombres';
-
-    const isLastName = 
-      columnName === 'apellido' || 
-      columnName === 'apellidos' || 
-      columnName === 'last_name' || 
-      columnName === 'lastname' || 
-      columnName === 'paterno' || 
-      columnName === 'materno';
-
     if (semanticHint) {
+      // Los campos de identidad/contacto SIEMPRE se generan desde el contexto
+      // de persona/Faker, sin importar qué generatorHint haya propuesto la IA.
+      // Esto evita que un "sampleValues" mal etiquetado (p. ej. nombres o
+      // direcciones de ejemplo) desacople el nombre, el email, el teléfono o
+      // la dirección de una misma fila.
+      switch (semanticHint.semanticType) {
+        case 'PERSON_NAME':
+          if (isFirstName) return person.firstName;
+          if (isLastName) return person.lastName;
+          return person.fullName;
+
+        case 'EMAIL':
+          return this.buildEmail(person, rowIndex);
+
+        case 'PHONE':
+          return this.buildPhoneForRegion(activeRegion, activeFaker);
+
+        case 'ADDRESS':
+          return activeFaker.location.streetAddress();
+
+        case 'CITY':
+          return this.generateCityForRegion(activeRegion, activeFaker);
+      }
+
       if (semanticHint.sampleValues.length > 0) {
-        return this.pick(semanticHint.sampleValues);
+        return this.resolveSampleValue(
+          table,
+          column,
+          rowIndex,
+          plan,
+          semanticHint.sampleValues,
+        );
       }
 
       const hasNumericRange =
@@ -461,9 +628,7 @@ export class SyntheticDataGeneratorService {
           return person.fullName;
 
         case 'SAMPLE_VALUES':
-          return semanticHint.sampleValues.length > 0
-            ? this.pick(semanticHint.sampleValues)
-            : `valor_${rowIndex}`;
+          return `valor_${rowIndex}`;
 
         case 'EMAIL':
           return this.buildEmail(person, rowIndex);
@@ -502,9 +667,7 @@ export class SyntheticDataGeneratorService {
             : this.randomDecimal(1, 9999);
 
         case 'STATUS':
-          return semanticHint.sampleValues.length > 0
-            ? this.pick(semanticHint.sampleValues)
-            : this.pickStatus(activeRegion);
+          return this.pickStatus(activeRegion);
 
         case 'DATE':
           return this.generateDateValue(column.name.toLowerCase());
@@ -522,17 +685,13 @@ export class SyntheticDataGeneratorService {
             }
             return activeFaker.lorem.sentence();
           }
-          return semanticHint.sampleValues.length > 0
-            ? this.pick(semanticHint.sampleValues)
-            : 'Dato sintético generado por SynData';
+          return 'Dato sintético generado por SynData';
 
         case 'STRING':
           if (columnName.includes('categoria') || columnName.includes('category') || columnName.includes('departamento') || columnName.includes('dep')) {
             return activeFaker.commerce.department();
           }
-          return semanticHint.sampleValues.length > 0
-            ? this.pick(semanticHint.sampleValues)
-            : `valor_${rowIndex}`;
+          return `valor_${rowIndex}`;
       }
     }
 
@@ -585,8 +744,14 @@ export class SyntheticDataGeneratorService {
       return this.randomDecimal(10, 5000);
     }
 
-    if (columnName.includes('cantidad') || columnName.includes('stock')) {
-      return this.randomInteger(1, 100);
+    if (columnName.includes('cantidad')) {
+      // Cantidad de línea de un detalle/pedido: rangos pequeños son más realistas
+      // que hasta 100 unidades por línea.
+      return this.randomInteger(1, 10);
+    }
+
+    if (columnName.includes('stock')) {
+      return this.randomInteger(10, 200);
     }
 
     switch (column.normalizedType) {
@@ -630,11 +795,115 @@ export class SyntheticDataGeneratorService {
     }
   }
 
+  /**
+   * Resuelve el valor de una columna según el "type" elegido manualmente por
+   * el usuario en el panel de reglas. Devuelve NO_RULE_OVERRIDE cuando el tipo
+   * no aplica (ej. ENUM sin valores cargados) para que el resto del pipeline
+   * de generación siga su curso normal.
+   */
+  private applyColumnRuleType(
+    rule: ColumnOverrideRule,
+    rowIndex: number,
+    isFirstName: boolean,
+    isLastName: boolean,
+    person: PersonContext,
+    faker: Faker,
+    regionName: string,
+  ): GeneratedValue | typeof NO_RULE_OVERRIDE {
+    switch (rule.type?.toUpperCase()) {
+      case 'PERSON_NAME':
+        if (isFirstName) return person.firstName;
+        if (isLastName) return person.lastName;
+        return person.fullName;
+
+      case 'EMAIL':
+        return this.buildEmail(person, rowIndex);
+
+      case 'PHONE':
+        return this.buildPhoneForRegion(regionName, faker);
+
+      case 'CITY':
+        return this.generateCityForRegion(regionName, faker);
+
+      case 'STATUS':
+        return rule.values && rule.values.length > 0
+          ? this.pick(rule.values)
+          : this.pickStatus(regionName);
+
+      case 'ENUM':
+        return rule.values && rule.values.length > 0
+          ? this.pick(rule.values)
+          : NO_RULE_OVERRIDE;
+
+      case 'INTEGER': {
+        const min = this.parseRuleNumber(rule.min, 1);
+        const max = this.parseRuleNumber(rule.max, 1000);
+        return this.randomInteger(Math.min(min, max), Math.max(min, max));
+      }
+
+      case 'DECIMAL':
+      case 'MONEY': {
+        const min = this.parseRuleNumber(rule.min, 10);
+        const max = this.parseRuleNumber(rule.max, 5000);
+        return this.randomDecimal(Math.min(min, max), Math.max(min, max));
+      }
+
+      case 'DATE': {
+        const start = this.parseRuleDate(rule.min) ?? new Date('2023-01-01');
+        const end = this.parseRuleDate(rule.max) ?? new Date('2026-05-09');
+        return this.randomDateBetween(start, end);
+      }
+
+      case 'DATETIME': {
+        const start =
+          this.parseRuleDate(rule.min) ?? new Date('2023-01-01T00:00:00');
+        const end =
+          this.parseRuleDate(rule.max) ?? new Date('2026-05-09T23:59:59');
+        return this.randomDateObjectBetween(start, end)
+          .toISOString()
+          .slice(0, 19)
+          .replace('T', ' ');
+      }
+
+      case 'BOOLEAN':
+        return Math.random() >= 0.5;
+
+      case 'UUID':
+        return randomUUID();
+
+      case 'TEXT':
+      case 'STRING':
+        return rule.values && rule.values.length > 0
+          ? this.pick(rule.values)
+          : NO_RULE_OVERRIDE;
+
+      default:
+        return NO_RULE_OVERRIDE;
+    }
+  }
+
+  private parseRuleNumber(
+    value: number | string | undefined,
+    fallback: number,
+  ): number {
+    if (value === undefined || value === '') return fallback;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  }
+
+  private parseRuleDate(value: number | string | undefined): Date | null {
+    if (value === undefined || value === '') return null;
+    const date = new Date(String(value));
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
   private generateForeignKeyValue(
     currentTableName: string,
     column: DetectedColumn,
+    rowIndex: number,
     generatedRowsByTable: Map<string, GeneratedRow[]>,
     currentTableRows: GeneratedRow[],
+    fkAssignments?: Map<string, GeneratedValue[]>,
   ): GeneratedValue {
     if (!column.references) {
       throw new BadRequestException(
@@ -660,6 +929,13 @@ export class SyntheticDataGeneratorService {
       return referencedRow[referencedColumnName] ?? null;
     }
 
+    // Asignación precomputada con cobertura garantizada (evita cabeceras sin
+    // ningún hijo, ej. facturas sin detalle_factura por puro azar).
+    const precomputed = fkAssignments?.get(column.name);
+    if (precomputed && rowIndex - 1 < precomputed.length) {
+      return precomputed[rowIndex - 1];
+    }
+
     const referencedRows = generatedRowsByTable.get(referencedTableName);
 
     if (!referencedRows || referencedRows.length === 0) {
@@ -670,6 +946,60 @@ export class SyntheticDataGeneratorService {
 
     const referencedRow = this.pick(referencedRows);
     return referencedRow[referencedColumnName] ?? null;
+  }
+
+  /**
+   * Precalcula, por columna FK, una lista de valores de longitud `count` que:
+   *  1) Garantiza que cada fila padre referenciada sea usada al menos una vez
+   *     (si count >= número de padres), evitando cabeceras huérfanas.
+   *  2) Reparte el resto de filas de forma aleatoria entre los padres.
+   *  3) Mezcla el orden final para que la cobertura no quede agrupada al inicio.
+   */
+  private buildForeignKeyAssignments(
+    table: DetectedTable,
+    count: number,
+    rowsByTableMap: Map<string, GeneratedRow[]>,
+  ): Map<string, GeneratedValue[]> {
+    const assignments = new Map<string, GeneratedValue[]>();
+
+    for (const column of table.columns) {
+      if (!column.references) continue;
+
+      const referencedTableName = column.references.table;
+      if (referencedTableName === table.name) continue; // autorreferencial: manejo dinámico
+
+      const referencedRows = rowsByTableMap.get(referencedTableName);
+      if (!referencedRows || referencedRows.length === 0) continue;
+
+      const referencedColumnName = column.references.column;
+      const parentValues = referencedRows.map(
+        (row) => row[referencedColumnName] ?? null,
+      );
+
+      const shuffledParents = this.shuffle(parentValues);
+      const values: GeneratedValue[] = [];
+
+      for (let index = 0; index < count; index++) {
+        values.push(
+          index < shuffledParents.length
+            ? shuffledParents[index]
+            : this.pick(parentValues),
+        );
+      }
+
+      assignments.set(column.name, this.shuffle(values));
+    }
+
+    return assignments;
+  }
+
+  private shuffle<T>(items: T[]): T[] {
+    const result = [...items];
+    for (let index = result.length - 1; index > 0; index--) {
+      const swapIndex = this.randomInteger(0, index);
+      [result[index], result[swapIndex]] = [result[swapIndex], result[index]];
+    }
+    return result;
   }
 
   private generatePrimaryKeyValue(
@@ -916,6 +1246,84 @@ export class SyntheticDataGeneratorService {
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
       .replace(/\s+/g, '');
+  }
+
+  /**
+   * Resuelve un valor proveniente de `sampleValues` aplicando coherencia de
+   * catálogo (mismo "slot" de entidad para columnas relacionadas de la misma
+   * tabla) y conversión numérica cuando la columna destino no es texto.
+   */
+  private resolveSampleValue(
+    table: DetectedTable,
+    column: DetectedColumn,
+    rowIndex: number,
+    plan: GenerationPlanJson | null | undefined,
+    sampleValues: string[],
+  ): GeneratedValue {
+    const raw = this.pickCorrelatedSampleValue(
+      table,
+      column,
+      rowIndex,
+      plan,
+      sampleValues,
+    );
+    return this.coerceSampleValue(column, raw);
+  }
+
+  /**
+   * Si la tabla tiene varias columnas de dominio con sampleValues (p. ej.
+   * productos.nombre + productos.descripcion + productos.precio_unitario),
+   * usa el mismo "slot" derivado de rowIndex en todas ellas para que la fila
+   * represente UNA entidad coherente, en vez de combinar nombre/descripción/
+   * precio de forma independiente y sin relación entre sí.
+   */
+  private pickCorrelatedSampleValue(
+    table: DetectedTable,
+    column: DetectedColumn,
+    rowIndex: number,
+    plan: GenerationPlanJson | null | undefined,
+    sampleValues: string[],
+  ): string {
+    if (!plan || column.isUnique || column.isPrimaryKey) {
+      return this.pick(sampleValues);
+    }
+
+    const domainColumns = plan.columns.filter((item) => {
+      if (item.table !== table.name || item.sampleValues.length < 2) {
+        return false;
+      }
+      const matchingColumn = table.columns.find((c) => c.name === item.column);
+      return !matchingColumn?.isUnique && !matchingColumn?.isPrimaryKey;
+    });
+
+    if (domainColumns.length < 2) {
+      return this.pick(sampleValues);
+    }
+
+    const entitySlotSize = Math.max(
+      ...domainColumns.map((item) => item.sampleValues.length),
+    );
+    const entitySlot = (rowIndex - 1) % entitySlotSize;
+
+    return sampleValues[entitySlot % sampleValues.length];
+  }
+
+  /** sampleValues siempre llega como string[]; lo convertimos si la columna es numérica. */
+  private coerceSampleValue(
+    column: DetectedColumn,
+    raw: string,
+  ): GeneratedValue {
+    if (column.normalizedType === 'DECIMAL') {
+      const parsed = Number(raw.replace(',', '.'));
+      return Number.isFinite(parsed) ? parsed : raw;
+    }
+
+    if (column.normalizedType === 'INTEGER' || column.normalizedType === 'SERIAL') {
+      const parsed = parseInt(raw, 10);
+      return Number.isFinite(parsed) ? parsed : raw;
+    }
+
+    return raw;
   }
 
   // getImplicitReferencesTable removido porque fue trasladado a schema-enricher.ts

@@ -93,7 +93,8 @@ export const UserScalarFieldEnum = {
   updatedAt: 'updatedAt',
   subscriptionPlanId: 'subscriptionPlanId',
   stripeCustomerId: 'stripeCustomerId',
-  stripeSubscriptionId: 'stripeSubscriptionId'
+  stripeSubscriptionId: 'stripeSubscriptionId',
+  apiKey: 'apiKey'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -139,6 +140,7 @@ export const GenerationScalarFieldEnum = {
   progress: 'progress',
   error: 'error',
   outputFile: 'outputFile',
+  outputDataFile: 'outputDataFile',
   region: 'region',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',

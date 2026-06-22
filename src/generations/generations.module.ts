@@ -17,5 +17,6 @@ import { DeterministicCoherenceService } from './deterministic-coherence.service
     VolumeSuggestionService,
     DeterministicCoherenceService,
   ],
+  exports: [GenerationsService],
 })
 export class GenerationsModule { }

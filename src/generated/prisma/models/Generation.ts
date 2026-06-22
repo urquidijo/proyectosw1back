@@ -44,6 +44,7 @@ export type GenerationMinAggregateOutputType = {
   progress: number | null
   error: string | null
   outputFile: string | null
+  outputDataFile: string | null
   region: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -59,6 +60,7 @@ export type GenerationMaxAggregateOutputType = {
   progress: number | null
   error: string | null
   outputFile: string | null
+  outputDataFile: string | null
   region: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -76,6 +78,7 @@ export type GenerationCountAggregateOutputType = {
   progress: number
   error: number
   outputFile: number
+  outputDataFile: number
   region: number
   createdAt: number
   updatedAt: number
@@ -102,6 +105,7 @@ export type GenerationMinAggregateInputType = {
   progress?: true
   error?: true
   outputFile?: true
+  outputDataFile?: true
   region?: true
   createdAt?: true
   updatedAt?: true
@@ -117,6 +121,7 @@ export type GenerationMaxAggregateInputType = {
   progress?: true
   error?: true
   outputFile?: true
+  outputDataFile?: true
   region?: true
   createdAt?: true
   updatedAt?: true
@@ -134,6 +139,7 @@ export type GenerationCountAggregateInputType = {
   progress?: true
   error?: true
   outputFile?: true
+  outputDataFile?: true
   region?: true
   createdAt?: true
   updatedAt?: true
@@ -239,6 +245,7 @@ export type GenerationGroupByOutputType = {
   progress: number
   error: string | null
   outputFile: string | null
+  outputDataFile: string | null
   region: string | null
   createdAt: Date
   updatedAt: Date
@@ -280,6 +287,7 @@ export type GenerationWhereInput = {
   progress?: Prisma.IntFilter<"Generation"> | number
   error?: Prisma.StringNullableFilter<"Generation"> | string | null
   outputFile?: Prisma.StringNullableFilter<"Generation"> | string | null
+  outputDataFile?: Prisma.StringNullableFilter<"Generation"> | string | null
   region?: Prisma.StringNullableFilter<"Generation"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Generation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Generation"> | Date | string
@@ -301,6 +309,7 @@ export type GenerationOrderByWithRelationInput = {
   progress?: Prisma.SortOrder
   error?: Prisma.SortOrderInput | Prisma.SortOrder
   outputFile?: Prisma.SortOrderInput | Prisma.SortOrder
+  outputDataFile?: Prisma.SortOrderInput | Prisma.SortOrder
   region?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -325,6 +334,7 @@ export type GenerationWhereUniqueInput = Prisma.AtLeast<{
   progress?: Prisma.IntFilter<"Generation"> | number
   error?: Prisma.StringNullableFilter<"Generation"> | string | null
   outputFile?: Prisma.StringNullableFilter<"Generation"> | string | null
+  outputDataFile?: Prisma.StringNullableFilter<"Generation"> | string | null
   region?: Prisma.StringNullableFilter<"Generation"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Generation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Generation"> | Date | string
@@ -346,6 +356,7 @@ export type GenerationOrderByWithAggregationInput = {
   progress?: Prisma.SortOrder
   error?: Prisma.SortOrderInput | Prisma.SortOrder
   outputFile?: Prisma.SortOrderInput | Prisma.SortOrder
+  outputDataFile?: Prisma.SortOrderInput | Prisma.SortOrder
   region?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -372,6 +383,7 @@ export type GenerationScalarWhereWithAggregatesInput = {
   progress?: Prisma.IntWithAggregatesFilter<"Generation"> | number
   error?: Prisma.StringNullableWithAggregatesFilter<"Generation"> | string | null
   outputFile?: Prisma.StringNullableWithAggregatesFilter<"Generation"> | string | null
+  outputDataFile?: Prisma.StringNullableWithAggregatesFilter<"Generation"> | string | null
   region?: Prisma.StringNullableWithAggregatesFilter<"Generation"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Generation"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Generation"> | Date | string
@@ -387,6 +399,7 @@ export type GenerationCreateInput = {
   progress?: number
   error?: string | null
   outputFile?: string | null
+  outputDataFile?: string | null
   region?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -408,6 +421,7 @@ export type GenerationUncheckedCreateInput = {
   progress?: number
   error?: string | null
   outputFile?: string | null
+  outputDataFile?: string | null
   region?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -423,6 +437,7 @@ export type GenerationUpdateInput = {
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -444,6 +459,7 @@ export type GenerationUncheckedUpdateInput = {
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -462,6 +478,7 @@ export type GenerationCreateManyInput = {
   progress?: number
   error?: string | null
   outputFile?: string | null
+  outputDataFile?: string | null
   region?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -477,6 +494,7 @@ export type GenerationUpdateManyMutationInput = {
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -495,6 +513,7 @@ export type GenerationUncheckedUpdateManyInput = {
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -523,6 +542,7 @@ export type GenerationCountOrderByAggregateInput = {
   progress?: Prisma.SortOrder
   error?: Prisma.SortOrder
   outputFile?: Prisma.SortOrder
+  outputDataFile?: Prisma.SortOrder
   region?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -543,6 +563,7 @@ export type GenerationMaxOrderByAggregateInput = {
   progress?: Prisma.SortOrder
   error?: Prisma.SortOrder
   outputFile?: Prisma.SortOrder
+  outputDataFile?: Prisma.SortOrder
   region?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -558,6 +579,7 @@ export type GenerationMinOrderByAggregateInput = {
   progress?: Prisma.SortOrder
   error?: Prisma.SortOrder
   outputFile?: Prisma.SortOrder
+  outputDataFile?: Prisma.SortOrder
   region?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -710,6 +732,7 @@ export type GenerationCreateWithoutProjectInput = {
   progress?: number
   error?: string | null
   outputFile?: string | null
+  outputDataFile?: string | null
   region?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -729,6 +752,7 @@ export type GenerationUncheckedCreateWithoutProjectInput = {
   progress?: number
   error?: string | null
   outputFile?: string | null
+  outputDataFile?: string | null
   region?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -776,6 +800,7 @@ export type GenerationScalarWhereInput = {
   progress?: Prisma.IntFilter<"Generation"> | number
   error?: Prisma.StringNullableFilter<"Generation"> | string | null
   outputFile?: Prisma.StringNullableFilter<"Generation"> | string | null
+  outputDataFile?: Prisma.StringNullableFilter<"Generation"> | string | null
   region?: Prisma.StringNullableFilter<"Generation"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Generation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Generation"> | Date | string
@@ -791,6 +816,7 @@ export type GenerationCreateWithoutSqlImportInput = {
   progress?: number
   error?: string | null
   outputFile?: string | null
+  outputDataFile?: string | null
   region?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -810,6 +836,7 @@ export type GenerationUncheckedCreateWithoutSqlImportInput = {
   progress?: number
   error?: string | null
   outputFile?: string | null
+  outputDataFile?: string | null
   region?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -851,6 +878,7 @@ export type GenerationCreateWithoutGenerationRuleSetInput = {
   progress?: number
   error?: string | null
   outputFile?: string | null
+  outputDataFile?: string | null
   region?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -870,6 +898,7 @@ export type GenerationUncheckedCreateWithoutGenerationRuleSetInput = {
   progress?: number
   error?: string | null
   outputFile?: string | null
+  outputDataFile?: string | null
   region?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -913,6 +942,7 @@ export type GenerationCreateManyProjectInput = {
   progress?: number
   error?: string | null
   outputFile?: string | null
+  outputDataFile?: string | null
   region?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -928,6 +958,7 @@ export type GenerationUpdateWithoutProjectInput = {
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -947,6 +978,7 @@ export type GenerationUncheckedUpdateWithoutProjectInput = {
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -964,6 +996,7 @@ export type GenerationUncheckedUpdateManyWithoutProjectInput = {
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -981,6 +1014,7 @@ export type GenerationCreateManySqlImportInput = {
   progress?: number
   error?: string | null
   outputFile?: string | null
+  outputDataFile?: string | null
   region?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -996,6 +1030,7 @@ export type GenerationUpdateWithoutSqlImportInput = {
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1015,6 +1050,7 @@ export type GenerationUncheckedUpdateWithoutSqlImportInput = {
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1032,6 +1068,7 @@ export type GenerationUncheckedUpdateManyWithoutSqlImportInput = {
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1049,6 +1086,7 @@ export type GenerationCreateManyGenerationRuleSetInput = {
   progress?: number
   error?: string | null
   outputFile?: string | null
+  outputDataFile?: string | null
   region?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1064,6 +1102,7 @@ export type GenerationUpdateWithoutGenerationRuleSetInput = {
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1083,6 +1122,7 @@ export type GenerationUncheckedUpdateWithoutGenerationRuleSetInput = {
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1100,6 +1140,7 @@ export type GenerationUncheckedUpdateManyWithoutGenerationRuleSetInput = {
   progress?: Prisma.IntFieldUpdateOperationsInput | number
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1120,6 +1161,7 @@ export type GenerationSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   progress?: boolean
   error?: boolean
   outputFile?: boolean
+  outputDataFile?: boolean
   region?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1141,6 +1183,7 @@ export type GenerationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   progress?: boolean
   error?: boolean
   outputFile?: boolean
+  outputDataFile?: boolean
   region?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1162,6 +1205,7 @@ export type GenerationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   progress?: boolean
   error?: boolean
   outputFile?: boolean
+  outputDataFile?: boolean
   region?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1183,13 +1227,14 @@ export type GenerationSelectScalar = {
   progress?: boolean
   error?: boolean
   outputFile?: boolean
+  outputDataFile?: boolean
   region?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   validationJson?: boolean
 }
 
-export type GenerationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "sqlImportId" | "generationRuleSetId" | "rowConfig" | "previewJson" | "outputSql" | "status" | "progress" | "error" | "outputFile" | "region" | "createdAt" | "updatedAt" | "validationJson", ExtArgs["result"]["generation"]>
+export type GenerationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "sqlImportId" | "generationRuleSetId" | "rowConfig" | "previewJson" | "outputSql" | "status" | "progress" | "error" | "outputFile" | "outputDataFile" | "region" | "createdAt" | "updatedAt" | "validationJson", ExtArgs["result"]["generation"]>
 export type GenerationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   sqlImport?: boolean | Prisma.SqlImportDefaultArgs<ExtArgs>
@@ -1225,6 +1270,7 @@ export type $GenerationPayload<ExtArgs extends runtime.Types.Extensions.Internal
     progress: number
     error: string | null
     outputFile: string | null
+    outputDataFile: string | null
     region: string | null
     createdAt: Date
     updatedAt: Date
@@ -1666,6 +1712,7 @@ export interface GenerationFieldRefs {
   readonly progress: Prisma.FieldRef<"Generation", 'Int'>
   readonly error: Prisma.FieldRef<"Generation", 'String'>
   readonly outputFile: Prisma.FieldRef<"Generation", 'String'>
+  readonly outputDataFile: Prisma.FieldRef<"Generation", 'String'>
   readonly region: Prisma.FieldRef<"Generation", 'String'>
   readonly createdAt: Prisma.FieldRef<"Generation", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Generation", 'DateTime'>

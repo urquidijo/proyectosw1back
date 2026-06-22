@@ -16,6 +16,7 @@ import { SubscriptionPlansModule } from './subscription-plans/subscription-plans
 import { WorkspacesModule } from './workspaces/workspaces.module';
 import { PaymentsModule } from './payments/payments.module';
 import { CommunityModule } from './community/community.module';
+import { ExportsModule } from './exports/exports.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { CommunityModule } from './community/community.module';
     WorkspacesModule,
     PaymentsModule,
     CommunityModule,
+    ExportsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -7,7 +7,10 @@ import { Prisma } from '../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { DetectedSchema } from '../sql-imports/types/detected-schema.type';
 import { CreateGenerationDto } from './dto/create-generation.dto';
-import { SyntheticDataGeneratorService } from './synthetic-data-generator.service';
+import {
+  ColumnRulesInput,
+  SyntheticDataGeneratorService,
+} from './synthetic-data-generator.service';
 import { GenerationValidationService } from './generation-validation.service';
 import { DeterministicCoherenceService } from './deterministic-coherence.service';
 import { enrichSchemaWithImplicitFks } from '../sql-imports/utils/schema-enricher';
@@ -115,6 +118,7 @@ export class GenerationsService {
       rowConfig,
       plan,
       createGenerationDto.region,
+      rulesJson as unknown as ColumnRulesInput | undefined,
     );
 
     return {
@@ -228,6 +232,33 @@ export class GenerationsService {
     return generation.outputSql || '';
   }
 
+  /** Datos completos (todas las filas) de una generación, para exportarlos en otros formatos. */
+  async getFullData(
+    projectId: string,
+    generationId: string,
+    userId: string,
+  ): Promise<{
+    orderedTables: string[];
+    rowsByTable: Record<string, Record<string, unknown>[]>;
+  }> {
+    const generation = await this.findOne(projectId, generationId, userId);
+
+    if (generation.status !== 'COMPLETED') {
+      throw new BadRequestException(
+        'La generación todavía no terminó o falló; no hay datos para exportar',
+      );
+    }
+
+    if (!generation.outputDataFile || !fs.existsSync(generation.outputDataFile)) {
+      throw new NotFoundException(
+        'No se encontraron los datos completos de esta generación',
+      );
+    }
+
+    const raw = fs.readFileSync(generation.outputDataFile, 'utf8');
+    return JSON.parse(raw);
+  }
+
   async getStatus(projectId: string, generationId: string, userId: string) {
     await this.ensureProjectBelongsToUser(projectId, userId);
 
@@ -257,6 +288,7 @@ export class GenerationsService {
     rowConfig: Record<string, number>,
     plan: any,
     region?: string,
+    columnRules?: ColumnRulesInput,
   ): Promise<void> {
     setImmediate(async () => {
       try {
@@ -270,12 +302,14 @@ export class GenerationsService {
         //    cualquier base, con o sin análisis de IA y con cualquier modelo.
         const effectivePlan = this.mergeWithDeterministicRules(schema, plan);
 
-        // 1. Generación de datos sintéticos
+        // 1. Generación de datos sintéticos. Las reglas manuales por columna
+        //    (rulesJson.tables[t].columns) tienen prioridad sobre el plan de IA.
         const result = this.syntheticDataGenerator.generate(
           schema,
           rowConfig,
           effectivePlan,
           region,
+          columnRules,
         );
 
         await this.prisma.generation.update({
@@ -295,13 +329,26 @@ export class GenerationsService {
           data: { progress: 85 },
         });
 
-        // 3. Escribir archivo de salida en disco
+        // 3. Escribir archivos de salida en disco
         const uploadDir = path.join(process.cwd(), 'uploads', 'generations');
         if (!fs.existsSync(uploadDir)) {
           fs.mkdirSync(uploadDir, { recursive: true });
         }
         const filePath = path.join(uploadDir, `${generationId}.sql`);
         fs.writeFileSync(filePath, result.outputSql, 'utf8');
+
+        // Datos completos (todas las filas, no solo el preview) para poder
+        // exportar a CSV/Excel/JSON desde el módulo de exportaciones sin
+        // tener que volver a generar ni parsear el .sql.
+        const dataFilePath = path.join(uploadDir, `${generationId}.data.json`);
+        fs.writeFileSync(
+          dataFilePath,
+          JSON.stringify({
+            orderedTables: result.orderedTables,
+            rowsByTable: result.rowsByTable,
+          }),
+          'utf8',
+        );
 
         // 4. Guardar resultado completado
         await this.prisma.generation.update({
@@ -312,6 +359,7 @@ export class GenerationsService {
             previewJson: result.preview as any,
             validationJson: validationReport as any,
             outputFile: filePath,
+            outputDataFile: dataFilePath,
             outputSql: '',
           },
         });
