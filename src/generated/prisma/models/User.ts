@@ -35,6 +35,7 @@ export type UserMinAggregateOutputType = {
   subscriptionPlanId: string | null
   stripeCustomerId: string | null
   stripeSubscriptionId: string | null
+  apiKey: string | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -48,6 +49,7 @@ export type UserMaxAggregateOutputType = {
   subscriptionPlanId: string | null
   stripeCustomerId: string | null
   stripeSubscriptionId: string | null
+  apiKey: string | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -61,6 +63,7 @@ export type UserCountAggregateOutputType = {
   subscriptionPlanId: number
   stripeCustomerId: number
   stripeSubscriptionId: number
+  apiKey: number
   _all: number
 }
 
@@ -76,6 +79,7 @@ export type UserMinAggregateInputType = {
   subscriptionPlanId?: true
   stripeCustomerId?: true
   stripeSubscriptionId?: true
+  apiKey?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -89,6 +93,7 @@ export type UserMaxAggregateInputType = {
   subscriptionPlanId?: true
   stripeCustomerId?: true
   stripeSubscriptionId?: true
+  apiKey?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -102,6 +107,7 @@ export type UserCountAggregateInputType = {
   subscriptionPlanId?: true
   stripeCustomerId?: true
   stripeSubscriptionId?: true
+  apiKey?: true
   _all?: true
 }
 
@@ -188,6 +194,7 @@ export type UserGroupByOutputType = {
   subscriptionPlanId: string | null
   stripeCustomerId: string | null
   stripeSubscriptionId: string | null
+  apiKey: string | null
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -222,6 +229,7 @@ export type UserWhereInput = {
   subscriptionPlanId?: Prisma.StringNullableFilter<"User"> | string | null
   stripeCustomerId?: Prisma.StringNullableFilter<"User"> | string | null
   stripeSubscriptionId?: Prisma.StringNullableFilter<"User"> | string | null
+  apiKey?: Prisma.StringNullableFilter<"User"> | string | null
   projects?: Prisma.ProjectListRelationFilter
   plan?: Prisma.XOR<Prisma.SubscriptionPlanNullableScalarRelationFilter, Prisma.SubscriptionPlanWhereInput> | null
   workspaces?: Prisma.WorkspaceMemberListRelationFilter
@@ -244,6 +252,7 @@ export type UserOrderByWithRelationInput = {
   subscriptionPlanId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiKey?: Prisma.SortOrderInput | Prisma.SortOrder
   projects?: Prisma.ProjectOrderByRelationAggregateInput
   plan?: Prisma.SubscriptionPlanOrderByWithRelationInput
   workspaces?: Prisma.WorkspaceMemberOrderByRelationAggregateInput
@@ -258,6 +267,7 @@ export type UserOrderByWithRelationInput = {
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
+  apiKey?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
@@ -278,7 +288,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   communityPosts?: Prisma.CommunityPostListRelationFilter
   postComments?: Prisma.PostCommentListRelationFilter
   postUpvotes?: Prisma.PostUpvoteListRelationFilter
-}, "id" | "email">
+}, "id" | "email" | "apiKey">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -291,6 +301,7 @@ export type UserOrderByWithAggregationInput = {
   subscriptionPlanId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiKey?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -310,6 +321,7 @@ export type UserScalarWhereWithAggregatesInput = {
   subscriptionPlanId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   stripeCustomerId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   stripeSubscriptionId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  apiKey?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
 }
 
 export type UserCreateInput = {
@@ -322,6 +334,7 @@ export type UserCreateInput = {
   updatedAt?: Date | string
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
   plan?: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
@@ -344,6 +357,7 @@ export type UserUncheckedCreateInput = {
   subscriptionPlanId?: string | null
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -364,6 +378,7 @@ export type UserUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
   plan?: Prisma.SubscriptionPlanUpdateOneWithoutUsersNestedInput
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
@@ -386,6 +401,7 @@ export type UserUncheckedUpdateInput = {
   subscriptionPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -407,6 +423,7 @@ export type UserCreateManyInput = {
   subscriptionPlanId?: string | null
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -419,6 +436,7 @@ export type UserUpdateManyMutationInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -432,6 +450,7 @@ export type UserUncheckedUpdateManyInput = {
   subscriptionPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -445,6 +464,7 @@ export type UserCountOrderByAggregateInput = {
   subscriptionPlanId?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrder
+  apiKey?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -458,6 +478,7 @@ export type UserMaxOrderByAggregateInput = {
   subscriptionPlanId?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrder
+  apiKey?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -471,6 +492,7 @@ export type UserMinOrderByAggregateInput = {
   subscriptionPlanId?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrder
+  apiKey?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -677,6 +699,7 @@ export type UserCreateWithoutProjectsInput = {
   updatedAt?: Date | string
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   plan?: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -698,6 +721,7 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   subscriptionPlanId?: string | null
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   payments?: Prisma.PaymentLogUncheckedCreateNestedManyWithoutUserInput
@@ -733,6 +757,7 @@ export type UserUpdateWithoutProjectsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.SubscriptionPlanUpdateOneWithoutUsersNestedInput
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -754,6 +779,7 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   subscriptionPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   payments?: Prisma.PaymentLogUncheckedUpdateManyWithoutUserNestedInput
@@ -773,6 +799,7 @@ export type UserCreateWithoutPlanInput = {
   updatedAt?: Date | string
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -793,6 +820,7 @@ export type UserUncheckedCreateWithoutPlanInput = {
   updatedAt?: Date | string
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -843,6 +871,7 @@ export type UserScalarWhereInput = {
   subscriptionPlanId?: Prisma.StringNullableFilter<"User"> | string | null
   stripeCustomerId?: Prisma.StringNullableFilter<"User"> | string | null
   stripeSubscriptionId?: Prisma.StringNullableFilter<"User"> | string | null
+  apiKey?: Prisma.StringNullableFilter<"User"> | string | null
 }
 
 export type UserCreateWithoutOwnedWorkspacesInput = {
@@ -855,6 +884,7 @@ export type UserCreateWithoutOwnedWorkspacesInput = {
   updatedAt?: Date | string
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
   plan?: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
@@ -876,6 +906,7 @@ export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
   subscriptionPlanId?: string | null
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentLogUncheckedCreateNestedManyWithoutUserInput
@@ -911,6 +942,7 @@ export type UserUpdateWithoutOwnedWorkspacesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
   plan?: Prisma.SubscriptionPlanUpdateOneWithoutUsersNestedInput
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
@@ -932,6 +964,7 @@ export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
   subscriptionPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentLogUncheckedUpdateManyWithoutUserNestedInput
@@ -951,6 +984,7 @@ export type UserCreateWithoutWorkspacesInput = {
   updatedAt?: Date | string
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
   plan?: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -972,6 +1006,7 @@ export type UserUncheckedCreateWithoutWorkspacesInput = {
   subscriptionPlanId?: string | null
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
   payments?: Prisma.PaymentLogUncheckedCreateNestedManyWithoutUserInput
@@ -1007,6 +1042,7 @@ export type UserUpdateWithoutWorkspacesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
   plan?: Prisma.SubscriptionPlanUpdateOneWithoutUsersNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -1028,6 +1064,7 @@ export type UserUncheckedUpdateWithoutWorkspacesInput = {
   subscriptionPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   payments?: Prisma.PaymentLogUncheckedUpdateManyWithoutUserNestedInput
@@ -1047,6 +1084,7 @@ export type UserCreateWithoutPaymentsInput = {
   updatedAt?: Date | string
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
   plan?: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
@@ -1068,6 +1106,7 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   subscriptionPlanId?: string | null
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -1103,6 +1142,7 @@ export type UserUpdateWithoutPaymentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
   plan?: Prisma.SubscriptionPlanUpdateOneWithoutUsersNestedInput
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
@@ -1124,6 +1164,7 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   subscriptionPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1143,6 +1184,7 @@ export type UserCreateWithoutActivitiesInput = {
   updatedAt?: Date | string
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
   plan?: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
@@ -1164,6 +1206,7 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   subscriptionPlanId?: string | null
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -1199,6 +1242,7 @@ export type UserUpdateWithoutActivitiesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
   plan?: Prisma.SubscriptionPlanUpdateOneWithoutUsersNestedInput
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
@@ -1220,6 +1264,7 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   subscriptionPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1239,6 +1284,7 @@ export type UserCreateWithoutCommunityPostsInput = {
   updatedAt?: Date | string
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
   plan?: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
@@ -1260,6 +1306,7 @@ export type UserUncheckedCreateWithoutCommunityPostsInput = {
   subscriptionPlanId?: string | null
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -1295,6 +1342,7 @@ export type UserUpdateWithoutCommunityPostsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
   plan?: Prisma.SubscriptionPlanUpdateOneWithoutUsersNestedInput
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
@@ -1316,6 +1364,7 @@ export type UserUncheckedUpdateWithoutCommunityPostsInput = {
   subscriptionPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1335,6 +1384,7 @@ export type UserCreateWithoutPostCommentsInput = {
   updatedAt?: Date | string
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
   plan?: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
@@ -1356,6 +1406,7 @@ export type UserUncheckedCreateWithoutPostCommentsInput = {
   subscriptionPlanId?: string | null
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -1391,6 +1442,7 @@ export type UserUpdateWithoutPostCommentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
   plan?: Prisma.SubscriptionPlanUpdateOneWithoutUsersNestedInput
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
@@ -1412,6 +1464,7 @@ export type UserUncheckedUpdateWithoutPostCommentsInput = {
   subscriptionPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1431,6 +1484,7 @@ export type UserCreateWithoutPostUpvotesInput = {
   updatedAt?: Date | string
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
   plan?: Prisma.SubscriptionPlanCreateNestedOneWithoutUsersInput
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
@@ -1452,6 +1506,7 @@ export type UserUncheckedCreateWithoutPostUpvotesInput = {
   subscriptionPlanId?: string | null
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -1487,6 +1542,7 @@ export type UserUpdateWithoutPostUpvotesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
   plan?: Prisma.SubscriptionPlanUpdateOneWithoutUsersNestedInput
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
@@ -1508,6 +1564,7 @@ export type UserUncheckedUpdateWithoutPostUpvotesInput = {
   subscriptionPlanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1527,6 +1584,7 @@ export type UserCreateManyPlanInput = {
   updatedAt?: Date | string
   stripeCustomerId?: string | null
   stripeSubscriptionId?: string | null
+  apiKey?: string | null
 }
 
 export type UserUpdateWithoutPlanInput = {
@@ -1539,6 +1597,7 @@ export type UserUpdateWithoutPlanInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -1559,6 +1618,7 @@ export type UserUncheckedUpdateWithoutPlanInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1579,6 +1639,7 @@ export type UserUncheckedUpdateManyWithoutPlanInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1686,6 +1747,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   subscriptionPlanId?: boolean
   stripeCustomerId?: boolean
   stripeSubscriptionId?: boolean
+  apiKey?: boolean
   projects?: boolean | Prisma.User$projectsArgs<ExtArgs>
   plan?: boolean | Prisma.User$planArgs<ExtArgs>
   workspaces?: boolean | Prisma.User$workspacesArgs<ExtArgs>
@@ -1709,6 +1771,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   subscriptionPlanId?: boolean
   stripeCustomerId?: boolean
   stripeSubscriptionId?: boolean
+  apiKey?: boolean
   plan?: boolean | Prisma.User$planArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1723,6 +1786,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   subscriptionPlanId?: boolean
   stripeCustomerId?: boolean
   stripeSubscriptionId?: boolean
+  apiKey?: boolean
   plan?: boolean | Prisma.User$planArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1737,9 +1801,10 @@ export type UserSelectScalar = {
   subscriptionPlanId?: boolean
   stripeCustomerId?: boolean
   stripeSubscriptionId?: boolean
+  apiKey?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "passwordHash" | "role" | "createdAt" | "updatedAt" | "subscriptionPlanId" | "stripeCustomerId" | "stripeSubscriptionId", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "passwordHash" | "role" | "createdAt" | "updatedAt" | "subscriptionPlanId" | "stripeCustomerId" | "stripeSubscriptionId" | "apiKey", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   projects?: boolean | Prisma.User$projectsArgs<ExtArgs>
   plan?: boolean | Prisma.User$planArgs<ExtArgs>
@@ -1783,6 +1848,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     subscriptionPlanId: string | null
     stripeCustomerId: string | null
     stripeSubscriptionId: string | null
+    apiKey: string | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -2225,6 +2291,7 @@ export interface UserFieldRefs {
   readonly subscriptionPlanId: Prisma.FieldRef<"User", 'String'>
   readonly stripeCustomerId: Prisma.FieldRef<"User", 'String'>
   readonly stripeSubscriptionId: Prisma.FieldRef<"User", 'String'>
+  readonly apiKey: Prisma.FieldRef<"User", 'String'>
 }
     
 

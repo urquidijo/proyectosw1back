@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Request, ForbiddenException, ConflictException } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, UseGuards, Request, ForbiddenException, ConflictException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PrismaService } from '../prisma/prisma.service';
@@ -29,6 +29,20 @@ export class UsersController {
   @Get('me/usage')
   async getMyUsage(@Request() req) {
     return this.usersService.getUserUsage(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('me/api-key')
+  async generateApiKey(@Request() req) {
+    const key = await this.usersService.generateApiKey(req.user.id);
+    return { apiKey: key };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('me/api-key')
+  async revokeApiKey(@Request() req) {
+    await this.usersService.revokeApiKey(req.user.id);
+    return { message: 'API Key revocada correctamente.' };
   }
 
   @UseGuards(JwtAuthGuard)

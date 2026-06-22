@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, User } from 'src/generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -17,6 +18,22 @@ export class UsersService {
     return this.prisma.user.findUnique({
       where: { email },
       include: { plan: true },
+    });
+  }
+
+  async generateApiKey(userId: string): Promise<string> {
+    const key = `sk-syn-${crypto.randomBytes(24).toString('hex')}`;
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { apiKey: key },
+    });
+    return key;
+  }
+
+  async revokeApiKey(userId: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { apiKey: null },
     });
   }
 
@@ -52,19 +69,33 @@ export class UsersService {
 
     const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
     
-    const totalGenerations = await this.prisma.generation.count({
+    const generations = await this.prisma.generation.findMany({
       where: {
         project: { ownerId: userId },
         createdAt: { gte: startOfMonth },
       },
+      select: { rowConfig: true },
     });
+
+    const totalGenerations = generations.length;
+    let totalRowsGenerated = 0;
+
+    for (const gen of generations) {
+      if (gen.rowConfig && typeof gen.rowConfig === 'object') {
+        for (const val of Object.values(gen.rowConfig)) {
+          totalRowsGenerated += Number(val) || 0;
+        }
+      }
+    }
 
     return {
       plan: user.plan,
+      apiKey: user.apiKey,
       usage: {
         projects: totalProjects,
         workspaces: totalWorkspaces,
         generations: totalGenerations,
+        rowsGenerated: totalRowsGenerated,
       },
       subscriptionStart: user.createdAt,
     };

@@ -118,7 +118,7 @@ export class SyntheticDataGeneratorService {
     const preview = Object.fromEntries(
       Object.entries(rowsByTable).map(([tableName, rows]) => [
         tableName,
-        rows.slice(0, 5),
+        rows.slice(0, 100),
       ]),
     );
 
