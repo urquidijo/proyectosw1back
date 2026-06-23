@@ -9,6 +9,7 @@ import { DetectedSchema } from '../sql-imports/types/detected-schema.type';
 import { CreateGenerationDto } from './dto/create-generation.dto';
 import {
   ColumnRulesInput,
+  GenerationTargetEngine,
   SyntheticDataGeneratorService,
 } from './synthetic-data-generator.service';
 import { GenerationValidationService } from './generation-validation.service';
@@ -96,6 +97,11 @@ export class GenerationsService {
       | import('../generation-plans/schemas/generation-plan.schema').GenerationPlanJson
       | undefined;
 
+    // El motor (PostgreSQL/MongoDB) es una decisión estructural tomada al
+    // analizar el SQL, no algo que se re-elija en cada generación: toda
+    // generación hereda el motor de su importación.
+    const engine = sqlImport.engine;
+
     const generation = await this.prisma.generation.create({
       data: {
         projectId,
@@ -107,6 +113,7 @@ export class GenerationsService {
         status: 'PENDING',
         progress: 0,
         region: createGenerationDto.region ?? 'GENERIC',
+        engine,
       },
     });
 
@@ -119,6 +126,7 @@ export class GenerationsService {
       plan,
       createGenerationDto.region,
       rulesJson as unknown as ColumnRulesInput | undefined,
+      engine,
     );
 
     return {
@@ -131,6 +139,7 @@ export class GenerationsService {
       status: generation.status,
       progress: generation.progress,
       region: generation.region,
+      engine: generation.engine,
       orderedTables: schema.tables.map((t) => t.name),
       createdAt: generation.createdAt,
       updatedAt: generation.updatedAt,
@@ -199,6 +208,7 @@ export class GenerationsService {
         progress: true,
         error: true,
         region: true,
+        engine: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -289,6 +299,7 @@ export class GenerationsService {
     plan: any,
     region?: string,
     columnRules?: ColumnRulesInput,
+    engine?: GenerationTargetEngine,
   ): Promise<void> {
     setImmediate(async () => {
       try {
@@ -304,12 +315,15 @@ export class GenerationsService {
 
         // 1. Generación de datos sintéticos. Las reglas manuales por columna
         //    (rulesJson.tables[t].columns) tienen prioridad sobre el plan de IA.
+        //    El motor destino (PostgreSQL/MongoDB) solo cambia el formato del
+        //    dump final; las filas y sus relaciones se generan igual para ambos.
         const result = this.syntheticDataGenerator.generate(
           schema,
           rowConfig,
           effectivePlan,
           region,
           columnRules,
+          engine,
         );
 
         await this.prisma.generation.update({
@@ -334,7 +348,8 @@ export class GenerationsService {
         if (!fs.existsSync(uploadDir)) {
           fs.mkdirSync(uploadDir, { recursive: true });
         }
-        const filePath = path.join(uploadDir, `${generationId}.sql`);
+        const extension = engine === 'MONGODB' ? 'js' : 'sql';
+        const filePath = path.join(uploadDir, `${generationId}.${extension}`);
         fs.writeFileSync(filePath, result.outputSql, 'utf8');
 
         // Datos completos (todas las filas, no solo el preview) para poder

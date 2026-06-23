@@ -121,6 +121,8 @@ export const SqlImportScalarFieldEnum = {
   status: 'status',
   schemaJson: 'schemaJson',
   errors: 'errors',
+  engine: 'engine',
+  dialect: 'dialect',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -142,6 +144,7 @@ export const GenerationScalarFieldEnum = {
   outputFile: 'outputFile',
   outputDataFile: 'outputDataFile',
   region: 'region',
+  engine: 'engine',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   validationJson: 'validationJson'

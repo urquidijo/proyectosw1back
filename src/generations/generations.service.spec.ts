@@ -42,6 +42,7 @@ describe('GenerationsService (CP-12 Generación Masiva SQL)', () => {
     projectId: 'p1',
     status: 'VALID',
     schemaJson: schema,
+    engine: 'POSTGRESQL',
   };
 
   let prisma: {
@@ -69,19 +70,22 @@ describe('GenerationsService (CP-12 Generación Masiva SQL)', () => {
       generationRuleSet: { findFirst: jest.fn().mockResolvedValue(null) },
       generationPlan: { findUnique: jest.fn().mockResolvedValue(null) },
       generation: {
-        create: jest.fn().mockResolvedValue({
-          id: 'g1',
-          projectId: 'p1',
-          sqlImportId: 'sql1',
-          generationRuleSetId: null,
-          rowConfig: { clientes: 5000 },
-          previewJson: {},
-          status: 'PENDING',
-          progress: 0,
-          region: 'GENERIC',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        }),
+        create: jest.fn().mockImplementation(({ data }) =>
+          Promise.resolve({
+            id: 'g1',
+            projectId: 'p1',
+            sqlImportId: 'sql1',
+            generationRuleSetId: null,
+            rowConfig: { clientes: 5000 },
+            previewJson: {},
+            status: 'PENDING',
+            progress: 0,
+            region: 'GENERIC',
+            engine: data.engine ?? 'POSTGRESQL',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          }),
+        ),
         update: jest.fn().mockResolvedValue({}),
       },
     };
@@ -142,7 +146,38 @@ describe('GenerationsService (CP-12 Generación Masiva SQL)', () => {
       expect.anything(),
       undefined,
       undefined,
+      'POSTGRESQL',
     );
+  });
+
+  it('hereda el motor MongoDB definido al analizar el SQL: lo persiste, lo pasa al generador y usa extensión .js', async () => {
+    prisma.sqlImport.findFirst.mockResolvedValue({ ...sqlImport, engine: 'MONGODB' });
+
+    const result = await service.create('p1', 'u1', {
+      sqlImportId: 'sql1',
+      rowConfig: { clientes: 5000 },
+    } as any);
+
+    // El motor de la importación se refleja de inmediato en la respuesta (antes del trabajo en segundo plano)
+    expect(result.engine).toBe('MONGODB');
+    expect(prisma.generation.create).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ engine: 'MONGODB' }) }),
+    );
+
+    await flushBackgroundWork();
+
+    expect(syntheticDataGenerator.generate).toHaveBeenCalledWith(
+      schema,
+      { clientes: 5000 },
+      expect.anything(),
+      undefined,
+      undefined,
+      'MONGODB',
+    );
+
+    const writeCalls = (fs.writeFileSync as jest.Mock).mock.calls;
+    const scriptWrite = writeCalls.find(([path]) => String(path).endsWith('.js'));
+    expect(scriptWrite).toBeDefined();
   });
 
   it('rechaza cantidades de filas por encima del máximo permitido (10000) antes de iniciar la generación', async () => {

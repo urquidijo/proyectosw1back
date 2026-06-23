@@ -23,6 +23,154 @@ describe('SyntheticDataGeneratorService', () => {
     expect(service).toBeDefined();
   });
 
+  describe('PK compuesta con columna no-FK (ej. fecha)', () => {
+    it('genera un valor del tipo real (DATE) para la columna no-FK de una PK compuesta, no un entero', () => {
+      // Caso reportado: PRIMARY KEY (cuenta_id, fecha_inicio) donde cuenta_id
+      // es FK pero fecha_inicio es una columna DATE normal. Antes del fix,
+      // fecha_inicio recibía rowIndex (un entero) porque cualquier columna
+      // marcada isPrimaryKey pasaba por generatePrimaryKeyValue, que solo
+      // sabe generar id sustituto (entero/UUID/código), rompiendo el INSERT
+      // ("column is of type date but expression is of type integer").
+      const schema: DetectedSchema = {
+        dialect: 'postgresql',
+        tables: [
+          {
+            name: 'cuentas',
+            primaryKeys: ['id'],
+            foreignKeys: [],
+            columns: [
+              { name: 'id', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: true, isNullable: false, isUnique: true },
+            ],
+          },
+          {
+            name: 'estados_cuenta',
+            primaryKeys: ['id'],
+            foreignKeys: [],
+            columns: [
+              { name: 'id', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: true, isNullable: false, isUnique: true },
+            ],
+          },
+          {
+            name: 'cuentas_estado',
+            primaryKeys: ['cuenta_id', 'fecha_inicio'],
+            foreignKeys: [
+              { column: 'cuenta_id', referencesTable: 'cuentas', referencesColumn: 'id' },
+              { column: 'estado_id', referencesTable: 'estados_cuenta', referencesColumn: 'id' },
+            ],
+            columns: [
+              { name: 'cuenta_id', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: true, isNullable: false, isUnique: false, references: { table: 'cuentas', column: 'id' } },
+              { name: 'estado_id', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: false, isNullable: false, isUnique: false, references: { table: 'estados_cuenta', column: 'id' } },
+              { name: 'fecha_inicio', rawType: 'DATE', normalizedType: 'DATE', isPrimaryKey: true, isNullable: false, isUnique: false },
+              { name: 'fecha_fin', rawType: 'DATE', normalizedType: 'DATE', isPrimaryKey: false, isNullable: true, isUnique: false },
+            ],
+          },
+        ],
+      };
+
+      const rowConfig = { cuentas: 5, estados_cuenta: 3, cuentas_estado: 20 };
+      const result = service.generate(schema, rowConfig, null, 'GENERIC');
+
+      const cuentaIds = new Set(result.rowsByTable.cuentas.map((c) => c.id));
+      const estadoIds = new Set(result.rowsByTable.estados_cuenta.map((e) => e.id));
+
+      for (const row of result.rowsByTable.cuentas_estado) {
+        // fecha_inicio debe ser una fecha real (string ISO), nunca un entero
+        expect(typeof row.fecha_inicio).toBe('string');
+        expect(row.fecha_inicio as string).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+
+        // Las FKs siguen apuntando a filas existentes
+        expect(cuentaIds.has(row.cuenta_id)).toBe(true);
+        expect(estadoIds.has(row.estado_id)).toBe(true);
+      }
+
+      // La tupla compuesta (cuenta_id, fecha_inicio) debe ser única
+      const keys = result.rowsByTable.cuentas_estado.map(
+        (r) => `${r.cuenta_id}|${r.fecha_inicio}`,
+      );
+      expect(new Set(keys).size).toBe(keys.length);
+    });
+  });
+
+  describe('Restricciones CHECK aplicadas tras reglas del plan (ej. transacciones_monto_check)', () => {
+    it('acota un valor negativo producido por una regla BINARY_OPERATION (SUBTRACT) cuando la columna tiene CHECK (monto >= 0)', () => {
+      // Caso reportado: el plan de IA define monto = monto_base - descuento.
+      // Si descuento > monto_base, el resultado es negativo y antes del fix
+      // se insertaba tal cual, violando CHECK (monto >= 0) en Postgres. El
+      // clamp por columna (generateColumnValue) no alcanza a este caso porque
+      // el plan sobrescribe "monto" después de generarlo.
+      const schema: DetectedSchema = {
+        dialect: 'postgresql',
+        tables: [
+          {
+            name: 'transacciones',
+            primaryKeys: ['id'],
+            foreignKeys: [],
+            columns: [
+              { name: 'id', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: true, isNullable: false, isUnique: true },
+              { name: 'monto_base', rawType: 'DECIMAL', normalizedType: 'DECIMAL', isPrimaryKey: false, isNullable: false, isUnique: false },
+              { name: 'descuento', rawType: 'DECIMAL', normalizedType: 'DECIMAL', isPrimaryKey: false, isNullable: false, isUnique: false },
+              { name: 'monto', rawType: 'DECIMAL', normalizedType: 'DECIMAL', isPrimaryKey: false, isNullable: false, isUnique: false, checkMin: 0 },
+            ],
+          },
+        ],
+      };
+
+      const columnRules = {
+        tables: {
+          transacciones: {
+            columns: {
+              monto_base: { type: 'MONEY', min: '10', max: '20' },
+              descuento: { type: 'MONEY', min: '1000', max: '2000' },
+            },
+          },
+        },
+      };
+
+      const plan = {
+        domainSummary: '',
+        tables: [],
+        columns: [],
+        warnings: [],
+        rules: [
+          {
+            type: 'BINARY_OPERATION' as const,
+            targetTable: 'transacciones',
+            targetColumn: 'monto',
+            description: 'monto = monto_base - descuento',
+            confidence: 1,
+            sourceTable: null,
+            sourceColumn: null,
+            viaForeignKey: null,
+            leftColumn: 'monto_base',
+            rightColumn: 'descuento',
+            operator: 'SUBTRACT' as const,
+            childTable: null,
+            childForeignKey: null,
+            childColumn: null,
+            aggregate: null,
+            referenceColumn: null,
+            dateRelation: null,
+            boundOperator: null,
+          },
+        ],
+      };
+
+      const result = service.generate(
+        schema,
+        { transacciones: 10 },
+        plan,
+        'GENERIC',
+        columnRules,
+      );
+
+      for (const row of result.rowsByTable.transacciones) {
+        // Sin el fix, monto_base (10-20) - descuento (1000-2000) siempre da
+        // negativo: la regla del plan lo dejaría así y rompería el INSERT real.
+        expect(Number(row.monto)).toBeGreaterThanOrEqual(0);
+      }
+    });
+  });
+
   describe('Implicit FKs and Business Heuristics', () => {
     it('should enrich schema, sort tables, generate records and apply business heuristics', () => {
       // 1. Definir un esquema con FK explícita e implícitas
@@ -133,6 +281,77 @@ describe('SyntheticDataGeneratorService', () => {
         const matchingDetails = result.rowsByTable.detalle_ventas.filter(d => d.id_venta === venta.id);
         const sum = matchingDetails.reduce((acc, curr) => acc + (curr.subtotal as number), 0);
         expect(venta.total).toBe(Number(sum.toFixed(2)));
+      }
+    });
+  });
+
+  describe('Motor destino MongoDB', () => {
+    const schema: DetectedSchema = {
+      dialect: 'postgresql',
+      tables: [
+        {
+          name: 'clientes',
+          primaryKeys: ['id'],
+          foreignKeys: [],
+          columns: [
+            { name: 'id', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: true, isNullable: false, isUnique: true },
+            { name: 'nombre', rawType: 'VARCHAR', normalizedType: 'STRING', isPrimaryKey: false, isNullable: false, isUnique: false },
+            { name: 'activo', rawType: 'BOOLEAN', normalizedType: 'BOOLEAN', isPrimaryKey: false, isNullable: false, isUnique: false },
+            { name: 'fecha_registro', rawType: 'DATE', normalizedType: 'DATE', isPrimaryKey: false, isNullable: false, isUnique: false },
+          ],
+        },
+        {
+          name: 'pedidos',
+          primaryKeys: ['id'],
+          foreignKeys: [
+            { column: 'id_cliente', referencesTable: 'clientes', referencesColumn: 'id' },
+          ],
+          columns: [
+            { name: 'id', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: true, isNullable: false, isUnique: true },
+            { name: 'id_cliente', rawType: 'INT', normalizedType: 'INTEGER', isPrimaryKey: false, isNullable: false, isUnique: false },
+          ],
+        },
+      ],
+    };
+
+    it('genera un script de mongosh con insertMany por colección, en lugar de INSERT INTO, cuando engine=MONGODB', () => {
+      const result = service.generate(
+        schema,
+        { clientes: 5, pedidos: 5 },
+        null,
+        'GENERIC',
+        null,
+        'MONGODB',
+      );
+
+      expect(result.outputSql).toContain('db.clientes.insertMany([');
+      expect(result.outputSql).toContain('db.pedidos.insertMany([');
+      expect(result.outputSql).not.toContain('INSERT INTO');
+
+      // Las fechas se serializan como ISODate, idiomático de Mongo
+      expect(result.outputSql).toMatch(/"fecha_registro":\s*ISODate\("/);
+
+      // La integridad referencial sigue intacta en los valores (sin FKs nativas en Mongo)
+      const clienteIds = result.rowsByTable.clientes.map((c) => c.id);
+      for (const pedido of result.rowsByTable.pedidos) {
+        expect(clienteIds).toContain(pedido.id_cliente);
+      }
+    });
+
+    it('mantiene el dump SQL (INSERT INTO) cuando no se especifica engine o es POSTGRESQL', () => {
+      const resultDefault = service.generate(schema, { clientes: 3, pedidos: 3 }, null, 'GENERIC');
+      const resultExplicit = service.generate(
+        schema,
+        { clientes: 3, pedidos: 3 },
+        null,
+        'GENERIC',
+        null,
+        'POSTGRESQL',
+      );
+
+      for (const result of [resultDefault, resultExplicit]) {
+        expect(result.outputSql).toContain('INSERT INTO');
+        expect(result.outputSql).not.toContain('insertMany');
       }
     });
   });

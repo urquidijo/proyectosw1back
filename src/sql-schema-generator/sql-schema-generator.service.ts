@@ -38,6 +38,7 @@ export class SqlSchemaGeneratorService {
     projectId: string,
     userId: string,
     description: string,
+    dialect: 'POSTGRESQL' | 'MYSQL' = 'POSTGRESQL',
   ): Promise<GeneratedSqlSchemaResponse> {
     await this.ensureProjectBelongsToUser(projectId, userId);
 
@@ -45,7 +46,7 @@ export class SqlSchemaGeneratorService {
       throw new BadRequestException('La descripción no puede estar vacía');
     }
 
-    const prompt = this.buildPrompt(description);
+    const prompt = this.buildPrompt(description, dialect);
 
     try {
       const jsonSchema = z.toJSONSchema(generatedSqlSchema);
@@ -81,18 +82,47 @@ export class SqlSchemaGeneratorService {
     }
   }
 
-  private buildPrompt(description: string): string {
-    return `
-Eres un arquitecto experto en bases de datos PostgreSQL.
+  private buildPrompt(
+    description: string,
+    dialect: 'POSTGRESQL' | 'MYSQL',
+  ): string {
+    const isMysql = dialect === 'MYSQL';
+    const dialectName = isMysql ? 'MySQL' : 'PostgreSQL';
 
-Tu tarea es convertir una descripción en lenguaje natural en un script DDL PostgreSQL completo, claro y utilizable.
+    const primaryKeyRule = isMysql
+      ? 'id INT NOT NULL AUTO_INCREMENT, definida luego como PRIMARY KEY (id)'
+      : 'id SERIAL PRIMARY KEY';
+
+    const typeRules = isMysql
+      ? `   - VARCHAR(n) para textos cortos
+   - TEXT para descripciones largas
+   - INT para cantidades enteras
+   - DECIMAL(10,2) o DECIMAL(12,2) para dinero
+   - DATE para fechas
+   - DATETIME para fecha y hora
+   - TINYINT(1) para estados lógicos (booleanos)`
+      : `   - VARCHAR(n) para textos cortos
+   - TEXT para descripciones largas
+   - INT para cantidades enteras
+   - DECIMAL(10,2) o DECIMAL(12,2) para dinero
+   - DATE para fechas
+   - BOOLEAN para estados lógicos`;
+
+    const executionRule = isMysql
+      ? 'El SQL debe poder ejecutarse en MySQL 8 sin depender de extensiones externas.'
+      : 'El SQL debe poder ejecutarse en PostgreSQL sin depender de extensiones externas.';
+
+    return `
+Eres un arquitecto experto en bases de datos ${dialectName}.
+
+Tu tarea es convertir una descripción en lenguaje natural en un script DDL ${dialectName} completo, claro y utilizable.
 
 Objetivo:
-Generar un esquema relacional para PostgreSQL que pueda ser analizado después por un sistema de generación de datos sintéticos.
+Generar un esquema relacional para ${dialectName} que pueda ser analizado después por un sistema de generación de datos sintéticos.
 
 Reglas estrictas de salida:
 1. Devuelve únicamente el JSON solicitado por el esquema de respuesta.
-2. El campo "sql" debe contener solo SQL PostgreSQL válido.
+2. El campo "sql" debe contener solo SQL ${dialectName} válido${isMysql ? ' (no mezcles sintaxis de PostgreSQL como SERIAL, RETURNING o ::cast)' : ''}.
 3. No uses Markdown, no uses bloques de código, no uses explicaciones dentro de "sql".
 4. No generes INSERT, UPDATE, DELETE, DROP, ALTER, VIEW, FUNCTION, PROCEDURE ni TRIGGER.
 5. Usa solo sentencias CREATE TABLE.
@@ -101,7 +131,7 @@ Reglas estrictas de salida:
 8. Crea primero las tablas padre y luego las tablas hijas.
 9. Cada tabla debe tener una clave primaria.
 10. Usa preferentemente:
-   id SERIAL PRIMARY KEY
+   ${primaryKeyRule}
 11. Toda relación relevante debe tener FOREIGN KEY mediante:
    columna_id INT NOT NULL REFERENCES tabla_padre(id)
 12. Usa NOT NULL cuando el dato sea claramente obligatorio.
@@ -117,18 +147,13 @@ Reglas estrictas de salida:
    - cantidades >= 0
    - porcentajes entre 0 y 100
    - fechas no requieren CHECK por ahora si dependen de otra columna
-15. Usa tipos PostgreSQL apropiados:
-   - VARCHAR(n) para textos cortos
-   - TEXT para descripciones largas
-   - INT para cantidades enteras
-   - DECIMAL(10,2) o DECIMAL(12,2) para dinero
-   - DATE para fechas
-   - BOOLEAN para estados lógicos
+15. Usa tipos ${dialectName} apropiados:
+${typeRules}
 16. El esquema debe ser suficientemente rico para representar bien el dominio, pero no excesivamente grande.
 17. Si la descripción implica cabecera/detalle, modela ambas tablas.
 18. Si la descripción implica pagos, movimientos, productos, servicios, préstamos, citas, etc., crea las relaciones necesarias.
 19. No inventes datos; solo estructura.
-20. El SQL debe poder ejecutarse en PostgreSQL sin depender de extensiones externas.
+20. ${executionRule}
 
 Criterios de calidad:
 - El diseño debe tener sentido lógico.
@@ -140,7 +165,7 @@ Criterios de calidad:
 Debes devolver:
 - title: nombre breve del dominio de la base
 - summary: resumen breve de lo que modela el esquema
-- sql: script PostgreSQL completo
+- sql: script ${dialectName} completo
 - assumptions: supuestos que tomaste al diseñar el esquema
 
 Descripción del usuario:

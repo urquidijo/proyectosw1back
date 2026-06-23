@@ -1530,6 +1530,8 @@ export const SqlImportScalarFieldEnum = {
   status: 'status',
   schemaJson: 'schemaJson',
   errors: 'errors',
+  engine: 'engine',
+  dialect: 'dialect',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1551,6 +1553,7 @@ export const GenerationScalarFieldEnum = {
   outputFile: 'outputFile',
   outputDataFile: 'outputDataFile',
   region: 'region',
+  engine: 'engine',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   validationJson: 'validationJson'
@@ -1818,6 +1821,34 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'GenerationEngine'
+ */
+export type EnumGenerationEngineFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GenerationEngine'>
+    
+
+
+/**
+ * Reference to a field of type 'GenerationEngine[]'
+ */
+export type ListEnumGenerationEngineFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GenerationEngine[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SqlDialect'
+ */
+export type EnumSqlDialectFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SqlDialect'>
+    
+
+
+/**
+ * Reference to a field of type 'SqlDialect[]'
+ */
+export type ListEnumSqlDialectFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SqlDialect[]'>
     
 
 

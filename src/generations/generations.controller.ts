@@ -69,16 +69,26 @@ export class GenerationsController {
     @CurrentUser() user: AuthenticatedUser,
     @Res({ passthrough: true }) response: Response,
   ) {
+    const generation = await this.generationsService.findOne(
+      projectId,
+      generationId,
+      user.id,
+    );
     const outputSql = await this.generationsService.getOutputSql(
       projectId,
       generationId,
       user.id,
     );
 
-    response.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    const isMongo = generation.engine === 'MONGODB';
+
+    response.setHeader(
+      'Content-Type',
+      isMongo ? 'application/javascript; charset=utf-8' : 'text/plain; charset=utf-8',
+    );
     response.setHeader(
       'Content-Disposition',
-      `attachment; filename="syndata-${generationId}.sql"`,
+      `attachment; filename="syndata-${generationId}.${isMongo ? 'js' : 'sql'}"`,
     );
 
     return outputSql;

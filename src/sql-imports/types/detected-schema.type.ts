@@ -10,6 +10,9 @@ export type DetectedColumn = {
     table: string;
     column: string;
   } | null;
+  /** Límites numéricos detectados en restricciones CHECK simples (ej. CHECK (monto >= 0)). */
+  checkMin?: number | null;
+  checkMax?: number | null;
 };
 
 export type DetectedForeignKey = {
@@ -26,7 +29,7 @@ export type DetectedTable = {
 };
 
 export type DetectedSchema = {
-  dialect: 'postgresql';
+  dialect: 'postgresql' | 'mysql';
   tables: DetectedTable[];
 };
 

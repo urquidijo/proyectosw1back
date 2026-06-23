@@ -18,6 +18,9 @@ import { enrichSchemaWithImplicitFks } from '../sql-imports/utils/schema-enriche
 type GeneratedValue = string | number | boolean | null;
 type GeneratedRow = Record<string, GeneratedValue>;
 
+/** Motor de base de datos destino para el dump generado (SQL o script de Mongo shell). */
+export type GenerationTargetEngine = 'POSTGRESQL' | 'MONGODB';
+
 type GenerationEngineResult = {
   orderedTables: string[];
   rowsByTable: Record<string, GeneratedRow[]>;
@@ -76,6 +79,7 @@ export class SyntheticDataGeneratorService {
     plan?: GenerationPlanJson | null,
     region?: string,
     columnRules?: ColumnRulesInput | null,
+    targetEngine?: GenerationTargetEngine,
   ): GenerationEngineResult {
     const enrichedSchema = enrichSchemaWithImplicitFks(schema);
     const { faker, regionName } = getFakerInstance(region);
@@ -149,16 +153,27 @@ export class SyntheticDataGeneratorService {
     // Aplicar heurísticas lógicas de negocio (precios, subtotales, totales agregados)
     this.applyBusinessHeuristics(enrichedSchema, rowsByTableMap);
 
+    // Red de seguridad final: tanto las reglas del plan (ej. una resta que da
+    // negativo) como las heurísticas de negocio pueden producir valores fuera
+    // de los límites de un CHECK del DDL (ej. CHECK (monto >= 0)) sin pasar
+    // por la generación de columnas donde ya se acota. Se revisa una última
+    // vez aquí para no romper el INSERT real sin importar qué paso produjo
+    // el valor.
+    this.enforceCheckBounds(enrichedSchema, rowsByTableMap);
+
     const rowsByTable = Object.fromEntries(rowsByTableMap.entries());
 
     const preview = Object.fromEntries(
       Object.entries(rowsByTable).map(([tableName, rows]) => [
         tableName,
-        rows.slice(0, 100),
+        rows.slice(0, 5),
       ]),
     );
 
-    const outputSql = this.buildSqlFile(orderedTableObjects, rowsByTableMap);
+    const outputSql =
+      targetEngine === 'MONGODB'
+        ? this.buildMongoScript(orderedTableObjects, rowsByTableMap)
+        : this.buildSqlFile(orderedTableObjects, rowsByTableMap);
 
     return {
       orderedTables: orderedTableObjects.map((table) => table.name),
@@ -296,7 +311,7 @@ export class SyntheticDataGeneratorService {
 
     const mustBeUnique =
       column.isUnique ||
-      column.isPrimaryKey ||
+      this.isSurrogatePrimaryKeyColumn(table, column) ||
       isReferenceNameCandidate ||
       Boolean(columnRule?.unique);
 
@@ -338,7 +353,71 @@ export class SyntheticDataGeneratorService {
       }
     }
 
+    // Último paso: si el DDL trae un CHECK numérico simple sobre esta columna
+    // (ej. CHECK (monto >= 0)), acotar el valor para no romper el INSERT real,
+    // sin importar qué heurística/regla haya producido el valor original.
+    if (typeof value === 'number') {
+      value = this.clampToCheckBounds(value, column.checkMin, column.checkMax);
+    }
+
     return value;
+  }
+
+  private clampToCheckBounds(
+    value: number,
+    min?: number | null,
+    max?: number | null,
+  ): number {
+    let result = value;
+
+    if (min !== undefined && min !== null && result < min) {
+      result = min;
+    }
+
+    if (max !== undefined && max !== null && result > max) {
+      result = max;
+    }
+
+    return result;
+  }
+
+  /**
+   * Pasada final sobre las filas ya generadas: las reglas del plan de IA
+   * (ej. una resta entre dos columnas) y las heurísticas de negocio corren
+   * después de generar cada columna y pueden dejar un valor fuera del rango
+   * de un CHECK del DDL (ej. CHECK (monto >= 0)) sin pasar por
+   * clampToCheckBounds. Se vuelve a acotar aquí para garantizar que el
+   * INSERT real nunca falle por esto, sin importar qué paso produjo el valor.
+   */
+  private enforceCheckBounds(
+    schema: DetectedSchema,
+    rowsByTableMap: Map<string, Record<string, unknown>[]>,
+  ): void {
+    for (const table of schema.tables) {
+      const columnsWithBounds = table.columns.filter(
+        (column) =>
+          (column.checkMin !== undefined && column.checkMin !== null) ||
+          (column.checkMax !== undefined && column.checkMax !== null),
+      );
+
+      if (columnsWithBounds.length === 0) continue;
+
+      const rows = rowsByTableMap.get(table.name);
+      if (!rows) continue;
+
+      for (const row of rows) {
+        for (const column of columnsWithBounds) {
+          const current = row[column.name];
+          if (typeof current === 'number') {
+            row[column.name] = this.clampToCheckBounds(
+              current,
+              column.checkMin,
+              column.checkMax,
+            );
+          }
+        }
+      }
+    }
   }
 
   private getColumnRule(
@@ -462,9 +541,11 @@ export class SyntheticDataGeneratorService {
 
     // 0. Reglas manuales configuradas por el usuario para esta columna: tienen
     //    prioridad absoluta sobre el plan de IA y cualquier heurística genérica
-    //    (excepto en claves primarias, que deben conservar su estrategia de
-    //    generación para no romper la unicidad/orden de inserción).
-    if (!column.isPrimaryKey) {
+    //    (excepto en claves primarias de una sola columna, que deben conservar
+    //    su estrategia de generación para no romper la unicidad/orden de
+    //    inserción). Una columna que solo es PARTE de una PK compuesta (y no es
+    //    FK) no es un "id sustituto": sí puede llevar regla manual.
+    if (!this.isSurrogatePrimaryKeyColumn(table, column)) {
       const columnRule = this.getColumnRule(table, column, columnRules);
 
       if (columnRule?.type) {
@@ -572,7 +653,13 @@ export class SyntheticDataGeneratorService {
       }
     }
 
-    if (column.isPrimaryKey) {
+    // Solo las PK de una sola columna usan la estrategia de "id sustituto"
+    // (secuencial/UUID/código). Una columna que solo es parte de una PK
+    // compuesta (ej. fecha_inicio en PK (cuenta_id, fecha_inicio)) debe
+    // generarse con su tipo real; de lo contrario, generatePrimaryKeyValue
+    // devuelve rowIndex (un entero) sin importar el tipo de columna, lo que
+    // rompe el INSERT cuando esa columna es DATE/DECIMAL/etc.
+    if (this.isSurrogatePrimaryKeyColumn(table, column)) {
       return this.generatePrimaryKeyValue(table, column, rowIndex);
     }
 
@@ -1002,6 +1089,20 @@ export class SyntheticDataGeneratorService {
     return result;
   }
 
+  /**
+   * Solo una PK de UNA columna (id/código/UUID secuencial) usa la estrategia
+   * de "id sustituto" de generatePrimaryKeyValue. Una columna que solo es
+   * parte de una PK compuesta no es eso: es una columna normal (fecha, monto,
+   * etc.) cuya combinación con las demás columnas de la PK debe ser única,
+   * pero su valor individual debe respetar su tipo real.
+   */
+  private isSurrogatePrimaryKeyColumn(
+    table: DetectedTable,
+    column: DetectedColumn,
+  ): boolean {
+    return column.isPrimaryKey && table.primaryKeys.length <= 1;
+  }
+
   private generatePrimaryKeyValue(
     table: DetectedTable,
     column: DetectedColumn,
@@ -1114,6 +1215,90 @@ export class SyntheticDataGeneratorService {
       .join('\n\n');
 
     return `${header}${inserts}\n`;
+  }
+
+  /**
+   * Genera un script de `mongosh` equivalente al dump SQL: una colección por
+   * tabla detectada (mismo orden topológico, así las colecciones referenciadas
+   * existen antes que sus referencias) con `insertMany` por colección. Las
+   * relaciones del esquema original se preservan como valores planos (sin FKs
+   * nativas, como corresponde a MongoDB), igual que ya hace el generador de filas.
+   */
+  private buildMongoScript(
+    orderedTables: DetectedTable[],
+    rowsByTable: Map<string, GeneratedRow[]>,
+  ): string {
+    const header = [
+      '// Archivo generado por SynData',
+      '// Datos sintéticos para MongoDB — ejecutar con: mongosh <conexion> archivo.js',
+      '',
+    ].join('\n');
+
+    const blocks = orderedTables
+      .map((table) => {
+        const rows = rowsByTable.get(table.name) ?? [];
+
+        if (rows.length === 0) {
+          return '';
+        }
+
+        const columnTypeByName = new Map(
+          table.columns.map((column) => [column.name, column.normalizedType]),
+        );
+
+        const documents = rows
+          .map((row) => this.toMongoDocument(row, columnTypeByName))
+          .join(',\n');
+
+        return `db.${table.name}.insertMany([\n${documents}\n]);`;
+      })
+      .filter(Boolean)
+      .join('\n\n');
+
+    return `${header}${blocks}\n`;
+  }
+
+  private toMongoDocument(
+    row: GeneratedRow,
+    columnTypeByName: Map<string, string>,
+  ): string {
+    const fields = Object.entries(row)
+      .map(
+        ([key, value]) =>
+          `    ${JSON.stringify(key)}: ${this.toMongoLiteral(
+            value,
+            columnTypeByName.get(key),
+          )}`,
+      )
+      .join(',\n');
+
+    return `  {\n${fields}\n  }`;
+  }
+
+  private toMongoLiteral(
+    value: GeneratedValue,
+    normalizedType?: string,
+  ): string {
+    if (value === null) return 'null';
+
+    if (typeof value === 'number') return String(value);
+
+    if (typeof value === 'boolean') return value ? 'true' : 'false';
+
+    if (
+      (normalizedType === 'DATE' || normalizedType === 'DATETIME') &&
+      typeof value === 'string'
+    ) {
+      const isoCandidate =
+        normalizedType === 'DATE' ? `${value}T00:00:00.000Z` : value.replace(' ', 'T');
+      const date = new Date(isoCandidate);
+
+      if (!Number.isNaN(date.getTime())) {
+        return `ISODate("${date.toISOString()}")`;
+      }
+    }
+
+    return JSON.stringify(String(value));
   }
 
   private toSqlLiteral(value: GeneratedValue): string {

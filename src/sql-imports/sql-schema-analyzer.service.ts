@@ -9,10 +9,13 @@ import {
 
 @Injectable()
 export class SqlSchemaAnalyzerService {
-  analyze(sql: string): SchemaAnalysisResult {
+  analyze(
+    sql: string,
+    dialect: 'postgresql' | 'mysql' = 'postgresql',
+  ): SchemaAnalysisResult {
     const errors: string[] = [];
 
-    const cleanedSql = this.removeComments(sql);
+    const cleanedSql = this.stripMySqlTableOptions(this.removeComments(sql));
 
     if (!cleanedSql.trim()) {
       return {
@@ -30,11 +33,16 @@ export class SqlSchemaAnalyzerService {
       };
     }
 
+    const dialectMismatch = this.detectDialectMismatch(cleanedSql, dialect);
+    if (dialectMismatch) {
+      errors.push(dialectMismatch);
+    }
+
     const tables = this.extractTables(cleanedSql);
 
     if (tables.length === 0) {
       errors.push(
-        'No se pudieron detectar tablas. Verifica que el SQL sea compatible con PostgreSQL.',
+        'No se pudieron detectar tablas. Verifica que el SQL sea compatible con PostgreSQL o MySQL.',
       );
     }
 
@@ -47,7 +55,7 @@ export class SqlSchemaAnalyzerService {
     }
 
     const schema: DetectedSchema = {
-      dialect: 'postgresql',
+      dialect,
       tables,
     };
 
@@ -56,6 +64,63 @@ export class SqlSchemaAnalyzerService {
       schema,
       errors,
     };
+  }
+
+  /**
+   * Detecta si el script usa marcadores sintácticos exclusivos del OTRO
+   * dialecto al que el usuario declaró (ej. eligió MySQL pero el script usa
+   * `SERIAL`/`RETURNING`, propios de PostgreSQL). Evita que se analice un
+   * script con el dialecto equivocado, lo que produciría tipos/columnas mal
+   * detectados de forma silenciosa.
+   */
+  private detectDialectMismatch(
+    sql: string,
+    dialect: 'postgresql' | 'mysql',
+  ): string | null {
+    const mysqlMarkers = [
+      /`[a-zA-Z0-9_]+`/, // identificadores con backtick
+      /\bauto_increment\b/i,
+      /\bengine\s*=\s*\w+/i,
+      /\bunsigned\b/i,
+      /\btinyint\b/i,
+    ];
+
+    const postgresMarkers = [
+      /\b(big)?serial\b/i,
+      /\bgenerated\s+(always|by\s+default)\s+as\s+identity\b/i,
+      /::\s*[a-zA-Z][\w[\]]*/, // cast estilo Postgres, ej. precio::numeric
+      /\breturning\b/i,
+    ];
+
+    const hasMysqlMarker = mysqlMarkers.some((pattern) => pattern.test(sql));
+    const hasPostgresMarker = postgresMarkers.some((pattern) =>
+      pattern.test(sql),
+    );
+
+    if (dialect === 'mysql' && hasPostgresMarker) {
+      return 'El script parece usar sintaxis PostgreSQL (SERIAL, RETURNING, ::cast o GENERATED ... AS IDENTITY), pero seleccionaste MySQL. Cambia la base de datos seleccionada o revisa el script.';
+    }
+
+    if (dialect === 'postgresql' && hasMysqlMarker) {
+      return 'El script parece usar sintaxis MySQL (identificadores con backtick, AUTO_INCREMENT, ENGINE=..., UNSIGNED o TINYINT), pero seleccionaste PostgreSQL. Cambia la base de datos seleccionada o revisa el script.';
+    }
+
+    return null;
+  }
+
+  /**
+   * Quita cláusulas de opciones de tabla exclusivas de MySQL (ENGINE=InnoDB,
+   * DEFAULT CHARSET=..., COLLATE=..., AUTO_INCREMENT=N, ROW_FORMAT=...,
+   * COMMENT='...') que MySQL permite escribir entre el ")" de cierre y el ";"
+   * final de un CREATE TABLE. El resto del parser asume que justo después del
+   * paréntesis de cierre viene el ";", así que las removemos antes de extraer
+   * tablas. Es un no-op para scripts PostgreSQL (esas cláusulas no existen ahí).
+   */
+  private stripMySqlTableOptions(sql: string): string {
+    return sql.replace(
+      /\)(?:\s*(?:ENGINE\s*=\s*\w+|DEFAULT\s+CHARSET\s*=\s*\w+|CHARSET\s*=\s*\w+|COLLATE\s*=\s*[\w-]+|AUTO_INCREMENT\s*=\s*\d+|ROW_FORMAT\s*=\s*\w+|COMMENT\s*=\s*'[^']*'))*\s*;/gi,
+      ');',
+    );
   }
 
   private removeComments(sql: string): string {
@@ -69,7 +134,7 @@ export class SqlSchemaAnalyzerService {
     const tables: DetectedTable[] = [];
 
     const regex =
-      /create\s+table\s+(?:if\s+not\s+exists\s+)?([a-zA-Z0-9_."']+)\s*\(([\s\S]*?)\)\s*;/gi;
+      /create\s+table\s+(?:if\s+not\s+exists\s+)?([a-zA-Z0-9_."'`]+)\s*\(([\s\S]*?)\)\s*;/gi;
 
     let match: RegExpExecArray | null;
 
@@ -90,6 +155,10 @@ export class SqlSchemaAnalyzerService {
     const columns: DetectedColumn[] = [];
     const primaryKeys = new Set<string>();
     const foreignKeys: DetectedForeignKey[] = [];
+    const checkBoundsByColumn = new Map<
+      string,
+      { min?: number; max?: number }
+    >();
 
     for (const rawPart of parts) {
       const part = rawPart.trim();
@@ -113,12 +182,27 @@ export class SqlSchemaAnalyzerService {
       }
 
       if (this.isOtherTableConstraint(part)) {
+        // Restricción CHECK a nivel de tabla (ej. `CHECK (monto >= 0)` o
+        // `CONSTRAINT chk_monto CHECK (monto >= 0)`): no representa una
+        // columna, pero sus límites numéricos sí se usan luego para acotar
+        // los valores generados de esa columna.
+        this.mergeCheckBounds(
+          checkBoundsByColumn,
+          this.extractCheckBoundsFromText(part),
+        );
         continue;
       }
 
       const column = this.parseColumn(part);
 
       if (column) {
+        // CHECK inline dentro de la propia definición de columna
+        // (ej. `monto DECIMAL(10,2) CHECK (monto >= 0)`).
+        this.mergeCheckBounds(
+          checkBoundsByColumn,
+          this.extractCheckBoundsFromText(part),
+        );
+
         if (column.isPrimaryKey) {
           primaryKeys.add(column.name);
         }
@@ -137,6 +221,7 @@ export class SqlSchemaAnalyzerService {
 
     const finalColumns = columns.map((column) => {
       const fk = foreignKeys.find((f) => f.column === column.name);
+      const bounds = checkBoundsByColumn.get(column.name);
       return {
         ...column,
         isPrimaryKey: primaryKeys.has(column.name) || column.isPrimaryKey,
@@ -144,6 +229,8 @@ export class SqlSchemaAnalyzerService {
         references: fk
           ? { table: fk.referencesTable, column: fk.referencesColumn }
           : column.references,
+        checkMin: bounds?.min ?? column.checkMin ?? null,
+        checkMax: bounds?.max ?? column.checkMax ?? null,
       };
     });
 
@@ -155,6 +242,118 @@ export class SqlSchemaAnalyzerService {
     };
   }
 
+  /**
+   * Extrae límites numéricos de cualquier CHECK presente en un fragmento de
+   * DDL (puede haber más de uno, ej. `CHECK (cant > 0) CHECK (cant < 1000)`
+   * aunque eso es inusual). Solo entiende patrones simples de un solo lado o
+   * de rango (BETWEEN o dos comparaciones unidas con AND); cualquier otra
+   * expresión (funciones, comparaciones entre columnas, etc.) se ignora en
+   * vez de fallar, ya que es mejor no acotar que acotar mal.
+   */
+  private extractCheckBoundsFromText(
+    text: string,
+  ): { column: string; min?: number; max?: number }[] {
+    const results: { column: string; min?: number; max?: number }[] = [];
+    const checkRegex = /check\s*\(([^)]*)\)/gi;
+
+    let match: RegExpExecArray | null;
+    while ((match = checkRegex.exec(text)) !== null) {
+      const parsed = this.parseCheckExpression(match[1]);
+
+      if (parsed) {
+        results.push(parsed);
+      }
+    }
+
+    return results;
+  }
+
+  private parseCheckExpression(
+    expression: string,
+  ): { column: string; min?: number; max?: number } | null {
+    const expr = expression.trim();
+    const num = '-?\\d+(?:\\.\\d+)?';
+    const id = "[a-zA-Z0-9_.\"'`]+";
+
+    const between = expr.match(
+      new RegExp(`^(${id})\\s+between\\s+(${num})\\s+and\\s+(${num})$`, 'i'),
+    );
+    if (between) {
+      return {
+        column: this.normalizeIdentifier(between[1]),
+        min: Number(between[2]),
+        max: Number(between[3]),
+      };
+    }
+
+    const lowerThenUpper = expr.match(
+      new RegExp(
+        `^(${id})\\s*(>=|>)\\s*(${num})\\s+and\\s+\\1\\s*(<=|<)\\s*(${num})$`,
+        'i',
+      ),
+    );
+    if (lowerThenUpper) {
+      return {
+        column: this.normalizeIdentifier(lowerThenUpper[1]),
+        min: Number(lowerThenUpper[3]),
+        max: Number(lowerThenUpper[5]),
+      };
+    }
+
+    const upperThenLower = expr.match(
+      new RegExp(
+        `^(${id})\\s*(<=|<)\\s*(${num})\\s+and\\s+\\1\\s*(>=|>)\\s*(${num})$`,
+        'i',
+      ),
+    );
+    if (upperThenLower) {
+      return {
+        column: this.normalizeIdentifier(upperThenLower[1]),
+        min: Number(upperThenLower[5]),
+        max: Number(upperThenLower[3]),
+      };
+    }
+
+    const single = expr.match(
+      new RegExp(`^(${id})\\s*(>=|>|<=|<)\\s*(${num})$`, 'i'),
+    );
+    if (single) {
+      const column = this.normalizeIdentifier(single[1]);
+      const operator = single[2];
+      const value = Number(single[3]);
+
+      return operator === '>=' || operator === '>'
+        ? { column, min: value }
+        : { column, max: value };
+    }
+
+    return null;
+  }
+
+  private mergeCheckBounds(
+    target: Map<string, { min?: number; max?: number }>,
+    updates: { column: string; min?: number; max?: number }[],
+  ): void {
+    for (const update of updates) {
+      const current = target.get(update.column) ?? {};
+
+      target.set(update.column, {
+        min:
+          update.min === undefined
+            ? current.min
+            : current.min === undefined
+              ? update.min
+              : Math.max(current.min, update.min),
+        max:
+          update.max === undefined
+            ? current.max
+            : current.max === undefined
+              ? update.max
+              : Math.min(current.max, update.max),
+      });
+    }
+  }
+
   private applyAlterTableConstraints(
     sql: string,
     tables: DetectedTable[],
@@ -162,7 +361,7 @@ export class SqlSchemaAnalyzerService {
     const tableMap = new Map(tables.map((table) => [table.name, table]));
 
     const primaryKeyRegex =
-      /alter\s+table\s+(?:only\s+)?([a-zA-Z0-9_."']+)\s+add\s+(?:constraint\s+[a-zA-Z0-9_."']+\s+)?primary\s+key\s*\(([^)]+)\)\s*;/gi;
+      /alter\s+table\s+(?:only\s+)?([a-zA-Z0-9_."'`]+)\s+add\s+(?:constraint\s+[a-zA-Z0-9_."'`]+\s+)?primary\s+key\s*\(([^)]+)\)\s*;/gi;
 
     let primaryKeyMatch: RegExpExecArray | null;
 
@@ -193,7 +392,7 @@ export class SqlSchemaAnalyzerService {
     }
 
     const foreignKeyRegex =
-      /alter\s+table\s+(?:only\s+)?([a-zA-Z0-9_."']+)\s+add\s+(?:constraint\s+[a-zA-Z0-9_."']+\s+)?foreign\s+key\s*\(\s*([a-zA-Z0-9_."']+)\s*\)\s+references\s+([a-zA-Z0-9_."']+)\s*\(\s*([a-zA-Z0-9_."']+)\s*\)\s*;/gi;
+      /alter\s+table\s+(?:only\s+)?([a-zA-Z0-9_."'`]+)\s+add\s+(?:constraint\s+[a-zA-Z0-9_."'`]+\s+)?foreign\s+key\s*\(\s*([a-zA-Z0-9_."'`]+)\s*\)\s+references\s+([a-zA-Z0-9_."'`]+)\s*\(\s*([a-zA-Z0-9_."'`]+)\s*\)\s*;/gi;
 
     let foreignKeyMatch: RegExpExecArray | null;
 
@@ -261,7 +460,7 @@ export class SqlSchemaAnalyzerService {
     const defaultValue = defaultValueMatch ? defaultValueMatch[1] : null;
 
     const inlineReferenceMatch = part.match(
-      /\breferences\s+([a-zA-Z0-9_."']+)\s*\(\s*([a-zA-Z0-9_."']+)\s*\)/i,
+      /\breferences\s+([a-zA-Z0-9_."'`]+)\s*\(\s*([a-zA-Z0-9_."'`]+)\s*\)/i,
     );
 
     const references = inlineReferenceMatch
@@ -271,10 +470,17 @@ export class SqlSchemaAnalyzerService {
         }
       : null;
 
+    // AUTO_INCREMENT (MySQL) puede aparecer después de NOT NULL/UNSIGNED, fuera
+    // de los `typeTokens` recortados por constraintIndex; se busca en `part`
+    // completo para no perderlo según el orden en que el usuario lo escribió.
+    const normalizedType = /auto_increment/i.test(part)
+      ? 'SERIAL'
+      : this.normalizeSqlType(rawType, columnName);
+
     return {
       name: columnName,
       rawType,
-      normalizedType: this.normalizeSqlType(rawType, columnName),
+      normalizedType,
       isPrimaryKey,
       isNullable,
       isUnique,
@@ -285,7 +491,7 @@ export class SqlSchemaAnalyzerService {
 
   private parseTableForeignKey(part: string): DetectedForeignKey | null {
     const match = part.match(
-      /foreign\s+key\s*\(\s*([a-zA-Z0-9_."']+)\s*\)\s+references\s+([a-zA-Z0-9_."']+)\s*\(\s*([a-zA-Z0-9_."']+)\s*\)/i,
+      /foreign\s+key\s*\(\s*([a-zA-Z0-9_."'`]+)\s*\)\s+references\s+([a-zA-Z0-9_."'`]+)\s*\(\s*([a-zA-Z0-9_."'`]+)\s*\)/i,
     );
 
     if (!match) {
@@ -308,7 +514,12 @@ export class SqlSchemaAnalyzerService {
   }
 
   private isOtherTableConstraint(part: string): boolean {
-    return /^(constraint|unique|check|exclude)/i.test(part);
+    // "key"/"index"/"fulltext"/"spatial" cubren los índices sueltos típicos de
+    // MySQL (ej. `KEY idx_nombre (nombre)`, `FULLTEXT idx (texto)`), que no
+    // representan una columna ni deben interpretarse como tal.
+    return /^(constraint|unique|check|exclude|key|index|fulltext|spatial)\b/i.test(
+      part,
+    );
   }
 
   private extractColumnsInsideParentheses(part: string): string[] {
@@ -348,7 +559,7 @@ export class SqlSchemaAnalyzerService {
   }
 
   private normalizeIdentifier(identifier: string): string {
-    const cleaned = identifier.replace(/["']/g, '').trim();
+    const cleaned = identifier.replace(/["'`]/g, '').trim();
 
     const parts = cleaned.split('.');
 
@@ -362,14 +573,23 @@ export class SqlSchemaAnalyzerService {
     if (type.includes('bigserial')) return 'SERIAL';
     if (type.includes('serial')) return 'SERIAL';
     if (type.includes('uuid')) return 'UUID';
+    // TINYINT(1) es el idioma estándar de MySQL para booleanos; debe resolverse
+    // antes que el check genérico de "int" (que de otro modo lo tomaría como INTEGER).
+    if (type.includes('tinyint')) return 'BOOLEAN';
     if (type.includes('int')) return 'INTEGER';
     if (type.includes('decimal')) return 'DECIMAL';
     if (type.includes('numeric')) return 'DECIMAL';
     if (type.includes('double')) return 'DECIMAL';
+    if (type.includes('float')) return 'DECIMAL';
     if (type.includes('real')) return 'DECIMAL';
     if (type.includes('bool')) return 'BOOLEAN';
-    if (type.includes('date') && !type.includes('timestamp')) return 'DATE';
+    if (type.includes('enum')) return 'STRING';
+    // "datetime" y "timestamp" deben resolverse antes que "date" a secas: ambos
+    // contienen la subcadena "date"/se relacionan, y MySQL usa DATETIME como su
+    // tipo estándar de fecha+hora (donde Postgres suele usar TIMESTAMP).
+    if (type.includes('datetime')) return 'DATETIME';
     if (type.includes('timestamp')) return 'DATETIME';
+    if (type.includes('date')) return 'DATE';
     if (type.includes('time')) return 'TIME';
     if (type.includes('text')) return 'TEXT';
 

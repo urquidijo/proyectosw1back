@@ -31,15 +31,26 @@ export class ExportsService {
         );
       }
 
+      const generation = await this.generationsService.findOne(
+        projectId,
+        generationId,
+        userId,
+      );
       const outputSql = await this.generationsService.getOutputSql(
         projectId,
         generationId,
         userId,
       );
 
+      // El dump "nativo" refleja el motor elegido al generar: script SQL para
+      // PostgreSQL o script de mongosh (insertMany) para MongoDB.
+      const isMongo = generation.engine === 'MONGODB';
+
       return {
-        filename: `syndata-${generationId}.sql`,
-        contentType: 'text/plain; charset=utf-8',
+        filename: `syndata-${generationId}.${isMongo ? 'js' : 'sql'}`,
+        contentType: isMongo
+          ? 'application/javascript; charset=utf-8'
+          : 'text/plain; charset=utf-8',
         body: outputSql,
       };
     }

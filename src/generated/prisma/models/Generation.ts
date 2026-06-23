@@ -46,6 +46,7 @@ export type GenerationMinAggregateOutputType = {
   outputFile: string | null
   outputDataFile: string | null
   region: string | null
+  engine: $Enums.GenerationEngine | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +63,7 @@ export type GenerationMaxAggregateOutputType = {
   outputFile: string | null
   outputDataFile: string | null
   region: string | null
+  engine: $Enums.GenerationEngine | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -80,6 +82,7 @@ export type GenerationCountAggregateOutputType = {
   outputFile: number
   outputDataFile: number
   region: number
+  engine: number
   createdAt: number
   updatedAt: number
   validationJson: number
@@ -107,6 +110,7 @@ export type GenerationMinAggregateInputType = {
   outputFile?: true
   outputDataFile?: true
   region?: true
+  engine?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -123,6 +127,7 @@ export type GenerationMaxAggregateInputType = {
   outputFile?: true
   outputDataFile?: true
   region?: true
+  engine?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -141,6 +146,7 @@ export type GenerationCountAggregateInputType = {
   outputFile?: true
   outputDataFile?: true
   region?: true
+  engine?: true
   createdAt?: true
   updatedAt?: true
   validationJson?: true
@@ -247,6 +253,7 @@ export type GenerationGroupByOutputType = {
   outputFile: string | null
   outputDataFile: string | null
   region: string | null
+  engine: $Enums.GenerationEngine
   createdAt: Date
   updatedAt: Date
   validationJson: runtime.JsonValue | null
@@ -289,6 +296,7 @@ export type GenerationWhereInput = {
   outputFile?: Prisma.StringNullableFilter<"Generation"> | string | null
   outputDataFile?: Prisma.StringNullableFilter<"Generation"> | string | null
   region?: Prisma.StringNullableFilter<"Generation"> | string | null
+  engine?: Prisma.EnumGenerationEngineFilter<"Generation"> | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFilter<"Generation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Generation"> | Date | string
   validationJson?: Prisma.JsonNullableFilter<"Generation">
@@ -311,6 +319,7 @@ export type GenerationOrderByWithRelationInput = {
   outputFile?: Prisma.SortOrderInput | Prisma.SortOrder
   outputDataFile?: Prisma.SortOrderInput | Prisma.SortOrder
   region?: Prisma.SortOrderInput | Prisma.SortOrder
+  engine?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   validationJson?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -336,6 +345,7 @@ export type GenerationWhereUniqueInput = Prisma.AtLeast<{
   outputFile?: Prisma.StringNullableFilter<"Generation"> | string | null
   outputDataFile?: Prisma.StringNullableFilter<"Generation"> | string | null
   region?: Prisma.StringNullableFilter<"Generation"> | string | null
+  engine?: Prisma.EnumGenerationEngineFilter<"Generation"> | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFilter<"Generation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Generation"> | Date | string
   validationJson?: Prisma.JsonNullableFilter<"Generation">
@@ -358,6 +368,7 @@ export type GenerationOrderByWithAggregationInput = {
   outputFile?: Prisma.SortOrderInput | Prisma.SortOrder
   outputDataFile?: Prisma.SortOrderInput | Prisma.SortOrder
   region?: Prisma.SortOrderInput | Prisma.SortOrder
+  engine?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   validationJson?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -385,6 +396,7 @@ export type GenerationScalarWhereWithAggregatesInput = {
   outputFile?: Prisma.StringNullableWithAggregatesFilter<"Generation"> | string | null
   outputDataFile?: Prisma.StringNullableWithAggregatesFilter<"Generation"> | string | null
   region?: Prisma.StringNullableWithAggregatesFilter<"Generation"> | string | null
+  engine?: Prisma.EnumGenerationEngineWithAggregatesFilter<"Generation"> | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Generation"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Generation"> | Date | string
   validationJson?: Prisma.JsonNullableWithAggregatesFilter<"Generation">
@@ -401,6 +413,7 @@ export type GenerationCreateInput = {
   outputFile?: string | null
   outputDataFile?: string | null
   region?: string | null
+  engine?: $Enums.GenerationEngine
   createdAt?: Date | string
   updatedAt?: Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -423,6 +436,7 @@ export type GenerationUncheckedCreateInput = {
   outputFile?: string | null
   outputDataFile?: string | null
   region?: string | null
+  engine?: $Enums.GenerationEngine
   createdAt?: Date | string
   updatedAt?: Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -439,6 +453,7 @@ export type GenerationUpdateInput = {
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -461,6 +476,7 @@ export type GenerationUncheckedUpdateInput = {
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -480,6 +496,7 @@ export type GenerationCreateManyInput = {
   outputFile?: string | null
   outputDataFile?: string | null
   region?: string | null
+  engine?: $Enums.GenerationEngine
   createdAt?: Date | string
   updatedAt?: Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -496,6 +513,7 @@ export type GenerationUpdateManyMutationInput = {
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -515,6 +533,7 @@ export type GenerationUncheckedUpdateManyInput = {
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -544,6 +563,7 @@ export type GenerationCountOrderByAggregateInput = {
   outputFile?: Prisma.SortOrder
   outputDataFile?: Prisma.SortOrder
   region?: Prisma.SortOrder
+  engine?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   validationJson?: Prisma.SortOrder
@@ -565,6 +585,7 @@ export type GenerationMaxOrderByAggregateInput = {
   outputFile?: Prisma.SortOrder
   outputDataFile?: Prisma.SortOrder
   region?: Prisma.SortOrder
+  engine?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -581,6 +602,7 @@ export type GenerationMinOrderByAggregateInput = {
   outputFile?: Prisma.SortOrder
   outputDataFile?: Prisma.SortOrder
   region?: Prisma.SortOrder
+  engine?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -734,6 +756,7 @@ export type GenerationCreateWithoutProjectInput = {
   outputFile?: string | null
   outputDataFile?: string | null
   region?: string | null
+  engine?: $Enums.GenerationEngine
   createdAt?: Date | string
   updatedAt?: Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -754,6 +777,7 @@ export type GenerationUncheckedCreateWithoutProjectInput = {
   outputFile?: string | null
   outputDataFile?: string | null
   region?: string | null
+  engine?: $Enums.GenerationEngine
   createdAt?: Date | string
   updatedAt?: Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -802,6 +826,7 @@ export type GenerationScalarWhereInput = {
   outputFile?: Prisma.StringNullableFilter<"Generation"> | string | null
   outputDataFile?: Prisma.StringNullableFilter<"Generation"> | string | null
   region?: Prisma.StringNullableFilter<"Generation"> | string | null
+  engine?: Prisma.EnumGenerationEngineFilter<"Generation"> | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFilter<"Generation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Generation"> | Date | string
   validationJson?: Prisma.JsonNullableFilter<"Generation">
@@ -818,6 +843,7 @@ export type GenerationCreateWithoutSqlImportInput = {
   outputFile?: string | null
   outputDataFile?: string | null
   region?: string | null
+  engine?: $Enums.GenerationEngine
   createdAt?: Date | string
   updatedAt?: Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -838,6 +864,7 @@ export type GenerationUncheckedCreateWithoutSqlImportInput = {
   outputFile?: string | null
   outputDataFile?: string | null
   region?: string | null
+  engine?: $Enums.GenerationEngine
   createdAt?: Date | string
   updatedAt?: Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -880,6 +907,7 @@ export type GenerationCreateWithoutGenerationRuleSetInput = {
   outputFile?: string | null
   outputDataFile?: string | null
   region?: string | null
+  engine?: $Enums.GenerationEngine
   createdAt?: Date | string
   updatedAt?: Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -900,6 +928,7 @@ export type GenerationUncheckedCreateWithoutGenerationRuleSetInput = {
   outputFile?: string | null
   outputDataFile?: string | null
   region?: string | null
+  engine?: $Enums.GenerationEngine
   createdAt?: Date | string
   updatedAt?: Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -944,6 +973,7 @@ export type GenerationCreateManyProjectInput = {
   outputFile?: string | null
   outputDataFile?: string | null
   region?: string | null
+  engine?: $Enums.GenerationEngine
   createdAt?: Date | string
   updatedAt?: Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -960,6 +990,7 @@ export type GenerationUpdateWithoutProjectInput = {
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -980,6 +1011,7 @@ export type GenerationUncheckedUpdateWithoutProjectInput = {
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -998,6 +1030,7 @@ export type GenerationUncheckedUpdateManyWithoutProjectInput = {
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1016,6 +1049,7 @@ export type GenerationCreateManySqlImportInput = {
   outputFile?: string | null
   outputDataFile?: string | null
   region?: string | null
+  engine?: $Enums.GenerationEngine
   createdAt?: Date | string
   updatedAt?: Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1032,6 +1066,7 @@ export type GenerationUpdateWithoutSqlImportInput = {
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1052,6 +1087,7 @@ export type GenerationUncheckedUpdateWithoutSqlImportInput = {
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1070,6 +1106,7 @@ export type GenerationUncheckedUpdateManyWithoutSqlImportInput = {
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1088,6 +1125,7 @@ export type GenerationCreateManyGenerationRuleSetInput = {
   outputFile?: string | null
   outputDataFile?: string | null
   region?: string | null
+  engine?: $Enums.GenerationEngine
   createdAt?: Date | string
   updatedAt?: Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1104,6 +1142,7 @@ export type GenerationUpdateWithoutGenerationRuleSetInput = {
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1124,6 +1163,7 @@ export type GenerationUncheckedUpdateWithoutGenerationRuleSetInput = {
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1142,6 +1182,7 @@ export type GenerationUncheckedUpdateManyWithoutGenerationRuleSetInput = {
   outputFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputDataFile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validationJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1163,6 +1204,7 @@ export type GenerationSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   outputFile?: boolean
   outputDataFile?: boolean
   region?: boolean
+  engine?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   validationJson?: boolean
@@ -1185,6 +1227,7 @@ export type GenerationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   outputFile?: boolean
   outputDataFile?: boolean
   region?: boolean
+  engine?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   validationJson?: boolean
@@ -1207,6 +1250,7 @@ export type GenerationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   outputFile?: boolean
   outputDataFile?: boolean
   region?: boolean
+  engine?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   validationJson?: boolean
@@ -1229,12 +1273,13 @@ export type GenerationSelectScalar = {
   outputFile?: boolean
   outputDataFile?: boolean
   region?: boolean
+  engine?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   validationJson?: boolean
 }
 
-export type GenerationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "sqlImportId" | "generationRuleSetId" | "rowConfig" | "previewJson" | "outputSql" | "status" | "progress" | "error" | "outputFile" | "outputDataFile" | "region" | "createdAt" | "updatedAt" | "validationJson", ExtArgs["result"]["generation"]>
+export type GenerationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "sqlImportId" | "generationRuleSetId" | "rowConfig" | "previewJson" | "outputSql" | "status" | "progress" | "error" | "outputFile" | "outputDataFile" | "region" | "engine" | "createdAt" | "updatedAt" | "validationJson", ExtArgs["result"]["generation"]>
 export type GenerationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   sqlImport?: boolean | Prisma.SqlImportDefaultArgs<ExtArgs>
@@ -1272,6 +1317,7 @@ export type $GenerationPayload<ExtArgs extends runtime.Types.Extensions.Internal
     outputFile: string | null
     outputDataFile: string | null
     region: string | null
+    engine: $Enums.GenerationEngine
     createdAt: Date
     updatedAt: Date
     validationJson: runtime.JsonValue | null
@@ -1714,6 +1760,7 @@ export interface GenerationFieldRefs {
   readonly outputFile: Prisma.FieldRef<"Generation", 'String'>
   readonly outputDataFile: Prisma.FieldRef<"Generation", 'String'>
   readonly region: Prisma.FieldRef<"Generation", 'String'>
+  readonly engine: Prisma.FieldRef<"Generation", 'GenerationEngine'>
   readonly createdAt: Prisma.FieldRef<"Generation", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Generation", 'DateTime'>
   readonly validationJson: Prisma.FieldRef<"Generation", 'Json'>

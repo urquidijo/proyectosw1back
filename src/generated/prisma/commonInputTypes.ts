@@ -171,6 +171,20 @@ export type JsonNullableFilterBase<$PrismaModel = never> = {
   not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
 }
 
+export type EnumGenerationEngineFilter<$PrismaModel = never> = {
+  equals?: $Enums.GenerationEngine | Prisma.EnumGenerationEngineFieldRefInput<$PrismaModel>
+  in?: $Enums.GenerationEngine[] | Prisma.ListEnumGenerationEngineFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GenerationEngine[] | Prisma.ListEnumGenerationEngineFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGenerationEngineFilter<$PrismaModel> | $Enums.GenerationEngine
+}
+
+export type EnumSqlDialectFilter<$PrismaModel = never> = {
+  equals?: $Enums.SqlDialect | Prisma.EnumSqlDialectFieldRefInput<$PrismaModel>
+  in?: $Enums.SqlDialect[] | Prisma.ListEnumSqlDialectFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SqlDialect[] | Prisma.ListEnumSqlDialectFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSqlDialectFilter<$PrismaModel> | $Enums.SqlDialect
+}
+
 export type EnumSqlImportStatusWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.SqlImportStatus | Prisma.EnumSqlImportStatusFieldRefInput<$PrismaModel>
   in?: $Enums.SqlImportStatus[] | Prisma.ListEnumSqlImportStatusFieldRefInput<$PrismaModel>
@@ -206,6 +220,26 @@ export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedJsonNullableFilter<$PrismaModel>
   _max?: Prisma.NestedJsonNullableFilter<$PrismaModel>
+}
+
+export type EnumGenerationEngineWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GenerationEngine | Prisma.EnumGenerationEngineFieldRefInput<$PrismaModel>
+  in?: $Enums.GenerationEngine[] | Prisma.ListEnumGenerationEngineFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GenerationEngine[] | Prisma.ListEnumGenerationEngineFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGenerationEngineWithAggregatesFilter<$PrismaModel> | $Enums.GenerationEngine
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGenerationEngineFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGenerationEngineFilter<$PrismaModel>
+}
+
+export type EnumSqlDialectWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SqlDialect | Prisma.EnumSqlDialectFieldRefInput<$PrismaModel>
+  in?: $Enums.SqlDialect[] | Prisma.ListEnumSqlDialectFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SqlDialect[] | Prisma.ListEnumSqlDialectFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSqlDialectWithAggregatesFilter<$PrismaModel> | $Enums.SqlDialect
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSqlDialectFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSqlDialectFilter<$PrismaModel>
 }
 
 export type JsonFilter<$PrismaModel = never> =
@@ -547,6 +581,20 @@ export type NestedEnumSqlImportStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumSqlImportStatusFilter<$PrismaModel> | $Enums.SqlImportStatus
 }
 
+export type NestedEnumGenerationEngineFilter<$PrismaModel = never> = {
+  equals?: $Enums.GenerationEngine | Prisma.EnumGenerationEngineFieldRefInput<$PrismaModel>
+  in?: $Enums.GenerationEngine[] | Prisma.ListEnumGenerationEngineFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GenerationEngine[] | Prisma.ListEnumGenerationEngineFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGenerationEngineFilter<$PrismaModel> | $Enums.GenerationEngine
+}
+
+export type NestedEnumSqlDialectFilter<$PrismaModel = never> = {
+  equals?: $Enums.SqlDialect | Prisma.EnumSqlDialectFieldRefInput<$PrismaModel>
+  in?: $Enums.SqlDialect[] | Prisma.ListEnumSqlDialectFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SqlDialect[] | Prisma.ListEnumSqlDialectFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSqlDialectFilter<$PrismaModel> | $Enums.SqlDialect
+}
+
 export type NestedEnumSqlImportStatusWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.SqlImportStatus | Prisma.EnumSqlImportStatusFieldRefInput<$PrismaModel>
   in?: $Enums.SqlImportStatus[] | Prisma.ListEnumSqlImportStatusFieldRefInput<$PrismaModel>
@@ -579,6 +627,26 @@ export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
   gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+}
+
+export type NestedEnumGenerationEngineWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GenerationEngine | Prisma.EnumGenerationEngineFieldRefInput<$PrismaModel>
+  in?: $Enums.GenerationEngine[] | Prisma.ListEnumGenerationEngineFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GenerationEngine[] | Prisma.ListEnumGenerationEngineFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGenerationEngineWithAggregatesFilter<$PrismaModel> | $Enums.GenerationEngine
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGenerationEngineFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGenerationEngineFilter<$PrismaModel>
+}
+
+export type NestedEnumSqlDialectWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SqlDialect | Prisma.EnumSqlDialectFieldRefInput<$PrismaModel>
+  in?: $Enums.SqlDialect[] | Prisma.ListEnumSqlDialectFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SqlDialect[] | Prisma.ListEnumSqlDialectFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSqlDialectWithAggregatesFilter<$PrismaModel> | $Enums.SqlDialect
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSqlDialectFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSqlDialectFilter<$PrismaModel>
 }
 
 export type NestedJsonFilter<$PrismaModel = never> =

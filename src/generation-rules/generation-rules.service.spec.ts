@@ -143,7 +143,7 @@ describe('GenerationRulesService (CP-09 Configurar Reglas)', () => {
   });
 
   it('rechaza una cantidad de filas por encima del máximo permitido', async () => {
-    const dto = baseDto({ tables: { clientes: { rowCount: 1001 } } });
+    const dto = baseDto({ tables: { clientes: { rowCount: 5001 } } });
 
     await expect(service.create('p1', 'u1', dto as any)).rejects.toThrow(
       BadRequestException,

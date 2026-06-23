@@ -29,6 +29,8 @@ export type SqlImportMinAggregateOutputType = {
   projectId: string | null
   originalSql: string | null
   status: $Enums.SqlImportStatus | null
+  engine: $Enums.GenerationEngine | null
+  dialect: $Enums.SqlDialect | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -38,6 +40,8 @@ export type SqlImportMaxAggregateOutputType = {
   projectId: string | null
   originalSql: string | null
   status: $Enums.SqlImportStatus | null
+  engine: $Enums.GenerationEngine | null
+  dialect: $Enums.SqlDialect | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -49,6 +53,8 @@ export type SqlImportCountAggregateOutputType = {
   status: number
   schemaJson: number
   errors: number
+  engine: number
+  dialect: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -60,6 +66,8 @@ export type SqlImportMinAggregateInputType = {
   projectId?: true
   originalSql?: true
   status?: true
+  engine?: true
+  dialect?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -69,6 +77,8 @@ export type SqlImportMaxAggregateInputType = {
   projectId?: true
   originalSql?: true
   status?: true
+  engine?: true
+  dialect?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -80,6 +90,8 @@ export type SqlImportCountAggregateInputType = {
   status?: true
   schemaJson?: true
   errors?: true
+  engine?: true
+  dialect?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -164,6 +176,8 @@ export type SqlImportGroupByOutputType = {
   status: $Enums.SqlImportStatus
   schemaJson: runtime.JsonValue | null
   errors: runtime.JsonValue | null
+  engine: $Enums.GenerationEngine
+  dialect: $Enums.SqlDialect
   createdAt: Date
   updatedAt: Date
   _count: SqlImportCountAggregateOutputType | null
@@ -196,6 +210,8 @@ export type SqlImportWhereInput = {
   status?: Prisma.EnumSqlImportStatusFilter<"SqlImport"> | $Enums.SqlImportStatus
   schemaJson?: Prisma.JsonNullableFilter<"SqlImport">
   errors?: Prisma.JsonNullableFilter<"SqlImport">
+  engine?: Prisma.EnumGenerationEngineFilter<"SqlImport"> | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFilter<"SqlImport"> | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFilter<"SqlImport"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SqlImport"> | Date | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
@@ -211,6 +227,8 @@ export type SqlImportOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   schemaJson?: Prisma.SortOrderInput | Prisma.SortOrder
   errors?: Prisma.SortOrderInput | Prisma.SortOrder
+  engine?: Prisma.SortOrder
+  dialect?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   project?: Prisma.ProjectOrderByWithRelationInput
@@ -229,6 +247,8 @@ export type SqlImportWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumSqlImportStatusFilter<"SqlImport"> | $Enums.SqlImportStatus
   schemaJson?: Prisma.JsonNullableFilter<"SqlImport">
   errors?: Prisma.JsonNullableFilter<"SqlImport">
+  engine?: Prisma.EnumGenerationEngineFilter<"SqlImport"> | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFilter<"SqlImport"> | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFilter<"SqlImport"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SqlImport"> | Date | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
@@ -244,6 +264,8 @@ export type SqlImportOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   schemaJson?: Prisma.SortOrderInput | Prisma.SortOrder
   errors?: Prisma.SortOrderInput | Prisma.SortOrder
+  engine?: Prisma.SortOrder
+  dialect?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.SqlImportCountOrderByAggregateInput
@@ -261,6 +283,8 @@ export type SqlImportScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumSqlImportStatusWithAggregatesFilter<"SqlImport"> | $Enums.SqlImportStatus
   schemaJson?: Prisma.JsonNullableWithAggregatesFilter<"SqlImport">
   errors?: Prisma.JsonNullableWithAggregatesFilter<"SqlImport">
+  engine?: Prisma.EnumGenerationEngineWithAggregatesFilter<"SqlImport"> | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectWithAggregatesFilter<"SqlImport"> | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"SqlImport"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"SqlImport"> | Date | string
 }
@@ -271,6 +295,8 @@ export type SqlImportCreateInput = {
   status: $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: $Enums.GenerationEngine
+  dialect?: $Enums.SqlDialect
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutSqlImportsInput
@@ -286,6 +312,8 @@ export type SqlImportUncheckedCreateInput = {
   status: $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: $Enums.GenerationEngine
+  dialect?: $Enums.SqlDialect
   createdAt?: Date | string
   updatedAt?: Date | string
   generations?: Prisma.GenerationUncheckedCreateNestedManyWithoutSqlImportInput
@@ -299,6 +327,8 @@ export type SqlImportUpdateInput = {
   status?: Prisma.EnumSqlImportStatusFieldUpdateOperationsInput | $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFieldUpdateOperationsInput | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutSqlImportsNestedInput
@@ -314,6 +344,8 @@ export type SqlImportUncheckedUpdateInput = {
   status?: Prisma.EnumSqlImportStatusFieldUpdateOperationsInput | $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFieldUpdateOperationsInput | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   generations?: Prisma.GenerationUncheckedUpdateManyWithoutSqlImportNestedInput
@@ -328,6 +360,8 @@ export type SqlImportCreateManyInput = {
   status: $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: $Enums.GenerationEngine
+  dialect?: $Enums.SqlDialect
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -338,6 +372,8 @@ export type SqlImportUpdateManyMutationInput = {
   status?: Prisma.EnumSqlImportStatusFieldUpdateOperationsInput | $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFieldUpdateOperationsInput | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -349,6 +385,8 @@ export type SqlImportUncheckedUpdateManyInput = {
   status?: Prisma.EnumSqlImportStatusFieldUpdateOperationsInput | $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFieldUpdateOperationsInput | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -370,6 +408,8 @@ export type SqlImportCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   schemaJson?: Prisma.SortOrder
   errors?: Prisma.SortOrder
+  engine?: Prisma.SortOrder
+  dialect?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -379,6 +419,8 @@ export type SqlImportMaxOrderByAggregateInput = {
   projectId?: Prisma.SortOrder
   originalSql?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  engine?: Prisma.SortOrder
+  dialect?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -388,6 +430,8 @@ export type SqlImportMinOrderByAggregateInput = {
   projectId?: Prisma.SortOrder
   originalSql?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  engine?: Prisma.SortOrder
+  dialect?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -443,6 +487,14 @@ export type EnumSqlImportStatusFieldUpdateOperationsInput = {
   set?: $Enums.SqlImportStatus
 }
 
+export type EnumGenerationEngineFieldUpdateOperationsInput = {
+  set?: $Enums.GenerationEngine
+}
+
+export type EnumSqlDialectFieldUpdateOperationsInput = {
+  set?: $Enums.SqlDialect
+}
+
 export type SqlImportCreateNestedOneWithoutGenerationsInput = {
   create?: Prisma.XOR<Prisma.SqlImportCreateWithoutGenerationsInput, Prisma.SqlImportUncheckedCreateWithoutGenerationsInput>
   connectOrCreate?: Prisma.SqlImportCreateOrConnectWithoutGenerationsInput
@@ -491,6 +543,8 @@ export type SqlImportCreateWithoutProjectInput = {
   status: $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: $Enums.GenerationEngine
+  dialect?: $Enums.SqlDialect
   createdAt?: Date | string
   updatedAt?: Date | string
   generations?: Prisma.GenerationCreateNestedManyWithoutSqlImportInput
@@ -504,6 +558,8 @@ export type SqlImportUncheckedCreateWithoutProjectInput = {
   status: $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: $Enums.GenerationEngine
+  dialect?: $Enums.SqlDialect
   createdAt?: Date | string
   updatedAt?: Date | string
   generations?: Prisma.GenerationUncheckedCreateNestedManyWithoutSqlImportInput
@@ -547,6 +603,8 @@ export type SqlImportScalarWhereInput = {
   status?: Prisma.EnumSqlImportStatusFilter<"SqlImport"> | $Enums.SqlImportStatus
   schemaJson?: Prisma.JsonNullableFilter<"SqlImport">
   errors?: Prisma.JsonNullableFilter<"SqlImport">
+  engine?: Prisma.EnumGenerationEngineFilter<"SqlImport"> | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFilter<"SqlImport"> | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFilter<"SqlImport"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SqlImport"> | Date | string
 }
@@ -557,6 +615,8 @@ export type SqlImportCreateWithoutGenerationsInput = {
   status: $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: $Enums.GenerationEngine
+  dialect?: $Enums.SqlDialect
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutSqlImportsInput
@@ -571,6 +631,8 @@ export type SqlImportUncheckedCreateWithoutGenerationsInput = {
   status: $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: $Enums.GenerationEngine
+  dialect?: $Enums.SqlDialect
   createdAt?: Date | string
   updatedAt?: Date | string
   generationPlan?: Prisma.GenerationPlanUncheckedCreateNestedOneWithoutSqlImportInput
@@ -599,6 +661,8 @@ export type SqlImportUpdateWithoutGenerationsInput = {
   status?: Prisma.EnumSqlImportStatusFieldUpdateOperationsInput | $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFieldUpdateOperationsInput | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutSqlImportsNestedInput
@@ -613,6 +677,8 @@ export type SqlImportUncheckedUpdateWithoutGenerationsInput = {
   status?: Prisma.EnumSqlImportStatusFieldUpdateOperationsInput | $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFieldUpdateOperationsInput | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   generationPlan?: Prisma.GenerationPlanUncheckedUpdateOneWithoutSqlImportNestedInput
@@ -625,6 +691,8 @@ export type SqlImportCreateWithoutGenerationPlanInput = {
   status: $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: $Enums.GenerationEngine
+  dialect?: $Enums.SqlDialect
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutSqlImportsInput
@@ -639,6 +707,8 @@ export type SqlImportUncheckedCreateWithoutGenerationPlanInput = {
   status: $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: $Enums.GenerationEngine
+  dialect?: $Enums.SqlDialect
   createdAt?: Date | string
   updatedAt?: Date | string
   generations?: Prisma.GenerationUncheckedCreateNestedManyWithoutSqlImportInput
@@ -667,6 +737,8 @@ export type SqlImportUpdateWithoutGenerationPlanInput = {
   status?: Prisma.EnumSqlImportStatusFieldUpdateOperationsInput | $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFieldUpdateOperationsInput | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutSqlImportsNestedInput
@@ -681,6 +753,8 @@ export type SqlImportUncheckedUpdateWithoutGenerationPlanInput = {
   status?: Prisma.EnumSqlImportStatusFieldUpdateOperationsInput | $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFieldUpdateOperationsInput | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   generations?: Prisma.GenerationUncheckedUpdateManyWithoutSqlImportNestedInput
@@ -693,6 +767,8 @@ export type SqlImportCreateWithoutGenerationRuleSetsInput = {
   status: $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: $Enums.GenerationEngine
+  dialect?: $Enums.SqlDialect
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutSqlImportsInput
@@ -707,6 +783,8 @@ export type SqlImportUncheckedCreateWithoutGenerationRuleSetsInput = {
   status: $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: $Enums.GenerationEngine
+  dialect?: $Enums.SqlDialect
   createdAt?: Date | string
   updatedAt?: Date | string
   generations?: Prisma.GenerationUncheckedCreateNestedManyWithoutSqlImportInput
@@ -735,6 +813,8 @@ export type SqlImportUpdateWithoutGenerationRuleSetsInput = {
   status?: Prisma.EnumSqlImportStatusFieldUpdateOperationsInput | $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFieldUpdateOperationsInput | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutSqlImportsNestedInput
@@ -749,6 +829,8 @@ export type SqlImportUncheckedUpdateWithoutGenerationRuleSetsInput = {
   status?: Prisma.EnumSqlImportStatusFieldUpdateOperationsInput | $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFieldUpdateOperationsInput | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   generations?: Prisma.GenerationUncheckedUpdateManyWithoutSqlImportNestedInput
@@ -761,6 +843,8 @@ export type SqlImportCreateManyProjectInput = {
   status: $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: $Enums.GenerationEngine
+  dialect?: $Enums.SqlDialect
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -771,6 +855,8 @@ export type SqlImportUpdateWithoutProjectInput = {
   status?: Prisma.EnumSqlImportStatusFieldUpdateOperationsInput | $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFieldUpdateOperationsInput | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   generations?: Prisma.GenerationUpdateManyWithoutSqlImportNestedInput
@@ -784,6 +870,8 @@ export type SqlImportUncheckedUpdateWithoutProjectInput = {
   status?: Prisma.EnumSqlImportStatusFieldUpdateOperationsInput | $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFieldUpdateOperationsInput | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   generations?: Prisma.GenerationUncheckedUpdateManyWithoutSqlImportNestedInput
@@ -797,6 +885,8 @@ export type SqlImportUncheckedUpdateManyWithoutProjectInput = {
   status?: Prisma.EnumSqlImportStatusFieldUpdateOperationsInput | $Enums.SqlImportStatus
   schemaJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  engine?: Prisma.EnumGenerationEngineFieldUpdateOperationsInput | $Enums.GenerationEngine
+  dialect?: Prisma.EnumSqlDialectFieldUpdateOperationsInput | $Enums.SqlDialect
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -848,6 +938,8 @@ export type SqlImportSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   status?: boolean
   schemaJson?: boolean
   errors?: boolean
+  engine?: boolean
+  dialect?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
@@ -864,6 +956,8 @@ export type SqlImportSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   status?: boolean
   schemaJson?: boolean
   errors?: boolean
+  engine?: boolean
+  dialect?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
@@ -876,6 +970,8 @@ export type SqlImportSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   status?: boolean
   schemaJson?: boolean
   errors?: boolean
+  engine?: boolean
+  dialect?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
@@ -888,11 +984,13 @@ export type SqlImportSelectScalar = {
   status?: boolean
   schemaJson?: boolean
   errors?: boolean
+  engine?: boolean
+  dialect?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type SqlImportOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "originalSql" | "status" | "schemaJson" | "errors" | "createdAt" | "updatedAt", ExtArgs["result"]["sqlImport"]>
+export type SqlImportOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "originalSql" | "status" | "schemaJson" | "errors" | "engine" | "dialect" | "createdAt" | "updatedAt", ExtArgs["result"]["sqlImport"]>
 export type SqlImportInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   generations?: boolean | Prisma.SqlImport$generationsArgs<ExtArgs>
@@ -922,6 +1020,8 @@ export type $SqlImportPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     status: $Enums.SqlImportStatus
     schemaJson: runtime.JsonValue | null
     errors: runtime.JsonValue | null
+    engine: $Enums.GenerationEngine
+    dialect: $Enums.SqlDialect
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["sqlImport"]>
@@ -1357,6 +1457,8 @@ export interface SqlImportFieldRefs {
   readonly status: Prisma.FieldRef<"SqlImport", 'SqlImportStatus'>
   readonly schemaJson: Prisma.FieldRef<"SqlImport", 'Json'>
   readonly errors: Prisma.FieldRef<"SqlImport", 'Json'>
+  readonly engine: Prisma.FieldRef<"SqlImport", 'GenerationEngine'>
+  readonly dialect: Prisma.FieldRef<"SqlImport", 'SqlDialect'>
   readonly createdAt: Prisma.FieldRef<"SqlImport", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"SqlImport", 'DateTime'>
 }

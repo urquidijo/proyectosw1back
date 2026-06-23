@@ -15,6 +15,7 @@ describe('ExportsService', () => {
   };
 
   const fakeGenerationsService = {
+    findOne: jest.fn().mockResolvedValue({ id: 'g1', engine: 'POSTGRESQL' }),
     getOutputSql: jest
       .fn()
       .mockResolvedValue('-- fake sql\nINSERT INTO "clientes" VALUES (1);'),
@@ -26,11 +27,34 @@ describe('ExportsService', () => {
 
   const service = new ExportsService(fakeGenerationsService);
 
+  afterEach(() => {
+    (fakeGenerationsService.findOne as jest.Mock).mockResolvedValue({
+      id: 'g1',
+      engine: 'POSTGRESQL',
+    });
+  });
+
   it('exporta SQL reutilizando el archivo ya generado', async () => {
     const result = await service.export('p1', 'g1', 'u1', 'sql');
     expect(result.filename).toBe('syndata-g1.sql');
     expect(result.contentType).toContain('text/plain');
     expect(result.body).toContain('INSERT INTO');
+  });
+
+  it('exporta el dump nativo como script de mongosh (.js) cuando la generación usó el motor MongoDB', async () => {
+    (fakeGenerationsService.findOne as jest.Mock).mockResolvedValue({
+      id: 'g1',
+      engine: 'MONGODB',
+    });
+    (fakeGenerationsService.getOutputSql as jest.Mock).mockResolvedValue(
+      'db.clientes.insertMany([{"id":1}]);',
+    );
+
+    const result = await service.export('p1', 'g1', 'u1', 'sql');
+
+    expect(result.filename).toBe('syndata-g1.js');
+    expect(result.contentType).toContain('application/javascript');
+    expect(result.body).toContain('db.clientes.insertMany');
   });
 
   it('rechaza SQL + filtro de tabla (no tiene sentido para un dump relacional)', async () => {

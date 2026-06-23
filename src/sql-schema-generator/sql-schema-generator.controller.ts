@@ -22,6 +22,7 @@ export class SqlSchemaGeneratorController {
       projectId,
       user.id,
       dto.description,
+      dto.dialect,
     );
   }
 }

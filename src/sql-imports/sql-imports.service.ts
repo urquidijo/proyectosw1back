@@ -1,5 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, SqlImportStatus } from '../generated/prisma/client';
+import {
+  GenerationEngine,
+  Prisma,
+  SqlDialect,
+  SqlImportStatus,
+} from '../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateSqlImportDto } from './dto/create-sql-import.dto';
 import { SqlSchemaAnalyzerService } from './sql-schema-analyzer.service';
@@ -18,7 +23,11 @@ export class SqlImportsService {
   ) {
     await this.ensureProjectBelongsToUser(projectId, userId);
 
-    const analysis = this.sqlSchemaAnalyzer.analyze(createSqlImportDto.sql);
+    const dialect = createSqlImportDto.dialect ?? SqlDialect.POSTGRESQL;
+    const analysis = this.sqlSchemaAnalyzer.analyze(
+      createSqlImportDto.sql,
+      dialect === SqlDialect.MYSQL ? 'mysql' : 'postgresql',
+    );
 
     return this.prisma.sqlImport.create({
       data: {
@@ -29,6 +38,8 @@ export class SqlImportsService {
           : SqlImportStatus.INVALID,
         schemaJson: analysis.schema as unknown as Prisma.InputJsonValue,
         errors: analysis.errors as unknown as Prisma.InputJsonValue,
+        engine: createSqlImportDto.engine ?? GenerationEngine.POSTGRESQL,
+        dialect,
       },
     });
   }
@@ -49,6 +60,8 @@ export class SqlImportsService {
         status: true,
         schemaJson: true,
         errors: true,
+        engine: true,
+        dialect: true,
         createdAt: true,
         updatedAt: true,
       },

@@ -19,6 +19,17 @@ enum SqlImportStatus {
   INVALID
 }
 
+enum GenerationEngine {
+  POSTGRESQL
+  MONGODB
+}
+
+/** Sintaxis del script DDL que el usuario pega/sube (no confundir con GenerationEngine, que es el motor destino de los datos generados). */
+enum SqlDialect {
+  POSTGRESQL
+  MYSQL
+}
+
 enum PlanType {
   INDIVIDUAL
   GROUP
@@ -90,6 +101,8 @@ model SqlImport {
   status      SqlImportStatus
   schemaJson  Json?
   errors      Json?
+  engine      GenerationEngine @default(POSTGRESQL)
+  dialect     SqlDialect       @default(POSTGRESQL)
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 
@@ -121,6 +134,7 @@ model Generation {
   outputFile     String?
   outputDataFile String?
   region         String?
+  engine         GenerationEngine @default(POSTGRESQL)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   validationJson Json?

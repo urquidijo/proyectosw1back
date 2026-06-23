@@ -26,6 +26,22 @@ export const SqlImportStatus = {
 export type SqlImportStatus = (typeof SqlImportStatus)[keyof typeof SqlImportStatus]
 
 
+export const GenerationEngine = {
+  POSTGRESQL: 'POSTGRESQL',
+  MONGODB: 'MONGODB'
+} as const
+
+export type GenerationEngine = (typeof GenerationEngine)[keyof typeof GenerationEngine]
+
+
+export const SqlDialect = {
+  POSTGRESQL: 'POSTGRESQL',
+  MYSQL: 'MYSQL'
+} as const
+
+export type SqlDialect = (typeof SqlDialect)[keyof typeof SqlDialect]
+
+
 export const PlanType = {
   INDIVIDUAL: 'INDIVIDUAL',
   GROUP: 'GROUP'

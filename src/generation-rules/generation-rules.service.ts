@@ -277,9 +277,9 @@ export class GenerationRulesService {
                 );
             }
 
-            if (tableRules.rowCount !== undefined && tableRules.rowCount > 1000) {
+            if (tableRules.rowCount !== undefined && tableRules.rowCount > 5000) {
                 throw new BadRequestException(
-                    `Por ahora el máximo permitido es 1000 filas para la tabla "${tableName}"`,
+                    `Por ahora el máximo permitido es 5000 filas para la tabla "${tableName}"`,
                 );
             }
 
