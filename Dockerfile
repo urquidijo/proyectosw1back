@@ -27,4 +27,4 @@ EXPOSE 4000
 # momento (la de Docker Compose, Railway, o cualquier otra) y luego arranca
 # la API compilada. Ningún paso de este Dockerfile depende de en qué entorno
 # se ejecute: todo lo específico del entorno llega por variables de entorno.
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main.js"]
