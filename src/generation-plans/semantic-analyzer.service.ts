@@ -13,6 +13,14 @@ import { SemanticRuleCandidate } from './types/semantic-rule-candidate.type';
 export type PlanLanguage = 'es' | 'en';
 
 /**
+ * Prefijo estable (no traducible, no depende de la redacción) que el
+ * frontend usa para detectar y resaltar de forma distinta la advertencia de
+ * "este plan se generó con IA local" en vez de tratarla como una advertencia
+ * cualquiera. Si cambias el texto humano, NO cambies este prefijo.
+ */
+export const LOCAL_AI_WARNING_PREFIX = '[LOCAL_AI]';
+
+/**
  * Analizador semántico del esquema. Es agnóstico del proveedor de IA: pide el
  * plan de generación a `LlmService`, que usa Claude (principal) o Gemini (respaldo).
  *
@@ -41,11 +49,27 @@ export class SemanticAnalyzerService {
         unknown
       >;
 
-      return await this.llmService.generateJson(
+      const result = await this.llmService.generateJson(
         prompt,
         jsonSchema,
         (data) => generationPlanSchema.parse(data),
       );
+
+      if (result.isLocal) {
+        // El usuario debe saber que este plan no lo generó Claude/Gemini,
+        // sino un modelo local (Ollama) por respaldo. Se inserta como
+        // advertencia porque es exactamente el mecanismo que ya existe en la
+        // UI ("Coherencia IA") para avisar cosas a revisar antes de generar.
+        return {
+          ...result.data,
+          warnings: [
+            `${LOCAL_AI_WARNING_PREFIX} Este plan se generó con un modelo de IA LOCAL ("${result.provider}") porque los proveedores en la nube no estaban disponibles o no respondieron. La calidad de las reglas puede variar respecto a Claude/Gemini.`,
+            ...result.data.warnings,
+          ],
+        };
+      }
+
+      return result.data;
     } catch (error) {
       throw new InternalServerErrorException(
         `No se pudo analizar la coherencia semántica: ${
@@ -94,6 +118,7 @@ Reglas estrictas:
 3. Solo propón reglas si tienen confianza alta.
 4. Si no estás seguro, deja la regla fuera y agrega una advertencia.
 5. Las reglas deben ser genéricas y ejecutables por software.
+5b. Todo campo "confidence" es una FRACCIÓN decimal entre 0 y 1 (ej: 0.95). NUNCA un porcentaje (95) ni un entero mayor a 1.
 6. No devuelvas texto libre fuera del JSON solicitado.
 7. Busca cadenas completas de reglas derivadas, no solo reglas aisladas.
 8. Si una columna derivada alimenta otra columna derivada, devuelve todas las reglas necesarias para mantener la cadena completa de coherencia.

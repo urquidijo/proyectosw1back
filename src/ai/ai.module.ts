@@ -3,6 +3,7 @@ import { Global, Module } from '@nestjs/common';
 import { ClaudeProvider } from './claude.provider';
 import { GeminiProvider } from './gemini.provider';
 import { GroqProvider } from './groq.provider';
+import { OllamaProvider } from './ollama.provider';
 import { LlmService } from './llm.service';
 
 /**
@@ -11,7 +12,13 @@ import { LlmService } from './llm.service';
  */
 @Global()
 @Module({
-  providers: [ClaudeProvider, GeminiProvider, GroqProvider, LlmService],
+  providers: [
+    ClaudeProvider,
+    GeminiProvider,
+    GroqProvider,
+    OllamaProvider,
+    LlmService,
+  ],
   exports: [LlmService],
 })
 export class AiModule {}

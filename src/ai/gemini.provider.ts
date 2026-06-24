@@ -13,6 +13,7 @@ import { LlmProvider } from './llm-provider.interface';
 @Injectable()
 export class GeminiProvider implements LlmProvider {
   readonly name = 'gemini';
+  readonly isLocal = false;
 
   private readonly logger = new Logger(GeminiProvider.name);
   private readonly client: GoogleGenAI | null;

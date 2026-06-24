@@ -6,10 +6,17 @@
  * sin tocar la lógica de generación.
  */
 export interface LlmProvider {
-  /** Nombre legible del proveedor, para logs ("claude" | "gemini"). */
+  /** Nombre legible del proveedor, para logs ("claude" | "gemini" | "ollama"). */
   readonly name: string;
 
-  /** Indica si el proveedor está configurado (tiene API key). */
+  /**
+   * true si corre en la propia máquina/servidor (sin API key ni internet,
+   * ej. Ollama). LlmService usa esto para avisar al usuario cuando el
+   * resultado vino de un modelo local en vez de un proveedor en la nube.
+   */
+  readonly isLocal: boolean;
+
+  /** Indica si el proveedor está configurado (tiene API key, o está habilitado). */
   isConfigured(): boolean;
 
   /**

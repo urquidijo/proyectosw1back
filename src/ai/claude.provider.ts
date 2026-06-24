@@ -15,6 +15,7 @@ import { LlmProvider } from './llm-provider.interface';
 @Injectable()
 export class ClaudeProvider implements LlmProvider {
   readonly name = 'claude';
+  readonly isLocal = false;
 
   private readonly logger = new Logger(ClaudeProvider.name);
   private readonly client: Anthropic | null;

@@ -13,6 +13,7 @@ import { LlmProvider } from './llm-provider.interface';
 @Injectable()
 export class GroqProvider implements LlmProvider {
   readonly name = 'groq';
+  readonly isLocal = false;
 
   private readonly logger = new Logger(GroqProvider.name);
   private readonly client: Groq | null;
